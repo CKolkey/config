@@ -1,0 +1,32 @@
+{
+  "title": "Remap F1/F2 in Kitty",
+  "rules": [
+    {
+      "description": "Have F1/F2 act as standard function keys in Kitty",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "f1" },
+          "to": [ { "key_code": "display_brightness_decrement" } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_unless",
+              "bundle_identifiers": [ "net.kovidgoyal.kitty" ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": { "key_code": "f2" },
+          "to": [ { "key_code": "display_brightness_increment" } ],
+          "conditions": [
+            {
+              "type": "frontmost_application_unless",
+              "bundle_identifiers": [ "net.kovidgoyal.kitty" ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

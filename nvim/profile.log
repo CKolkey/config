@@ -1,0 +1,1712 @@
+FUNCTION  <SNR>10_add_matches()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:1123
+Called 1 time
+Total time:   0.000139
+ Self time:   0.000127
+
+count  total (s)   self (s)
+    1              0.000002   if !exists('w:matchup_match_id_list')
+    1              0.000001     let w:matchup_match_id_list = []
+    1              0.000000   endif
+                            
+                              " if MatchwordCur is undefined and MatchWord links to MatchParen
+                              " (as default), behave like MatchWordCur is the same as MatchParenCur
+                              " otherwise, MatchWordCur is the same as MatchWord
+    1              0.000001   if a:0
+                                let l:mwc = hlexists('MatchWordCur') ? 'MatchWordCur' : (synIDtrans(hlID('MatchWord')) == hlID('MatchParen')     ? 'MatchParenCur' : 'MatchWord')
+    1              0.000000   endif
+                            
+    3              0.000003   for l:corr in a:corrlist
+    2              0.000003     if a:0 && l:corr.match_index == a:1.match_index
+                                  let l:group = s:wordish(l:corr) ? l:mwc : 'MatchParenCur'
+    2              0.000001     else
+    2   0.000021   0.000009       let l:group = s:wordish(l:corr) ? 'MatchWord' : 'MatchParen'
+    2              0.000001     endif
+                            
+    2              0.000003     if exists('s:ns_id')
+    2              0.000009       if strlen(l:corr.match) == 0 && matchup#loader#_treesitter_may_be_supported() && !matchup#ts_engine#get_option(   bufnr('%'), 'disable_virtual_text')
+                                    if hlexists('MatchupVirtualText')
+                                      let l:group = 'MatchupVirtualText'
+                                    endif
+                                    call nvim_buf_set_extmark(0, s:ns_id, l:corr.lnum - 1, l:corr.cnum - 1, {   'virt_text': [[' ' . g:matchup_matchparen_end_sign . ' '                  . a:corrlist[0].match, l:group]],   'virt_text_pos': 'overlay'})
+    2              0.000001       else
+    2              0.000016         call nvim_buf_add_highlight(0, s:ns_id, l:group, l:corr.lnum - 1, l:corr.cnum - 1, l:corr.cnum - 1 + strlen(l:corr.match))
+    2              0.000001       end
+                                elseif exists('*matchaddpos')
+                                  call add(w:matchup_match_id_list, matchaddpos(l:group, [[l:corr.lnum, l:corr.cnum, strlen(l:corr.match)]], 0))
+                                else
+                                  call add(w:matchup_match_id_list, matchadd(l:group, '\%'.(l:corr.lnum).'l\%'.(l:corr.cnum).'c' . '.\+\%<'.(l:corr.cnum+strlen(l:corr.match)+1).'c', 0))
+    2              0.000001     endif
+    3              0.000002   endfor
+
+FUNCTION  <SNR>97_get_delim()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:325
+Called 17 times
+Total time:   0.021156
+ Self time:   0.007851
+
+count  total (s)   self (s)
+                              " arguments: {{{2
+                              "   opts = {
+                              "     'direction'   : 'next' | 'prev' | 'current'
+                              "     'type'        : 'delim_tex'
+                              "                   | 'delim_all'
+                              "                   | 'all'
+                              "     'side'        : 'open'     | 'close'
+                              "                   | 'both'     | 'mid'
+                              "                   | 'both_all' | 'open_mid'
+                              "   }
+                              "
+                              "  }}}2
+                              " returns: {{{2
+                              "   delim = {
+                              "     lnum     : line number
+                              "     cnum     : column number
+                              "     type     : e.g., 'delim_tex'
+                              "     match    : the actual text match
+                              "     side     : 'open' | 'close' | 'mid'
+                              "     class    : [ c1, c2 ] identifies the kind of match_words
+                              "     skip     : skip state
+                              "     get_matching: callback used to get matching delims
+                              "     highlighting: whether the request was for highlighting
+                              "
+                              "     ... Parser dependent ...
+                              "     augment  : how to match a corresponding open
+                              "     groups   : dict of captured groups
+                              "     regexone : the regex items, like \1foo
+                              "     regextwo : the regex_capture items, like \(group\)foo
+                              "     midmap   : ??
+                              "   }
+                              "
+                              " }}}2
+                            
+   17              0.000033   if !get(b:, 'matchup_delim_enabled', 0)
+                                return {}
+   17              0.000006   endif
+                            
+   17              0.000058   if has('*state') && state('a') !=# '' | return {} | endif
+                            
+   17   0.000122   0.000075   call matchup#perf#tic('s:get_delim')
+                            
+   17   0.000108   0.000079   let l:save_pos = matchup#pos#get_cursor()
+                            
+   17   0.000587   0.000096   call matchup#loader#refresh_match_words()
+                            
+                              " this contains all the patterns for the specified type and side
+   17              0.000051   let l:re = b:matchup_delim_re[a:opts.type][a:opts.side]
+                            
+   17              0.000027   let l:cursorpos = col('.')
+                            
+   17              0.000034   let l:insertmode = get(a:opts, 'insertmode', 0)
+   17              0.000020   if l:cursorpos > 1 && l:insertmode
+                                let l:cursorpos -= 1
+   17              0.000006   endif
+   17              0.000089   if l:cursorpos > strlen(getline('.')) && stridx("vV\<c-v>", mode()) > -1
+                                let l:cursorpos -= 1
+   17              0.000005   endif
+                            
+   17   0.000135   0.000110   call matchup#delim#set_invert_skip(0)
+                            
+   17              0.000020   if a:opts.direction ==# 'current'
+   16              0.000085     let l:check_skip = get(a:opts, 'check_skip', g:matchup_delim_noskips >= 2 || g:matchup_delim_noskips >= 1     && getline(line('.'))[l:cursorpos-1] =~? '[^[:punct:]]')
+   16   0.008620   0.000092     if l:check_skip && matchup#delim#skip(line('.'), l:cursorpos)
+    1              0.000001       return {}
+   15              0.000008     endif
+    1              0.000000   else
+                                " check skip if cursor is not currently in skip
+    1   0.001606   0.000009     let l:check_skip = get(a:opts, 'check_skip', !matchup#delim#skip(line('.'), l:cursorpos) || g:matchup_delim_noskips >= 2)
+   16              0.000007   endif
+                            
+   16              0.000028   let a:opts.cursorpos = l:cursorpos
+                            
+                              " for current, we want to find matches that end after the cursor
+                              " note: we expect this to give false-positives with \ze
+   16              0.000026   if a:opts.direction ==# 'current'
+   15              0.000057     let l:re .= '\%>'.(l:cursorpos).'c'
+                              "  let l:re = '\%<'.(l:cursorpos+1).'c' . l:re
+   16              0.000006   endif
+                            
+                              " allow overlapping delimiters
+                              " without this, the > in <tag> would not be found
+   16              0.000049   if b:matchup_delim_re[a:opts.type]._engine_info.has_zs[a:opts.side]
+                                let l:save_cpo = &cpo
+                                noautocmd set cpo-=c
+   16              0.000007   else
+                                " faster than changing cpo but doesn't work right with \zs
+   16              0.000021     let l:re .= '\&'
+   16              0.000006   endif
+                            
+                              " move cursor one left for searchpos if necessary
+   16              0.000020   let l:need_restore_cursor = 0
+   16              0.000011   if l:insertmode
+                                call matchup#pos#set_cursor(line('.'), col('.')-1)
+                                let l:need_restore_cursor = 1
+   16              0.000005   endif
+                            
+                              " stopline may depend on the current action
+   16              0.000042   let l:stopline = get(a:opts, 'stopline', s:stopline)
+                            
+                              " in the first pass, we get matching line and column numbers
+                              " this is intended to be as fast as possible, with no capture groups
+                              " we look for a match on this line (if direction == current)
+                              " or forwards or backwards (if direction == next or prev)
+                              " for current, we actually search leftwards from the cursor
+   16              0.000024   while 1
+   16   0.000119   0.000080     let l:to = matchup#perf#timeout()
+   16              0.005030     let [l:lnum, l:cnum] = a:opts.direction ==# 'next' ? searchpos(l:re, 'cnW', line('.') + l:stopline, l:to) : a:opts.direction ==# 'prev'   ? searchpos(l:re, 'bcnW',               max([line('.') - l:stopline, 1]), l:to)   : searchpos(l:re, 'bcnW', line('.'), l:to)
+   16              0.000061     if l:lnum == 0 | break | endif
+                            
+                                " note: the skip here should not be needed
+                                " in 'current' mode, but be explicit
+    1              0.000010     if a:opts.direction !=# 'current' && (l:check_skip || g:matchup_delim_noskips == 1     && getline(l:lnum)[l:cnum-1] =~? '[^[:punct:]]') && matchup#delim#skip(l:lnum, l:cnum) && (a:opts.direction ==# 'prev' ? (l:lnum > 1 || l:cnum > 1)     : (l:lnum < line('$') || l:cnum < len(getline('$'))))
+                            
+                                  " invalid match, move cursor and keep looking
+                                  call matchup#pos#set_cursor(a:opts.direction ==# 'next' ? matchup#pos#next(l:lnum, l:cnum) : matchup#pos#prev(l:lnum, l:cnum))
+                                  let l:need_restore_cursor = 1
+                                  continue
+    1              0.000000     endif
+                            
+    1              0.000001     break
+   16              0.000023   endwhile
+                            
+                              " restore cpo if necessary
+                              " note: this messes with cursor position
+   16              0.000032   if exists('l:save_cpo')
+                                noautocmd let &cpo = l:save_cpo
+                                let l:need_restore_cursor = 1
+   16              0.000006   endif
+                            
+                              " restore cursor
+   16              0.000013   if l:need_restore_cursor
+                                call matchup#pos#set_cursor(l:save_pos)
+   16              0.000005   endif
+                            
+   16   0.000485   0.000121   call matchup#perf#toc('s:get_delim', 'first_pass')
+                            
+                              " nothing found, leave now
+   16              0.000013   if l:lnum == 0
+   15   0.000326   0.000071     call matchup#perf#toc('s:get_delim', 'nothing_found')
+   15              0.000014     return {}
+    1              0.000000   endif
+                            
+    1   0.000017   0.000005   if matchup#perf#timeout_check()
+                                return {}
+    1              0.000000   endif
+                            
+    1              0.000001   let l:skip_state = 0
+    1              0.000003   if !l:check_skip && (!&synmaxcol || l:cnum <= &synmaxcol)
+                                " XXX: workaround an apparent obscure vim bug where the
+                                " reported syntax id is incorrect on the first synID() call
+    1   0.000574   0.000006     call matchup#delim#skip(l:lnum, l:cnum)
+    1   0.000016   0.000005     if matchup#perf#timeout_check()
+                                  return {}
+    1              0.000000     endif
+                            
+    1   0.001051   0.000005     let l:skip_state = matchup#delim#skip(l:lnum, l:cnum)
+    1              0.000001   endif
+                            
+                              " now we get more data about the match in this position
+                              " there may be capture groups which need to be stored
+                            
+                              " result stub, to be filled by the parser when there is a match
+    1              0.000006   let l:result = { 'lnum'     : l:lnum, 'cnum'     : l:cnum, 'type'     : '', 'match'    : '', 'side'     : '', 'class'    : [], 'skip'     : l:skip_state,}
+                            
+    1              0.000004   for l:P in s:engines.classic.parsers[a:opts.type]
+    1   0.000279   0.000009     let l:parser_result = l:P(l:lnum, l:cnum, a:opts)
+    1              0.000002     if !empty(l:parser_result)
+    1              0.000007       let l:result = extend(l:parser_result, l:result, 'keep')
+    1              0.000001       break
+                                endif
+    1              0.000001   endfor
+                            
+    1   0.000027   0.000005   call matchup#perf#toc('s:get_delim', 'got_results')
+                            
+    1              0.000002   return empty(l:result.type) ? {} : l:result
+
+FUNCTION  matchup#ts_syntax#lang_skip()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_syntax.vim:21
+Called 1707 times
+Total time:   0.117912
+ Self time:   0.009274
+
+count  total (s)   self (s)
+ 1707   0.117481   0.008844   return s:forward('lang_skip', a:lnum, a:col)
+
+FUNCTION  matchup#pos#prev()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:88
+Called 441 times
+Total time:   0.011932
+ Self time:   0.007395
+
+count  total (s)   self (s)
+  441   0.007413   0.002875   let [l:lnum, l:cnum; l:rest] = s:parse_args(a:000)
+                            
+  441              0.000341   if l:cnum > 1
+  441              0.003844     return [0, l:lnum, match(getline(l:lnum)[0:l:cnum-2], '.$') + 1, 0]
+                              else
+                                return [0, max([l:lnum-1, 1]), max([strlen(getline(l:lnum-1)), 1]), 0]
+                              endif
+
+FUNCTION  1()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:135
+Called 17 times
+Total time:   0.000952
+ Self time:   0.000785
+
+count  total (s)   self (s)
+   17              0.000030   if exists('w:matchup_match_id_list')
+    2              0.000005     for l:id in w:matchup_match_id_list
+                                  silent! call matchdelete(l:id)
+    2              0.000002     endfor
+    2              0.000004     unlet! w:matchup_match_id_list
+   17              0.000007   endif
+   17              0.000023   if exists('s:ns_id')
+   17              0.000158     call nvim_buf_clear_namespace(0, s:ns_id, 0, -1)
+   17              0.000007   endif
+                            
+   17              0.000076   if !has('nvim') && exists('t:match_popup') && (exists('*win_gettype') ? win_gettype() !=# 'popup' : &buftype !=# 'terminal')
+                                call s:do_popup_autocmd_leave(t:match_popup)
+                                call popup_hide(t:match_popup)
+   17              0.000026   elseif has('nvim')
+   17   0.000252   0.000085     call s:close_floating_win()
+   17              0.000006   endif
+                            
+   17              0.000024   if exists('w:matchup_oldstatus')
+                                let &l:statusline = w:matchup_oldstatus
+                                unlet w:matchup_oldstatus
+                                if exists('#User#MatchupOffscreenLeave')
+                                  doautocmd <nomodeline> User MatchupOffscreenLeave
+                                endif
+   17              0.000005   endif
+   17              0.000022   if exists('w:matchup_statusline')
+                                unlet w:matchup_statusline
+   17              0.000005   endif
+                            
+   17              0.000019   let w:matchup_need_clear = 0
+
+FUNCTION  2()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:203
+Called 16 times
+Total time:   0.001089
+ Self time:   0.000193
+
+count  total (s)   self (s)
+                              ""
+                              " fade feature: remove highlights after a certain time
+                              " {level}
+                              "   =  0: prepare for possible loss of cursor support
+                              "   =  1: new highlights are coming (cancel prior fade)
+                              "   =  2: end of new highlights
+                              " {pos}     [lnum, column] of current match
+                              " {token}   in/out saves state between calls
+                              "
+                              " returns 1 if highlighting should be canceled
+                            
+   16              0.000046   if !g:matchup_matchparen_deferred || !exists('w:matchup_fade_timer')
+   16              0.000016     if a:level <= 0
+   16   0.000956   0.000060       call s:matchparen.clear()
+   16              0.000006     endif
+   16              0.000009     return 0
+                              endif
+                            
+                              " jumping between windows
+                              if a:level == 0 && win_getid() != get(s:, 'save_win')
+                                call timer_pause(w:matchup_fade_timer, 1)
+                                if exists('w:matchup_fade_pos')
+                                  unlet w:matchup_fade_pos
+                                endif
+                                call s:matchparen.clear()
+                                let s:save_win = win_getid()
+                              endif
+                            
+                              " highlighting might be stale
+                              if a:level == 0
+                                if exists('w:matchup_fade_pos')
+                                  let a:token.save_pos = w:matchup_fade_pos
+                                  unlet w:matchup_fade_pos
+                                endif
+                                if !w:matchup_need_clear
+                                  call timer_pause(w:matchup_fade_timer, 1)
+                                endif
+                                return 0
+                              endif
+                            
+                              " prepare for new highlighting
+                              if a:level == 1
+                                " if token has no save_pos, cursor was previously off of a match
+                                if !has_key(a:token, 'save_pos') || a:pos != a:token.save_pos
+                                  " clear immediately
+                                  call timer_pause(w:matchup_fade_timer, 1)
+                                  call s:matchparen.clear()
+                                  return 0
+                                endif
+                                let w:matchup_fade_pos = a:token.save_pos
+                                return 1
+                              endif
+                            
+                              " new highlighting is active
+                              if a:level == 2 && a:pos != get(w:, 'matchup_fade_pos', [])
+                                " init fade request
+                                let w:matchup_fade_pos = a:pos
+                                let w:matchup_fade_start = reltime()
+                                call timer_pause(w:matchup_fade_timer, 0)
+                              endif
+                            
+                              return 0
+
+FUNCTION  3()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:303
+Called 603 times
+Total time:   0.034431
+ Self time:   0.034431
+
+count  total (s)   self (s)
+  603              0.005577   if !get(b:, 'matchup_matchparen_deferred', g:matchup_matchparen_deferred)
+                                return s:matchparen.highlight()
+  603              0.000519   endif
+                            
+  603              0.002147   if !exists('w:matchup_timer')
+                                let s:show_delay = g:matchup_matchparen_deferred_show_delay
+                                let s:hide_delay = g:matchup_matchparen_deferred_hide_delay
+                                let w:matchup_timer = timer_start(s:show_delay, function('s:timer_callback', [ win_getid() ]), {'repeat': -1})
+                                if !exists('w:matchup_need_clear')
+                                  let w:matchup_need_clear = 0
+                                endif
+                                let s:fade_time = g:matchup_matchparen_deferred_fade_time
+                                if s:fade_time > 0
+                                  let w:matchup_fade_timer = timer_start(s:fade_time, function('s:fade_timer_callback', [ win_getid() ]), {'repeat': -1})
+                                  call timer_pause(w:matchup_fade_timer, 1)
+                                endif
+  603              0.000223   endif
+                            
+                              " keep the timer alive with a heartbeat
+  603              0.002631   let w:matchup_pulse_time = reltime()
+                            
+                              " if the timer is paused, some time has passed
+  603              0.005035   if timer_info(w:matchup_timer)[0].paused
+                                " unpause the timer
+   16              0.000049     call timer_pause(w:matchup_timer, 0)
+                            
+                                " set the hi time to the pulse time
+   16              0.000034     let w:matchup_hi_time = w:matchup_pulse_time
+  603              0.000220   endif
+
+FUNCTION  4()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:342
+Called 16 times
+Total time:   1.681556
+ Self time:   0.002369
+
+count  total (s)   self (s)
+   16              0.000047   if !g:matchup_matchparen_enabled | return | endif
+                            
+   16              0.000043   if has('vim_starting') | return | endif
+                            
+   16              0.000037   if !g:matchup_matchparen_pumvisible && pumvisible() | return | endif
+                            
+                              " try to avoid interfering with some auto-complete plugins
+   16              0.000047   if has('*state') && state('a') !=# '' | return | endif
+                            
+   16              0.000085   if !get(b:, 'matchup_matchparen_enabled', 1) && get(b:, 'matchup_matchparen_fallback', 1) && s:pi_paren_sid()
+                                return call(s:pi_paren_fcn, [])
+   16              0.000006   endif
+                            
+   16              0.000035   if !get(b:, 'matchup_matchparen_enabled', 1) | return | endif
+                            
+   16              0.000037   let l:force_update    = a:0 >= 1 ? a:1 : 0
+   16              0.000023   let l:changing_insert = a:0 >= 2 ? a:2 : 0
+   16              0.000041   let l:real_mode = l:changing_insert ? v:insertmode : mode()
+                            
+   16   0.001319   0.000259   if !l:force_update && exists('w:last_changedtick') && exists('w:last_cursor') && matchup#pos#equal(w:last_cursor, matchup#pos#get_cursor()) && w:last_changedtick == b:changedtick
+                                return
+   16              0.000006   endif
+   16              0.000023   let w:last_changedtick = b:changedtick
+   16   0.000095   0.000069   let w:last_cursor = matchup#pos#get_cursor()
+                            
+   16   0.000140   0.000081   call matchup#perf#tic('matchparen.highlight')
+                            
+                              " request eventual clearing of stale matches
+   16              0.000018   let l:token = {}
+   16   0.001153   0.000063   call self.fade(0, [], l:token)
+                            
+   16              0.000025   let l:modes = g:matchup_matchparen_nomode
+   16              0.000034   if get(g:, 'matchup_matchparen_novisual', 0)  " deprecated option name
+                                let l:modes .= "vV\<c-v>"
+   16              0.000005   endif
+   16              0.000037   if stridx(l:modes, l:real_mode) >= 0
+                                return
+   16              0.000005   endif
+                            
+                              " prevent problems in visual block mode at the end of a line
+   16   0.000189   0.000162   if get(matchup#pos#get_cursor(), 4, 0) == 2147483647 && "v\<c-v>" =~? mode()
+                                return
+   16              0.000005   endif
+                            
+                              " don't get matches when inside a closed fold
+   16              0.000042   if foldclosed(line('.')) > -1
+                                return
+   16              0.000005   endif
+                            
+                              " give up when cursor is far into a very long line
+   16              0.000046   if &synmaxcol && col('.') > &synmaxcol
+                                return
+   16              0.000005   endif
+                            
+                              " in insert mode, cursor is treated as being one behind
+   16              0.000028   let l:insertmode = l:real_mode ==# 'i'
+                            
+                              " start the timeout period
+   16              0.000086   let l:timeout = l:insertmode ? get(b:, 'matchup_matchparen_insert_timeout',           g:matchup_matchparen_insert_timeout) : get(b:, 'matchup_matchparen_timeout',           g:matchup_matchparen_timeout)
+   16   0.000167   0.000077   call matchup#perf#timeout_start(l:timeout)
+                            
+   16   0.020424   0.000160   let l:current = matchup#delim#get_current('all', 'both_all', { 'insertmode': l:insertmode,   'stopline': g:matchup_matchparen_stopline,   'highlighting': 1, })
+   16   0.000343   0.000065   call matchup#perf#toc('matchparen.highlight', 'get_current')
+                            
+   16              0.000043   if get(b:, 'matchup_matchparen_deferred', g:matchup_matchparen_deferred)
+   16              0.000050     let l:hsa = get(b:, 'matchup_matchparen_hi_surround_always', g:matchup_matchparen_hi_surround_always)
+   16              0.000034     if l:hsa > 0 && empty(l:current) || l:hsa > 1
+   16   1.656472   0.000178       call s:highlight_surrounding(l:insertmode, !empty(l:current))
+   16              0.000007     endif
+   16              0.000006   endif
+                            
+   16              0.000020   if empty(l:current)
+   16              0.000007     return
+                              endif
+                            
+                              let l:corrlist = matchup#delim#get_matching(l:current, { 'stopline': g:matchup_matchparen_stopline,   'highlighting': 1, })
+                              call matchup#perf#toc('matchparen.highlight', 'get_matching')
+                              if empty(l:corrlist) | return | endif
+                            
+                              if g:matchup_transmute_enabled
+                                if !exists('w:matchup_matchparen_context')
+                                  let w:matchup_matchparen_context = { 'normal': {   'current':   {},   'corrlist':  [],  }, 'prior': {}, 'counter': 0,}
+                                endif
+                            
+                                let w:matchup_matchparen_context.counter += 1
+                            
+                                if !l:insertmode
+                                  let w:matchup_matchparen_context.prior = copy(w:matchup_matchparen_context.normal)
+                            
+                                  let w:matchup_matchparen_context.normal.current = l:current
+                                  let w:matchup_matchparen_context.normal.corrlist = l:corrlist
+                                endif
+                            
+                                " if transmuted, highlight again (will reset timeout)
+                                if matchup#transmute#tick(l:insertmode)
+                                  " no force_update here because it would screw up prior
+                                  return s:matchparen.highlight(0, l:changing_insert)
+                                endif
+                              endif
+                            
+                              if !has_key(l:current, 'match_index') || len(l:corrlist) <= (l:current.side ==# 'mid' ? 2 : 1) && !g:matchup_matchparen_singleton
+                                " TODO this doesn't catch every case, needs refactor
+                                " TODO singleton doesn't work right for mids
+                                return
+                              endif
+                            
+                              " prepare for (possibly) new highlights
+                              let l:pos = [l:current.lnum, l:current.cnum]
+                              if self.fade(1, l:pos, l:token)
+                                return
+                              endif
+                            
+                              " store flag meaning highlighting is active
+                              let w:matchup_need_clear = 1
+                            
+                              " disable off-screen when scrolling with j/k
+                              let l:scrolling = get(g:matchup_matchparen_offscreen, 'scrolloff', 0) && winheight(0) > 2*&scrolloff && (line('.') == line('w$')-&scrolloff     && line('$') != line('w$')     || line('.') == line('w0')+&scrolloff)
+                            
+                              " show off-screen matches
+                              let l:method = get(g:matchup_matchparen_offscreen, 'method', '')
+                              if !empty(l:method) && l:method !=# 'none' && !l:current.skip && !l:scrolling && winheight(0) > 0
+                                call s:do_offscreen(l:current, l:method)
+                              endif
+                            
+                              " add highlighting matches
+                              call s:add_matches(l:corrlist, l:current)
+                            
+                              " highlight the background between parentheses
+                              if g:matchup_matchparen_hi_background >= 1
+                                call s:highlight_background(l:corrlist)
+                              endif
+                            
+                              " new highlights done, request fade away
+                              call self.fade(2, l:pos, l:token)
+                            
+                              call matchup#perf#toc('matchparen.highlight', 'end')
+
+FUNCTION  <SNR>10_wordish()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:1188
+Called 2 times
+Total time:   0.000012
+ Self time:   0.000012
+
+count  total (s)   self (s)
+    2              0.000011   return a:delim.match !~? '^[[:punct:]]\{1,3\}$'
+
+FUNCTION  matchup#delim#set_invert_skip()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:923
+Called 421 times
+Total time:   0.000597
+ Self time:   0.000597
+
+count  total (s)   self (s)
+  421              0.000481   let s:invert_skip = a:val
+
+FUNCTION  matchup#loader#sidedict()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/loader.vim:766
+Called 1 time
+Total time:   0.000001
+ Self time:   0.000001
+
+count  total (s)   self (s)
+    1              0.000001   return s:sidedict
+
+FUNCTION  matchup#delim#skip()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:873
+Called 35 times
+Total time:   0.015262
+ Self time:   0.001454
+
+count  total (s)   self (s)
+   35              0.000028   if a:0 >= 2
+   19              0.000046     let [l:lnum, l:cnum] = [a:1, a:2]
+   16              0.000006   else
+   16   0.000123   0.000097     let [l:lnum, l:cnum] = matchup#pos#get_cursor()[1:2]
+   35              0.000013   endif
+                            
+   35              0.000083   if empty(get(b:, 'matchup_delim_skip', ''))
+                                return matchup#util#in_comment_or_string(l:lnum, l:cnum) ? !s:invert_skip : s:invert_skip
+   35              0.000012   endif
+                            
+   35              0.000059   let s:eff_curpos = [l:lnum, l:cnum]
+   35   0.014697   0.000914   execute 'return' (s:invert_skip ? '!(' : '(') b:matchup_delim_skip ')'
+
+FUNCTION  matchup#pos#set_cursor()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:10
+Called 1341 times
+Total time:   0.025943
+ Self time:   0.008368
+
+count  total (s)   self (s)
+ 1341   0.025538   0.007963   call cursor(s:parse_args(a:000))
+
+FUNCTION  matchup#delim#end_offset()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:314
+Called 440 times
+Total time:   0.002535
+ Self time:   0.002535
+
+count  total (s)   self (s)
+  440              0.002370   return max([0, match(a:delim.match, '.$')])
+
+FUNCTION  matchup#delim#get_matching()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:65
+Called 442 times
+Total time:   1.550056
+ Self time:   0.076496
+
+count  total (s)   self (s)
+  442              0.002031   if empty(a:delim) || !has_key(a:delim, 'lnum') | return {} | endif
+                            
+  442              0.001416   let l:opts = a:0 && type(a:1) == type({}) ? a:1 : {}
+  442              0.000930   let l:stopline = get(l:opts, 'stopline', s:stopline)
+                            
+                              " get all the matching position(s)
+                              " *important*: in the case of mid, we search up before searching down
+                              " this gives us a context object which we use for the other side
+                              " TODO: what if no open is found here?
+  442              0.000381   let l:matches = []
+  442   0.003307   0.002253   let l:save_pos = matchup#pos#get_cursor()
+  884              0.002655   for l:down in {'open': [1], 'close': [0], 'mid': [0,1]}[a:delim.side]
+  442   0.009424   0.002274     call matchup#pos#set_cursor(a:delim)
+                            
+                                " second iteration: [] refers to the current match
+  442              0.000546     if !empty(l:matches)
+                                  call add(l:matches, [])
+  442              0.000181     endif
+                            
+  442   1.459600   0.004244     let l:res = a:delim.get_matching(l:down, l:stopline)
+  442              0.000566     if empty(l:res)
+  442              0.000777     elseif l:res[0][1] > 0
+  440              0.000930       call extend(l:matches, l:res)
+    2              0.000002     elseif l:down
+    2              0.000003       let l:matches = []
+  442              0.000180     endif
+  884              0.000667   endfor
+  442   0.012396   0.002397   call matchup#pos#set_cursor(l:save_pos)
+                            
+  442              0.000594   if a:delim.side ==# 'open'
+  442              0.000758     call insert(l:matches, [])
+  442              0.000174   endif
+  442              0.000418   if a:delim.side ==# 'close'
+                                call add(l:matches, [])
+  442              0.000155   endif
+                            
+                              " create the match result(s)
+  442              0.000512   let l:matching_list = []
+ 1330              0.001635   for l:i in range(len(l:matches))
+  888              0.001222     if empty(l:matches[l:i])
+  442              0.000896       let a:delim.match_index = l:i
+  442              0.000793       call add(l:matching_list, a:delim)
+  442              0.000342       continue
+  446              0.000214     end
+                            
+  446              0.001076     let [l:match, l:lnum, l:cnum] = l:matches[l:i]
+                            
+  446              0.002415     let l:matching = copy(a:delim)
+  446              0.001025     let l:matching.class = copy(a:delim.class)
+                            
+  446              0.000449     let l:matching.lnum = l:lnum
+  446              0.000398     let l:matching.cnum = l:cnum
+  446              0.000477     let l:matching.match = l:match
+  446              0.001352     let l:matching.side = l:i == 0 ? 'open' : l:i == len(l:matches)-1 ? 'close' : 'mid'
+  446              0.000594     let l:matching.class[1] = '__mid__'
+  446              0.000464     let l:matching.match_index = l:i
+                            
+  446              0.000719     call add(l:matching_list, l:matching)
+  888              0.000923   endfor
+                            
+                              " set up links between matches
+ 1330              0.001479   for l:i in range(len(l:matching_list))
+  888              0.001095     let l:c = l:matching_list[l:i]
+  888              0.001814     let l:c.links = {}
+  888              0.002175     let l:c.links.next = l:matching_list[(l:i+1) % len(l:matching_list)]
+  888              0.001300     let l:c.links.prev = l:matching_list[l:i-1]
+  888              0.001083     let l:c.links.open = l:matching_list[0]
+  888              0.001099     let l:c.links.close = l:matching_list[-1]
+ 1330              0.000665   endfor
+                            
+                              " allow empty marker ending
+                              " TODO: use a sentinel value instead of empty
+  442              0.001179   if len(l:matching_list) >= 2 && empty(l:matching_list[-1].match)
+                                if get(l:opts, 'highlighting', 0) && len(l:matching_list) <= 2
+                                  return []
+                                endif
+                                let l:matching_list[0].links.prev = l:matching_list[-2]
+                                let l:matching_list[-2].links.next = l:matching_list[0]
+  442              0.000158   endif
+                            
+  442              0.000359   return l:matching_list
+
+FUNCTION  matchup#pos#equal()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:106
+Called 16 times
+Total time:   0.001010
+ Self time:   0.000242
+
+count  total (s)   self (s)
+   16   0.000561   0.000106   let l:pos1 = s:parse_args(a:p1)
+   16   0.000393   0.000081   let l:pos2 = s:parse_args(a:p2)
+   16              0.000044   return l:pos1[:1] == l:pos2[:1]
+
+FUNCTION  <SNR>10_highlight_surrounding()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:902
+Called 16 times
+Total time:   1.656294
+ Self time:   0.000293
+
+count  total (s)   self (s)
+   16              0.000081   let l:opts = { 'local': 0, 'matches': [], 'stopline': 2*winheight(0), 'insertmode': a:insertmode}
+   16   1.655990   0.000129   let l:delims = matchup#delim#get_surrounding('delim_all', 1 + a:current, l:opts)
+   16              0.000022   let l:open = l:delims[0]
+   16              0.000030   if empty(l:open) | return | endif
+                            
+    1              0.000001   let l:corrlist = l:opts.matches
+    1              0.000002   if empty(l:corrlist) | return | endif
+                            
+                              " store flag meaning highlighting is active
+    1              0.000001   let w:matchup_need_clear = 1
+                            
+                              " add highlighting matches
+    1   0.000144   0.000005   call s:add_matches(l:corrlist)
+                            
+                              " highlight the background between parentheses
+    1              0.000001   if g:matchup_matchparen_hi_background >= 2
+                                call s:highlight_background(l:corrlist)
+    1              0.000000   endif
+
+FUNCTION  <SNR>11_parse_args()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:124
+Called 2745 times
+Total time:   0.033213
+ Self time:   0.032656
+
+count  total (s)   self (s)
+                              "
+                              " The arguments should be in one of the following forms (when unpacked):
+                              "
+                              "   [lnum, cnum]
+                              "   [bufnum, lnum, cnum, ...]
+                              "   {'lnum' : lnum, 'cnum' : cnum}
+                              "
+                            
+ 2745              0.003379   if len(a:args) > 1
+   32              0.000068     return s:parse_args([a:args])
+ 2713              0.002887   elseif len(a:args) == 1
+ 2713              0.005538     if type(a:args[0]) == type({})
+ 1766              0.004527       return [get(a:args[0], 'lnum'), get(a:args[0], 'cnum')]
+  947              0.000371     else
+  947              0.001113       if len(a:args[0]) == 2
+                                    return a:args[0]
+  947              0.000331       else
+  947              0.001137         return a:args[0][1:]
+                                  endif
+                                endif
+                              else
+                                return a:args
+                              endif
+
+FUNCTION  <SNR>98_forward()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_syntax.vim:10
+Called 3414 times
+Total time:   1.204935
+ Self time:   1.204935
+
+count  total (s)   self (s)
+ 3414              1.198322   let l:ret = luaeval( 'require"treesitter-matchup.syntax".' . a:fn . '(unpack(_A))', a:000)
+ 3414              0.004310   return l:ret
+
+FUNCTION  matchup#delim#fill_backrefs()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:944
+Called 1210 times
+Total time:   0.006774
+ Self time:   0.006774
+
+count  total (s)   self (s)
+ 1210              0.006362   return substitute(a:re, g:matchup#re#backref, '\=s:get_backref(a:groups, submatch(1), a:warn)', 'g')
+                                    " \ '\=get(a:groups, submatch(1), "")', 'g')
+
+FUNCTION  matchup#loader#remove_capture_groups()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/loader.vim:707
+Called 1210 times
+Total time:   0.008704
+ Self time:   0.008704
+
+count  total (s)   self (s)
+ 1210              0.001536   let l:sub_grp = '\(\\\@<!\(\\\\\)*\)\@<=\\('
+ 1210              0.006675   return substitute(a:re, l:sub_grp, '\\%(', 'g')
+
+FUNCTION  CursorHoldTimer()
+    Defined: ~/.local/share/nvim/site/pack/packer/start/FixCursorHold.nvim/plugin/fix_cursorhold_nvim.vim:37
+Called 603 times
+Total time:   0.009453
+ Self time:   0.009453
+
+count  total (s)   self (s)
+  603              0.002407   call timer_stop(g:fix_cursorhold_nvim_timer)
+  603              0.002040   if mode() == 'n'
+  603              0.003665     let g:fix_cursorhold_nvim_timer = timer_start(g:cursorhold_updatetime, 'CursorHold_Cb')
+  603              0.000391   endif
+
+FUNCTION  <SNR>67_StartHL()
+    Defined: ~/.local/share/nvim/site/pack/packer/start/vim-cool/plugin/cool.vim:28
+Called 603 times
+Total time:   0.002487
+ Self time:   0.002487
+
+count  total (s)   self (s)
+  603              0.001244     if !v:hlsearch || mode() isnot 'n'
+  603              0.000628         return
+                                endif
+                                let [pos, rpos] = [winsaveview(), getpos('.')]
+                                silent! exe "keepjumps go".(line2byte('.')+col('.')-(v:searchforward ? 2 : 0))
+                                try
+                                    silent keepjumps norm! n
+                                    if getpos('.') != rpos
+                                        throw 0
+                                    endif
+                                catch /^\%(0$\|Vim\%(\w\|:Interrupt$\)\@!\)/
+                                    call <SID>StopHL()
+                                    return
+                                finally
+                                    call winrestview(pos)
+                                endtry
+                                if !get(g:,'CoolTotalMatches') || !exists('*reltimestr')
+                                    return
+                                endif
+                                exe "silent! norm! :let g:cool_char=nr2char(screenchar(screenrow(),1))\<cr>"
+                                let cool_char = remove(g:,'cool_char')
+                                if cool_char !~ '[/?]'
+                                    return
+                                endif
+                                let [f, ws, now, noOf] = [0, &wrapscan, reltime(), [0,0]]
+                                set nowrapscan
+                                try
+                                    while f < 2
+                                        if reltimestr(reltime(now))[:-6] =~ '[1-9]'
+                                            " time >= 100ms
+                                            return
+                                        endif
+                                        let noOf[v:searchforward ? f : !f] += 1
+                                        try
+                                            silent exe "keepjumps norm! ".(f ? 'n' : 'N')
+                                        catch /^Vim[^)]\+):E38[45]\D/
+                                            call setpos('.',rpos)
+                                            let f += 1
+                                        endtry
+                                    endwhile
+                                finally
+                                    call winrestview(pos)
+                                    let &wrapscan = ws
+                                endtry
+                                redraw|echo cool_char.@/ 'match' noOf[0] 'of' noOf[0] + noOf[1] - 1
+
+FUNCTION  matchup#delim#get_surrounding()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:37
+Called 16 times
+Total time:   1.655862
+ Self time:   0.000184
+
+count  total (s)   self (s)
+   16   1.655856   0.000178   return matchup#delim#get_surrounding_impl(a:type, a:count, a:opts)
+
+FUNCTION  matchup#perf#tic()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/perf.vim:15
+Called 508 times
+Total time:   0.001466
+ Self time:   0.001466
+
+count  total (s)   self (s)
+  508              0.001333   let s:time_start[a:context] = reltime()
+
+FUNCTION  matchup#delim#skip0()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:896
+Called 1672 times
+Total time:   1.293159
+ Self time:   0.034018
+
+count  total (s)   self (s)
+ 1672              0.004994   let s:eff_curpos = [line('.'), col('.')]
+ 1672   1.287405   0.028265   execute 'return' (s:invert_skip ? '!(' : '(') b:matchup_delim_skip ')'
+
+FUNCTION  <SNR>97_get_matching_delims()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:686
+Called 404 times
+Total time:   1.448333
+ Self time:   0.113167
+
+count  total (s)   self (s)
+                              " called as:   a:delim.get_matching(...)
+                              " called from: matchup#delim#get_matching <- matchparen, motion
+                              "   from: matchup#delim#get_surrounding <- matchparen, motion, text_obj
+                            
+  404   0.002926   0.001797   call matchup#perf#tic('get_matching_delims')
+                            
+                              " first, we figure out what the furthest match is, which will be
+                              " either the open or close depending on the direction
+  404              0.003093   let [l:re, l:flags, l:stopline] = a:down ? [self.regextwo.close, 'W', line('.') + a:stopline] : [self.regextwo.open, 'bW', max([line('.') - a:stopline, 1])]
+                            
+                              " these are the anchors for searchpairpos
+                              " default to the backref '\1' patterns which will be filled in
+  404              0.000500   let l:open = self.regexone.open
+  404              0.000471   let l:close = self.regexone.close
+                            
+                              " if we're searching up, we anchor by the augment string, if it exists
+  404              0.000542   if !a:down && !empty(self.augment)
+                                let l:open = self.augment.str
+  404              0.000151   endif
+                            
+                              " if going down from mid, we might not have all the groups yet
+                              " TODO this could be improved via close augment strings
+  404              0.000917   if a:down && self.side ==# 'mid' && !empty(self.augment.unresolved)
+                                let l:open = self.regextwo.open
+                                let l:close = self.regextwo.close
+  404              0.000143   endif
+                            
+                              " turn \(\) into \%(\) for searchpairpos
+  404   0.006206   0.002933   let l:open  = matchup#loader#remove_capture_groups(l:open)
+  404   0.004924   0.002735   let l:close = matchup#loader#remove_capture_groups(l:close)
+                            
+                              " fill in necessary back-references
+  404   0.005089   0.002736   let l:open = matchup#delim#fill_backrefs(l:open, self.groups, 0)
+  404   0.004462   0.002521   let l:close = matchup#delim#fill_backrefs(l:close, self.groups, 0)
+                            
+  404   0.002895   0.002323   call matchup#delim#set_invert_skip(self.skip)
+  404              0.000650   if empty(b:matchup_delim_skip)
+                                let l:skip = 'matchup#delim#skip_default()'
+  404              0.000162   else
+  404              0.000420     let l:skip = 'matchup#delim#skip0()'
+  404              0.000152   endif
+                            
+                              " disambiguate matches for languages like julia, matlab, ruby, etc
+  404              0.000475   if !empty(self.midmap)
+                                let l:midmap = self.midmap.elements
+                                if self.side ==# 'mid'
+                                  let l:idx = filter(range(len(l:midmap)), 'self.match =~# l:midmap[v:val][1]')
+                                else
+                                  let l:syn = synIDattr(synID(self.lnum, self.cnum, 0), 'name')
+                                  let l:idx = filter(range(len(l:midmap)), 'l:syn =~# l:midmap[v:val][0]')
+                                endif
+                                if len(l:idx)
+                                  let l:valid = l:midmap[l:idx[0]]
+                                  let l:skip = printf('matchup#delim#skip1(%s, %s)', string(l:midmap[l:idx[0]]), string(l:skip))
+                                else
+                                  let l:skip = printf('matchup#delim#skip2(%s, %s)', string(self.midmap.strike), string(l:skip))
+                                endif
+  404              0.000132   endif
+                            
+  404   0.006737   0.002560   if matchup#perf#timeout_check() | return [['', 0, 0]] | endif
+                            
+                              " improves perceptual performance in insert mode
+  404              0.000791   if mode() ==# 'i' || mode() ==# 'R'
+                                if !g:matchup_matchparen_deferred && exists('*state') && state('s') ==# ''
+                                  sleep 1m
+                                endif
+  404              0.000125   endif
+                            
+                              " use b:match_ignorecase
+  404              0.000921   let l:ic = get(b:, 'match_ignorecase', 0) ? '\c' : '\C'
+  404              0.000589   let l:open = l:ic . l:open
+  404              0.000550   let l:close = l:ic . l:close
+                            
+                              " handle 'same' matches (TODO refactor to separate parser)
+  404              0.000489   if l:open == l:close
+                                let [l:lnum_corr, l:cnum_corr] = searchpos(l:open, 'n'.l:flags, l:stopline, matchup#perf#timeout()) " , l:skip)
+  404              0.000149   else
+  404   1.328168   0.034295     let [l:lnum_corr, l:cnum_corr] = searchpairpos(l:open, '', l:close, 'n'.l:flags, l:skip, l:stopline, matchup#perf#timeout())
+  404              0.000321   endif
+                            
+  404   0.012030   0.002711   call matchup#perf#toc('get_matching_delims', 'initial_pair')
+                            
+                              " if nothing found, bail immediately
+  404              0.000402   if l:lnum_corr == 0
+    2              0.000003     return [['', 0, 0]]
+  402              0.000164   endif
+                            
+                              " when highlighting, respect hlend
+  402              0.001075   let l:extra_entry = self.regextwo.extra_list[a:down ? -1 : 0]
+  402              0.000724   if self.highlighting && has_key(l:extra_entry, 'hlend')
+                                let l:re = s:process_hlend(l:re, -1)
+  402              0.000149   endif
+                            
+                              " get the corresponding match and (additional) groups
+  402              0.000616   let l:has_zs = self.regextwo.extra_info.has_zs
+  402   0.005684   0.002853   let l:re_anchored = l:ic . s:anchor_regex(l:re, l:cnum_corr, l:has_zs)
+                            
+  402              0.002864   let l:matches = matchlist(getline(l:lnum_corr), l:re_anchored)
+  402              0.000776   let l:match_corr = l:matches[0]
+                            
+                              " store these in these groups
+  402              0.000261   if a:down
+  402              0.000831     let l:id = len(self.regextwo.mid_list) + 1
+  402              0.001727     for [l:from, l:to] in items(get(self.regextwo.grp_renu, l:id, {}))
+                                  if !has_key(self.groups, l:to) && !empty(l:matches[l:from])
+                                    let self.groups[l:to] = l:matches[l:from]
+                                  endif
+  402              0.000310     endfor
+                              else
+                                for l:to in keys(self.regextwo.need_grp)
+                                  if !has_key(self.groups, l:to) && !empty(l:matches[l:to])
+                                    " TODO mark context
+                                    let self.groups[l:to] = l:matches[l:to]
+                                  endif
+                                  " let self.groups[0] = l:matches[0]
+                                endfor
+  402              0.000142   endif
+                            
+  402   0.010030   0.002244   call matchup#perf#toc('get_matching_delims', 'get_matches')
+                            
+                              " fill in additional groups
+  402   0.006414   0.003172   let l:mids = matchup#loader#remove_capture_groups(self.regexone.mid)
+  402   0.005274   0.002794   let l:mids = matchup#delim#fill_backrefs(l:mids, self.groups, 1)
+                            
+                              " if there are no mids, we're done
+  402              0.000730   if empty(l:mids) || g:matchup_delim_nomids
+  402              0.000829     return [[l:match_corr, l:lnum_corr, l:cnum_corr]]
+                              endif
+                            
+                              let l:re = l:mids
+                            
+                              " when highlighting, respect hlend
+                              if get(self.regextwo.extra_info, 'mid_hlend') && self.highlighting
+                                let l:re = s:process_hlend(l:re, -1)
+                              endif
+                            
+                              " use b:match_ignorecase
+                              let l:mid = l:ic . l:mids
+                              let l:re = l:ic . l:re
+                            
+                              let l:list = []
+                              while 1
+                                if matchup#perf#timeout_check() | break | endif
+                            
+                                let [l:lnum, l:cnum] = searchpairpos(l:open, l:mids, l:close, l:flags, l:skip, l:lnum_corr, matchup#perf#timeout())
+                                if l:lnum <= 0 | break | endif
+                            
+                                if a:down
+                                  if l:lnum > l:lnum_corr || l:lnum == l:lnum_corr && l:cnum >= l:cnum_corr | break | endif
+                                else
+                                  if l:lnum < l:lnum_corr || l:lnum == l:lnum_corr && l:cnum <= l:cnum_corr | break | endif
+                                endif
+                            
+                                let l:re_anchored = s:anchor_regex(l:re, l:cnum, l:has_zs)
+                                let l:matches = matchlist(getline(l:lnum), l:re_anchored)
+                                if empty(l:matches)
+                                  " this should never happen
+                                  continue
+                                endif
+                                let l:match = l:matches[0]
+                            
+                                call add(l:list, [l:match, l:lnum, l:cnum])
+                              endwhile
+                            
+                              call add(l:list, [l:match_corr, l:lnum_corr, l:cnum_corr])
+                            
+                              if !a:down
+                                call reverse(l:list)
+                              endif
+                            
+                              return l:list
+
+FUNCTION  matchup#pos#val()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:42
+Called 899 times
+Total time:   0.017564
+ Self time:   0.007788
+
+count  total (s)   self (s)
+  899   0.015232   0.005456   let [l:lnum, l:cnum; l:rest] = s:parse_args(a:000)
+                            
+  899              0.001756   return 100000*l:lnum + min([l:cnum, 90000])
+
+FUNCTION  <SNR>97_anchor_regex()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:964
+Called 404 times
+Total time:   0.002844
+ Self time:   0.002844
+
+count  total (s)   self (s)
+  404              0.000313   if a:method
+                                " trick to re-match at a particular column
+                                " handles the case where pattern contains \ze, \zs, and assertions
+                                " but doesn't work with overlapping matches and is possibly slower
+                                return '\%<'.(a:cnum+1).'c\%('.a:re.'\)\%>'.(a:cnum).'c'
+  404              0.000160   else
+                                " fails to match with \zs
+  404              0.001000     return '\%'.(a:cnum).'c\%('.a:re.'\)'
+                              endif
+
+FUNCTION  matchup#ts_engine#get_matching()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_engine.vim:61
+Called 38 times
+Total time:   0.007024
+ Self time:   0.000769
+
+count  total (s)   self (s)
+   38   0.000319   0.000195   call matchup#perf#tic('ts_engine.get_matching')
+                            
+   38   0.005672   0.000310   let l:list = s:forward('get_matching', self, a:down, bufnr('%'))
+                            
+   38   0.000937   0.000168   call matchup#perf#toc('ts_engine.get_matching', 'done')
+                            
+   38              0.000026   return l:list
+
+FUNCTION  nvim_treesitter#foldexpr()
+    Defined: ~/.local/share/nvim/site/pack/packer/start/nvim-treesitter/autoload/nvim_treesitter.vim:5
+Called 129 times
+Total time:   0.014507
+ Self time:   0.014507
+
+count  total (s)   self (s)
+  129              0.014258 	return luaeval(printf('require"nvim-treesitter.fold".get_fold_indic(%d)', v:lnum))
+
+FUNCTION  matchup#perf#timeout()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/perf.vim:79
+Called 458 times
+Total time:   0.000848
+ Self time:   0.000848
+
+count  total (s)   self (s)
+  458              0.000714   return float2nr(s:timeout)
+
+FUNCTION  matchup#ts_syntax#skip_expr()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_syntax.vim:25
+Called 1707 times
+Total time:   1.265346
+ Self time:   0.039947
+
+count  total (s)   self (s)
+ 1707   0.127847   0.009935   if matchup#ts_syntax#lang_skip(a:lnum, a:col)
+                                return 1
+ 1707              0.000723   endif
+                            
+ 1707   1.120217   0.012730   let l:syn = synIDattr(matchup#ts_syntax#synID( a:lnum, a:col, 1), 'name')
+ 1707              0.013852   return l:syn =~? '\%(String\|Comment\)'
+
+FUNCTION  <SNR>42_try()
+    Defined: ~/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim/plugin/indent_blankline.vim:7
+Called 313 times
+Total time:   0.462903
+ Self time:   0.462903
+
+count  total (s)   self (s)
+  313              0.000404     try
+  313              0.459523         execute a:cmd
+                                catch /E12/
+                                    return
+  313              0.000930     endtry
+
+FUNCTION  matchup#perf#timeout_check()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/perf.vim:91
+Called 850 times
+Total time:   0.008878
+ Self time:   0.008878
+
+count  total (s)   self (s)
+  850              0.001668   if !s:timeout_enabled | return 0 | endif
+  850              0.003153   let l:elapsed = 1000.0 * s:Reltimefloat(reltime(s:timeout_pulse_time))
+  850              0.001124   let s:timeout -= l:elapsed
+  850              0.001424   let s:timeout_pulse_time = reltime()
+  850              0.000884   return s:timeout <= 0.0
+
+FUNCTION  <SNR>97_get_delim_multi()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:43
+Called 17 times
+Total time:   0.024344
+ Self time:   0.000932
+
+count  total (s)   self (s)
+   17              0.000022   let l:best = {}
+   51              0.000119   for l:e in get(get(b:, 'matchup_active_engines', {}), a:opts.type, [])
+   34   0.023741   0.000389     let l:res = call(s:engines[l:e].get_delim, [a:opts])
+   34              0.000044     if empty(l:res)
+   32              0.000026       continue
+    2              0.000001     endif
+    2              0.000002     if a:opts.direction ==# 'current'
+                                  return l:res
+    2              0.000006     elseif a:opts.direction ==# 'next' && (empty(l:best) || matchup#pos#smaller(l:res, l:best))
+                                  let l:best = l:res
+    2   0.000069   0.000009     elseif a:opts.direction ==# 'prev' && (empty(l:best) || matchup#pos#larger(l:res, l:best))
+    2              0.000004       let l:best = l:res
+    2              0.000001     endif
+   19              0.000016   endfor
+   17              0.000014   return l:best
+
+FUNCTION  CursorHold_Cb()
+    Defined: ~/.local/share/nvim/site/pack/packer/start/FixCursorHold.nvim/plugin/fix_cursorhold_nvim.vim:19
+Called 6 times
+Total time:   0.134777
+ Self time:   0.000314
+
+count  total (s)   self (s)
+    6              0.000069   if v:exiting isnot v:null
+                                return
+    6              0.000007   endif
+    6   0.000120   0.000078   set eventignore-=CursorHold
+    6   0.134445   0.000055   doautocmd <nomodeline> CursorHold
+    6   0.000110   0.000080   set eventignore+=CursorHold
+
+FUNCTION  matchup#delim#get_surrounding_impl()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:152
+Called 16 times
+Total time:   1.655677
+ Self time:   0.051825
+
+count  total (s)   self (s)
+   16   0.000141   0.000093   call matchup#perf#tic('delim#get_surrounding')
+                            
+   16   0.000111   0.000081   let l:save_pos = matchup#pos#get_cursor()
+   16   0.000480   0.000073   let l:pos_val_cursor = matchup#pos#val(l:save_pos)
+   16              0.000021   let l:pos_val_last = l:pos_val_cursor
+   16              0.000020   let l:pos_val_open = l:pos_val_cursor - 1
+                            
+   16              0.000025   let l:count = a:0 >= 1 ? a:1 : 1
+   16              0.000016   let l:counter = l:count
+                            
+                              " third argument specifies local any block, otherwise,
+                              " provided count == 0 refers to local any block
+   16              0.000020   let l:opts = a:0 >= 2 ? a:2 : {}
+   16              0.000038   let l:local = get(l:opts, 'local', l:count == 0 ? 1 : 0)
+                            
+   16              0.000018   let l:delimopts = {}
+   16              0.000015   let s:invert_skip = 0   " TODO: this logic is still bad
+   16   0.003595   0.000073   if matchup#delim#skip() " TODO: check for insert mode (?)
+    1              0.000002     let l:delimopts.check_skip = 0
+   16              0.000007   endif
+                              " TODO: pin skip
+   16              0.000028   if get(l:opts, 'check_skip', 0)
+                                let l:delimopts.check_skip = 1
+   16              0.000005   endif
+   16              0.000039   let l:delimopts.stopline = get(l:opts, 'stopline', s:stopline)
+                            
+                              " keep track of the outermost pair found so far
+                              " returned when g:matchup_delim_count_fail = 1
+   16              0.000016   let l:best = []
+                            
+                              " if the buffer changed, clear the cache
+   16              0.000029   let l:bufnr = bufnr('%')
+   16              0.000067   if !has_key(s:cache, l:bufnr) || s:cache_valid[l:bufnr] != b:changedtick
+                                let s:cache[l:bufnr] = {}
+                                let s:cache_valid[l:bufnr] = b:changedtick
+   16              0.000005   endif
+                            
+  457              0.000622   while l:pos_val_open < l:pos_val_last
+                                " store found delims in a cache by cursor position
+  457              0.003417     let l:key = string(getcurpos()) . mode()
+  457              0.001184     if has_key(s:cache[l:bufnr], l:key)
+  456              0.001314       let l:open = s:cache[l:bufnr][l:key]
+    1              0.000000     else
+    1   0.004422   0.000006       let l:open = matchup#delim#get_prev(a:type, l:local ? 'open_mid' : 'open', l:delimopts)
+    1              0.000003       let s:cache[l:bufnr][l:key] = l:open
+  457              0.000181     endif
+  898              0.000763     if empty(l:open) | break | endif
+                            
+                                " if configured, we may still accept this match
+  444   0.007463   0.002786     if matchup#perf#timeout_check() && !g:matchup_delim_count_fail
+    2              0.000001       break
+  442              0.000163     endif
+                            
+  442   1.553839   0.003783     let l:matches = matchup#delim#get_matching(l:open, 1)
+                            
+                                " TODO: getting one match result here is surely wrong
+  442              0.000564     if len(l:matches) == 1
+    2              0.000002       let l:matches = []
+  442              0.000198     endif
+                            
+  442              0.000680     if has_key(l:opts, 'matches')
+  442              0.000611       let l:opts.matches = l:matches
+  442              0.000179     endif
+                            
+  442              0.000435     if len(l:matches)
+  440              0.000943       let l:close = l:local ? l:open.links.next : l:open.links.close
+  440   0.027265   0.015758       let l:pos_val_try = matchup#pos#val(l:close) + matchup#delim#end_offset(l:close)
+  442              0.000260     endif
+                            
+  442              0.000940     if len(l:matches) && l:pos_val_try >= l:pos_val_cursor
+    1              0.000001       if l:counter <= 1
+                                    " restore cursor and accept
+    1   0.000023   0.000004         call matchup#pos#set_cursor(l:save_pos)
+    1   0.000026   0.000004         call matchup#perf#toc('delim#get_surrounding', 'accept')
+    1              0.000001         return [l:open, l:close]
+                                  endif
+                                  let l:counter -= 1
+                                  let l:best = [l:open, l:close]
+  441              0.000215     else
+  441              0.000510       let l:pos_val_last = l:pos_val_open
+  441   0.010262   0.002129       let l:pos_val_open = matchup#pos#val(l:open)
+  441              0.000223     endif
+                            
+  441              0.000622     if l:open.lnum == 1 && l:open.cnum == 1
+                                  break
+  441              0.000168     endif
+  441   0.024649   0.004235     call matchup#pos#set_cursor(matchup#pos#prev(l:open))
+  456              0.000335   endwhile
+                            
+   15              0.000026   if !empty(l:best) && g:matchup_delim_count_fail
+                                call matchup#pos#set_cursor(l:save_pos)
+                                call matchup#perf#toc('delim#get_surrounding', 'bad_count')
+                                return l:best
+   15              0.000006   endif
+                            
+                              " restore cursor and return failure
+   15   0.000374   0.000081   call matchup#pos#set_cursor(l:save_pos)
+   15   0.000384   0.000075   call matchup#perf#toc('delim#get_surrounding', 'fail')
+   15              0.000021   return [{}, {}]
+
+FUNCTION  <SNR>97_effline()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:930
+Called 1707 times
+Total time:   0.004169
+ Self time:   0.004169
+
+count  total (s)   self (s)
+ 1707              0.003675   return a:expr ==# '.' ? s:eff_curpos[0] : line(a:expr)
+
+FUNCTION  <SNR>86_forward()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_engine.vim:10
+Called 55 times
+Total time:   0.006732
+ Self time:   0.006637
+
+count  total (s)   self (s)
+   55   0.006622   0.006527   let l:ret = luaeval( 'require"treesitter-matchup.internal".' . a:fn . '(unpack(_A))', a:000)
+   55              0.000068   return l:ret
+
+FUNCTION  matchup#pos#larger()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:101
+Called 1 time
+Total time:   0.000060
+ Self time:   0.000008
+
+count  total (s)   self (s)
+    1   0.000060   0.000007   return matchup#pos#val(a:pos1) > matchup#pos#val(a:pos2)
+
+FUNCTION  matchup#perf#timeout_start()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/perf.vim:84
+Called 16 times
+Total time:   0.000090
+ Self time:   0.000090
+
+count  total (s)   self (s)
+   16              0.000020   let s:timeout = a:timeout
+   16              0.000028   let s:timeout_enabled = (a:timeout == 0) ? 0 : 1
+   16              0.000035   let s:timeout_pulse_time = reltime()
+
+FUNCTION  <SNR>10_timer_callback()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:170
+Called 62 times
+Total time:   1.687069
+ Self time:   0.004984
+
+count  total (s)   self (s)
+   62              0.001085   if a:win_id != win_getid()
+                                call timer_pause(a:timer_id, 1)
+                                return
+   62              0.000075   endif
+                            
+                              " if we timed out, do a highlight and pause the timer
+   62   0.001438   0.001164   let l:elapsed = 1000*s:reltimefloat(reltime(w:matchup_pulse_time))
+   62              0.000110   if l:elapsed >= s:show_delay
+   16              0.000069     call timer_pause(a:timer_id, 1)
+   16              0.000154     if exists('#TextYankPost') && !has('patch-8.1.0192')
+                                  " workaround crash with autocmd trigger during regex match (#3175)
+   16              0.000047       let l:save_ei = &eventignore
+   16              0.000016       try
+   16   0.000319   0.000197         set eventignore+=TextYankPost
+   16   1.681642   0.000086         call s:matchparen.highlight()
+   16              0.000017       finally
+   16   0.000224   0.000147         let &eventignore = l:save_ei
+   16              0.000029       endtry
+                                else
+                                  call s:matchparen.highlight()
+   16              0.000006     endif
+   46              0.000085   elseif w:matchup_need_clear && exists('w:matchup_hi_time')
+                                " if highlighting becomes too stale, clear it
+    1   0.000007   0.000006     let l:elapsed = 1000*s:reltimefloat(reltime(w:matchup_hi_time))
+    1              0.000001     if l:elapsed >= s:hide_delay
+    1   0.000059   0.000004       call s:matchparen.clear()
+    1              0.000000     endif
+   62              0.000022   endif
+
+FUNCTION  <SNR>10_reltimefloat()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:292
+Called 63 times
+Total time:   0.000275
+ Self time:   0.000275
+
+count  total (s)   self (s)
+   63              0.000199     return reltimefloat(a:time)
+
+FUNCTION  matchup#pos#get_cursor()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/pos.vim:17
+Called 539 times
+Total time:   0.001241
+ Self time:   0.001241
+
+count  total (s)   self (s)
+  539              0.001083     return getcurpos()
+
+FUNCTION  matchup#loader#refresh_match_words()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/loader.vim:107
+Called 17 times
+Total time:   0.000491
+ Self time:   0.000491
+
+count  total (s)   self (s)
+   17              0.000088   if get(b:, 'match_words', ':') !~# ':'
+                                call matchup#perf#tic('refresh')
+                            
+                                " protect the cursor from the match_words function
+                                let l:save_pos = matchup#pos#get_cursor()
+                                let l:match_words = ''
+                                execute 'let l:match_words =' b:match_words
+                                if l:save_pos != matchup#pos#get_cursor()
+                                  call matchup#pos#set_cursor(l:save_pos)
+                                endif
+                            
+                                call matchup#perf#toc('refresh', 'function')
+                            
+                                if has_key(s:match_word_cache, l:match_words)
+                                  let b:matchup_delim_lists = s:match_word_cache[l:match_words].delim_lists
+                                  let b:matchup_delim_re = s:match_word_cache[l:match_words].delim_regexes
+                                  call matchup#perf#toc('refresh', 'cache_hit')
+                                else
+                                  " re-parse match words
+                                  let b:matchup_delim_lists = s:init_delim_lists(0, 0)
+                                  let b:matchup_delim_re = s:init_delim_regexes()
+                                  let s:match_word_cache[l:match_words] = { 'delim_lists'  : b:matchup_delim_lists, 'delim_regexes': b:matchup_delim_re,}
+                                  call matchup#perf#toc('refresh', 'parse')
+                                endif
+   17              0.000006   endif
+
+FUNCTION  <SNR>10_close_floating_win()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/matchparen.vim:875
+Called 17 times
+Total time:   0.000167
+ Self time:   0.000167
+
+count  total (s)   self (s)
+   17              0.000037   if !exists('s:float_id')
+                                return
+   17              0.000006   endif
+   17              0.000034   if win_id2win(s:float_id) > 0
+                                call s:do_popup_autocmd_leave(s:float_id)
+                                call nvim_win_close(s:float_id, 0)
+   17              0.000005   endif
+   17              0.000018   let s:float_id = 0
+
+FUNCTION  matchup#delim#get_current()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:28
+Called 16 times
+Total time:   0.020264
+ Self time:   0.000323
+
+count  total (s)   self (s)
+   16   0.020255   0.000314   return s:get_delim_multi(extend({ 'direction' : 'current', 'type' : a:type, 'side' : a:side,}, get(a:, '1', {})))
+
+FUNCTION  matchup#perf#toc()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/perf.vim:19
+Called 925 times
+Total time:   0.019515
+ Self time:   0.019515
+
+count  total (s)   self (s)
+  925              0.003977   let l:elapsed = s:Reltimefloat(reltime(s:time_start[a:context]))
+                            
+  925              0.001795   let l:key = a:context.'#'.a:state
+  925              0.001852   if has_key(g:matchup#perf#times, l:key)
+  925              0.001741     if l:elapsed > g:matchup#perf#times[l:key].maximum
+                                  let g:matchup#perf#times[l:key].maximum = l:elapsed
+  925              0.000355     endif
+  925              0.001637     let g:matchup#perf#times[l:key].last = l:elapsed
+  925              0.003190     let g:matchup#perf#times[l:key].emavg = s:alpha*l:elapsed + (1-s:alpha)*g:matchup#perf#times[l:key].emavg
+                              else
+                                let g:matchup#perf#times[l:key] = { 'maximum' : l:elapsed, 'emavg'   : l:elapsed, 'last'    : l:elapsed,}
+  925              0.000325   endif
+
+FUNCTION  matchup#ts_engine#get_delim()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_engine.vim:45
+Called 17 times
+Total time:   0.002196
+ Self time:   0.000378
+
+count  total (s)   self (s)
+   17   0.000141   0.000084   call matchup#perf#tic('ts_engine.get_delim')
+                            
+   17   0.001505   0.000134   let l:res = s:forward('get_delim', bufnr('%'), a:opts)
+   17              0.000025   if empty(l:res)
+   16   0.000458   0.000088     call matchup#perf#toc('ts_engine.get_delim', 'fail')
+   16              0.000013     return {}
+    1              0.000000   endif
+                            
+    1              0.000004   let l:res.get_matching = function('matchup#ts_engine#get_matching')
+                            
+    1   0.000023   0.000004   call matchup#perf#toc('ts_engine.get_delim', 'done')
+                            
+    1              0.000001   return l:res
+
+FUNCTION  matchup#ts_syntax#synID()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/ts_syntax.vim:17
+Called 1707 times
+Total time:   1.107486
+ Self time:   0.011189
+
+count  total (s)   self (s)
+ 1707   1.107021   0.010724   return s:forward('synID', a:lnum, a:col, a:trans)
+
+FUNCTION  matchup#delim#get_prev()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:19
+Called 1 time
+Total time:   0.004416
+ Self time:   0.000013
+
+count  total (s)   self (s)
+    1   0.004415   0.000012   return s:get_delim_multi(extend({ 'direction' : 'prev', 'type' : a:type, 'side' : a:side,}, get(a:, '1', {})))
+
+FUNCTION  <SNR>97_effcol()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:934
+Called 1707 times
+Total time:   0.003408
+ Self time:   0.003408
+
+count  total (s)   self (s)
+ 1707              0.002992   return a:expr ==# '.' ? s:eff_curpos[1] : col(a:expr)
+
+FUNCTION  <SNR>97_parser_delim_new()
+    Defined: ~/.local/share/nvim/site/pack/packer/opt/vim-matchup/autoload/matchup/delim.vim:532
+Called 1 time
+Total time:   0.000270
+ Self time:   0.000255
+
+count  total (s)   self (s)
+    1              0.000002   let l:cursorpos = a:opts.cursorpos
+    1              0.000001   let l:found = 0
+                            
+    1   0.000007   0.000006   let l:sides = matchup#loader#sidedict()[a:opts.side]
+    1              0.000003   let l:rebrs = b:matchup_delim_lists[a:opts.type].regex_capture
+                            
+                              " use b:match_ignorecase
+    1              0.000003   let l:ic = get(b:, 'match_ignorecase', 0) ? '\c' : '\C'
+                            
+                              " loop through all (index, side) pairs,
+    1              0.000002   let l:ns = len(l:sides)
+    1              0.000001   let l:found = 0
+    2              0.000004   for l:i in range(len(l:rebrs)*l:ns)
+    2              0.000004     let l:side = l:sides[ l:i % l:ns ]
+                            
+    2              0.000002     if l:side ==# 'mid'
+                                  let l:res = l:rebrs[l:i / l:ns].mid_list
+                                  if empty(l:res) | continue | end
+    2              0.000001     else
+    2              0.000005       let l:res = [ l:rebrs[l:i / l:ns][l:side] ]
+    3              0.000004       if empty(l:res[0]) | continue | end
+    2              0.000001     endif
+                            
+                                " if pattern may contain \zs, extra processing is required
+    2              0.000004     let l:extra_info = l:rebrs[l:i / l:ns].extra_info
+    2              0.000005     let l:has_zs = get(l:extra_info, 'has_zs', 0)
+                            
+    2              0.000002     let l:mid_id = 0
+    3              0.000004     for l:re in l:res
+    2              0.000003       let l:mid_id += 1
+                            
+                                  " check whether hlend needs to be handled
+    2              0.000005       let l:id = l:side ==# 'mid' ? l:mid_id : l:side ==# 'open' ? 0 : -1
+    2              0.000005       let l:extra_entry = l:rebrs[l:i / l:ns].extra_list[l:id]
+    2              0.000004       let l:has_hlend = has_key(l:extra_entry, 'hlend')
+                            
+    2              0.000003       if l:has_hlend && get(a:opts, 'highlighting', 0)
+                                    let l:re = s:process_hlend(l:re, l:cursorpos)
+    2              0.000001       endif
+                            
+                                  " prepend the column number and append the cursor column
+                                  " to anchor the match; we don't use {start} for matchlist
+                                  " because there may be zero-width look behinds
+    2   0.000026   0.000012       let l:re_anchored = l:ic . s:anchor_regex(l:re, a:cnum, l:has_zs)
+                            
+                                  " for current we want the first match which the cursor is inside
+    2              0.000002       if a:opts.direction ==# 'current'
+                                    let l:re_anchored .= '\%>'.(l:cursorpos).'c'
+    2              0.000001       endif
+                            
+    2              0.000015       let l:matches = matchlist(getline(a:lnum), l:re_anchored)
+    3              0.000004       if empty(l:matches) | continue | endif
+                            
+                                  " reject matches which the cursor is outside of
+                                  " this matters only for \ze
+    1              0.000003       if !l:has_hlend && a:opts.direction ==# 'current' && a:cnum + strlen(l:matches[0]) <= l:cursorpos
+                                    continue
+    1              0.000000       endif
+                            
+                                  " if pattern contains \zs we need to re-check the starting column
+    1              0.000002       if l:has_zs && match(getline(a:lnum), l:re_anchored) != a:cnum-1
+                                    continue
+    1              0.000000       endif
+                            
+                                  " handle syntax check- currently used for 'same' matches
+    1              0.000001       if has_key(l:extra_entry, 'syn')
+                                    let [l:pat; l:args] = split(l:extra_entry.syn, ';')
+                                    let l:offs = str2nr(get(l:args, 0, 0))
+                                    let l:invert = 0
+                                    if l:pat[0] ==? '!'
+                                      let l:invert = 1
+                                      let l:pat = l:pat[1:]
+                                    endif
+                                    let l:res = matchup#util#in_synstack( l:pat, a:lnum, a:cnum + l:offs)
+                                    if l:invert && l:res || !l:invert && !l:res
+                                      continue
+                                    endif
+    1              0.000000       endif
+                            
+    1              0.000001       let l:found = 1
+    1              0.000000       break
+    2              0.000001     endfor
+                            
+    3              0.000003     if !l:found | continue | endif
+                            
+    1              0.000000     break
+    1              0.000002   endfor
+                            
+    1              0.000001   if !l:found
+                                return {}
+    1              0.000000   endif
+                            
+    1              0.000001   let l:match = l:matches[0]
+                            
+    1              0.000002   let l:list = b:matchup_delim_lists[a:opts.type]
+    1              0.000002   let l:thisregex  = l:list.regex[l:i / l:ns]
+    1              0.000002   let l:thisrecap = l:list.regex_capture[l:i / l:ns]
+                            
+    1              0.000001   let l:augment = {}
+                            
+                              " these are the capture groups indexed by their 'open' id
+    1              0.000001   let l:groups = {}
+    1              0.000001   let l:id = 0
+                            
+    1              0.000001   if l:side ==# 'open'
+    1              0.000002     for l:br in keys(l:thisrecap.need_grp)
+                                  if empty(l:matches[l:br]) | continue | endif
+                                  let l:groups[l:br] = l:matches[l:br]
+    1              0.000001     endfor
+                              else
+                                let l:id = (l:side ==# 'close') ? len(l:thisrecap.mid_list)+1 : l:mid_id
+                            
+                                " groups here must be renumbered to match the open pattern
+                                if has_key(l:thisrecap.grp_renu, l:id)
+                                  for [l:br, l:to] in items(l:thisrecap.grp_renu[l:id])
+                                    let l:groups[l:to] = l:matches[l:br]
+                                  endfor
+                                  " let l:groups[0] = l:matches[0]
+                                endif
+                            
+                                " fill in augment pattern
+                                " TODO all the augment patterns should match,
+                                " but checking might be too slow
+                                if has_key(l:thisrecap.aug_comp, l:id)
+                                  let l:aug = l:thisrecap.aug_comp[l:id][0]
+                                  let l:augment.str = matchup#delim#fill_backrefs( l:aug.str, l:groups, 0)
+                                  let l:augment.unresolved = deepcopy(l:aug.outputmap)
+                                endif
+    1              0.000000   endif
+                            
+    1              0.000015   let l:result = { 'type'         : 'delim_tex', 'match'        : l:match, 'augment'      : l:augment, 'groups'       : l:groups, 'side'         : l:side, 'class'        : [(l:i / l:ns), l:id], 'get_matching' : s:engines.classic.get_matching, 'regexone'     : l:thisregex, 'regextwo'     : l:thisrecap, 'midmap'       : get(l:list, 'midmap', {}), 'highlighting' : get(a:opts, 'highlighting', 0),}
+                            
+    1              0.000001   return l:result
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+   62   1.687069   0.004984  <SNR>10_timer_callback()
+   16   1.681556   0.002369  4()
+   16   1.656294   0.000293  <SNR>10_highlight_surrounding()
+   16   1.655862   0.000184  matchup#delim#get_surrounding()
+   16   1.655677   0.051825  matchup#delim#get_surrounding_impl()
+  442   1.550056   0.076496  matchup#delim#get_matching()
+  404   1.448333   0.113167  <SNR>97_get_matching_delims()
+ 1672   1.293159   0.034018  matchup#delim#skip0()
+ 1707   1.265346   0.039947  matchup#ts_syntax#skip_expr()
+ 3414   1.204935             <SNR>98_forward()
+ 1707   1.107486   0.011189  matchup#ts_syntax#synID()
+  313   0.462903             <SNR>42_try()
+    6   0.134777   0.000314  CursorHold_Cb()
+ 1707   0.117912   0.009274  matchup#ts_syntax#lang_skip()
+  603   0.034431             3()
+ 2745   0.033213   0.032656  <SNR>11_parse_args()
+ 1341   0.025943   0.008368  matchup#pos#set_cursor()
+   17   0.024344   0.000932  <SNR>97_get_delim_multi()
+   17   0.021156   0.007851  <SNR>97_get_delim()
+   16   0.020264   0.000323  matchup#delim#get_current()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+ 3414              1.204935  <SNR>98_forward()
+  313              0.462903  <SNR>42_try()
+  404   1.448333   0.113167  <SNR>97_get_matching_delims()
+  442   1.550056   0.076496  matchup#delim#get_matching()
+   16   1.655677   0.051825  matchup#delim#get_surrounding_impl()
+ 1707   1.265346   0.039947  matchup#ts_syntax#skip_expr()
+  603              0.034431  3()
+ 1672   1.293159   0.034018  matchup#delim#skip0()
+ 2745   0.033213   0.032656  <SNR>11_parse_args()
+  925              0.019515  matchup#perf#toc()
+  129              0.014507  nvim_treesitter#foldexpr()
+ 1707   1.107486   0.011189  matchup#ts_syntax#synID()
+  603              0.009453  CursorHoldTimer()
+ 1707   0.117912   0.009274  matchup#ts_syntax#lang_skip()
+  850              0.008878  matchup#perf#timeout_check()
+ 1210              0.008704  matchup#loader#remove_capture_groups()
+ 1341   0.025943   0.008368  matchup#pos#set_cursor()
+   17   0.021156   0.007851  <SNR>97_get_delim()
+  899   0.017564   0.007788  matchup#pos#val()
+  441   0.011932   0.007395  matchup#pos#prev()
+

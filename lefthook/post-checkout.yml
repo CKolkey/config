@@ -1,0 +1,11 @@
+post-checkout:
+  parallel: false
+  commands:
+    pull-master:
+      run: ruby $HOME/.config/lefthook/post-checkout/pull-master.rb
+    package-json:
+      run: ruby $HOME/.config/lefthook/post-checkout/package-json-checker.rb
+    bundle:
+      run: ruby $HOME/.config/lefthook/post-checkout/bundle-checker.rb
+    code-coverage-changed-tag:
+      run: git tag -f code_coverage_diff $(git rev-parse master)

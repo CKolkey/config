@@ -1,0 +1,100 @@
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+  ui = auto
+
+[color "branch"]
+  current = green
+  remote = yellow
+
+[core]
+  pager = delta
+  editor = nvim
+	excludesFile = ~/.config/git/ignore
+  attributesfile = /users/cameron/.gitattributes
+
+[interactive]
+  diffFilter = delta --color-only
+
+[add.interactive]
+  useBuiltin = false
+
+[delta]
+  navigate = true
+
+[alias]
+  co = checkout
+  po = push origin
+  st = status -sb
+  br = branch
+  ci = commit
+  fo = fetch origin
+  dft = difftool
+  recent = !git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' | rg -v '(staging|production|origin|refs|master|\\s([0-9]+)$)' | head -n 15 | fzf | cut -d' ' -f2 | xargs git checkout
+
+  # Fetch repo and blow out local branch, favoring upstream commits
+  reset-origin = !git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
+
+  nuke-untracked = !git status --porcelain | awk '{print $2}' | xargs rm -rf
+
+  # Clean merged branches
+  sw = !git branch --merged master | grep -v 'master$' | xargs git branch -d && git remote prune origin
+
+  # http://www.jukie.net/bart/blog/pimping-out-git-log
+  lg = log --graph --all --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)%an%Creset %C(yellow)%d%Creset'
+
+  # Serve local repo. http://coderwall.com/p/eybtga
+  # Then other can access via `git clone git://#{YOUR_IP_ADDRESS}/
+  serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+
+  m = checkout master
+
+  # Removes a file from the index
+  unstage = reset HEAD --
+
+[help]
+  autocorrect = 0
+
+[push]
+	default = simple
+
+[branch "master"]
+  mergeoptions = --no-edit
+
+[user]
+	email = Alleyria@gmail.com
+	name = Cameron
+
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+
+[pull]
+	rebase = false
+
+[init]
+	defaultBranch = master
+
+; [credential]
+	; helper = /usr/local/share/gcm-core/git-credential-manager-core
+
+; [credential "https://dev.azure.com"]
+	; useHttpPath = true
+
+[merge]
+	conflictStyle = diff3
+
+[diff]
+  colorMoved = default
+	external = difft
+
+
+[include]
+  path = ~/.config/delta/themes
+
+[delta]
+  features = villsau

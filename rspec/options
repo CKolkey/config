@@ -1,0 +1,18 @@
+--order random
+
+<% begin %>
+<% $LOAD_PATH << File.dirname(File.dirname(`gem which fuubar`.strip)) %>
+<% require('fuubar') %>
+--format Fuubar
+--color
+<% rescue LoadError %>
+--format progress
+<% end %>
+
+<% if File.exist?("./spec_helper.rb") %>
+--require spec_helper
+<% end %>
+
+--require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
+--format QuickfixFormatter
+--out tmp/quickfix.out

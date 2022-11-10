@@ -1,0 +1,3 @@
+- I keep getting a "cannot close last buffer" error
+- Cycling through buffers will sometimes close a split
+- Something with the quickfix crashes nvim (cycling from top to bottom and back seems to do it)
