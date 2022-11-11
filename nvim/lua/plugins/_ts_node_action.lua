@@ -127,6 +127,11 @@ function M.node_action()
   end
 
   local filetype = vim.o.filetype
+  if not node_actions[filetype] then
+    print("(TS:Action) No actions defined for filetype: '" .. filetype .. "'")
+    return
+  end
+
   local action = node_actions[filetype][node:type()]
   if action then
     action(node)
