@@ -41,7 +41,7 @@ M.mappings = {
     ["<leader>h9"] = utils.plugin("harpoon_config").goto_file_9,
     ["<leader>h0"] = utils.plugin("harpoon_config").goto_file_10,
 
-    [","] = utils.plugin("treesitter").node_action,
+    ["K"] = utils.plugin("ts_node_action").node_action,
 
     -- Open cmd with same path as current file already printed
     ["<leader>e"] = [[:e <C-R>=expand("%:p:h") . "/" <CR>]],
@@ -83,7 +83,6 @@ M.mappings = {
 
     -- Dont lose position when joining lines
     ["J"] = "mzJ`z",
-    ["K"] = require("trevj").format_at_cursor,
 
     -- Close split using c-q, close pane keeping split with c-w
     ["<C-q>"] = ":call SmartCloseTerminal()<cr>:cclose<cr>:bd<Cr>",

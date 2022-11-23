@@ -3,6 +3,8 @@ local M = {}
 local config = require("lsp.config")
 
 function M.load()
+  require("neodev").setup({})
+
   local runtime_path = vim.split(package.path, ";")
   table.insert(runtime_path, "lua/?.lua")
   table.insert(runtime_path, "lua/?/init.lua")
@@ -34,7 +36,7 @@ function M.load()
           neededFileStatus = {
             ["codestyle-check"] = "Any",
           },
-          globals = { "vim" },
+          globals = { "vim", "hs" },
         },
         workspace = {
           library = vim.api.nvim_get_runtime_file("", true),

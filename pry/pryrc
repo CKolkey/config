@@ -1,3 +1,4 @@
+# vim: set ft=ruby
 if defined?(PryByebug)
   Pry.commands.alias_command 'c', 'continue'
   Pry.commands.alias_command 's', 'step'
@@ -6,7 +7,7 @@ if defined?(PryByebug)
 end
 
 # Hit Enter to repeat last command
-Pry::Commands.command /^$/, "repeat last command" do
+Pry::Commands.command(/^$/, 'repeat last command') do
   pry_instance.run_command Pry.history.to_a.last
 end
 
@@ -23,18 +24,17 @@ if defined?(Rails)
     end
   end
 
-  Pry::Prompt.add "project_custom", "Includes the current Rails environment.", %w[> *] do |target_self, nest_level, _pry, sep|
+  Pry::Prompt.add 'project_custom', 'Includes the current Rails environment.',
+                  %w[> *] do |target_self, nest_level, _pry, sep|
     "[#{formatted_env}] (#{Pry.view_clip(target_self)}) #{'>' * nest_level}#{sep} "
   end
 
-  Pry.config.prompt = Pry::Prompt.all["project_custom"]
+  Pry.config.prompt = Pry::Prompt.all['project_custom']
 end
 
 %w[looksee/shortcuts].each do |gem|
-  begin
-    require gem
-  rescue LoadError
-  end
+  require gem
+rescue LoadError
 end
 
 class Object
@@ -51,7 +51,7 @@ class Object
   #   arr.ri :pop
   def ri(method = nil)
     unless method && method =~ /^[A-Z]/ # if class isn't specified
-      klass = self.kind_of?(Class) ? name : self.class.name
+      klass = is_a?(Class) ? name : self.class.name
       method = [klass, method].compact.join('#')
     end
     system 'ri', method.to_s
@@ -64,8 +64,8 @@ end
 
 def copy_history
   history = Readline::HISTORY.entries
-  index = history.rindex("exit") || -1
-  content = history[(index+1)..-2].join("\n")
+  index = history.rindex('exit') || -1
+  content = history[(index + 1)..-2].join("\n")
   puts content
   copy content
 end

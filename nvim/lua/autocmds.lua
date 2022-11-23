@@ -58,8 +58,8 @@ local definitions = {
 
   neogit_config = {
     desc = "Some config stuff for neogit plugin",
-    { event = "WinEnter", pattern = "Neogit*", command = "setl eventignore+=InsertEnter,InsertLeave" },
-    { event = "WinLeave", pattern = "Neogit*", command = "setl eventignore-=InsertEnter,InsertLeave" },
+    -- { event = "WinEnter", pattern = "Neogit*", command = "setl eventignore+=InsertEnter,InsertLeave" },
+    -- { event = "WinLeave", pattern = "Neogit*", command = "setl eventignore-=InsertEnter,InsertLeave" },
   },
 
   line_number_toggle = {

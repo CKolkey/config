@@ -8,8 +8,8 @@ fish_add_path -g $HOME/.pyenv/bin
 fish_add_path -g $HOME/.composer/vendor/bin
 fish_add_path -g $HOME/.cargo/bin
 fish_add_path -g $HOME/.yarn/bin
-
 fish_add_path -g /usr/local/opt/curl/bin
+fish_add_path -g $HOME/.config/git/bin
 
 if status is-interactive
   auto_ls

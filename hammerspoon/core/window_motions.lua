@@ -59,49 +59,50 @@ local function sendFocusedWindowToNewSpace()
 end
 
 function M.load()
-  hs.hotkey.bind(
-    { "cmd" },
-    "h",
-    yabai({ { group = "window", command = "focus west" }, { group = "display", command = "focus west" } })
-  )
-  hs.hotkey.bind(
-    { "cmd" },
-    "j",
-    yabai({ { group = "window", command = "focus south" }, { group = "display", command = "focus south" } })
-  )
-  hs.hotkey.bind(
-    { "cmd" },
-    "k",
-    yabai({ { group = "window", command = "focus north" }, { group = "display", command = "focus north" } })
-  )
-  hs.hotkey.bind(
-    { "cmd" },
-    "l",
-    yabai({ { group = "window", command = "focus east" }, { group = "display", command = "focus east" } })
-  )
+  hs.hotkey.bind({ "cmd" }, "h", yabai({
+    { group = "window", command = "focus west" },
+    { group = "display", command = "focus west" },
+  }))
 
-  hs.hotkey.bind(
-    { "option", "ctrl" },
-    "h",
-    yabai({
+  hs.hotkey.bind({ "cmd" }, "j", yabai({
+    { group = "window", command = "focus south" },
+    { group = "display", command = "focus south" },
+  }))
+
+  hs.hotkey.bind({ "cmd" }, "k", yabai({
+    { group = "window", command = "focus north" },
+    { group = "display", command = "focus north" },
+  }))
+
+  hs.hotkey.bind({ "cmd" }, "l", yabai({
+    { group = "window", command = "focus east" },
+    { group = "display", command = "focus east" },
+  }))
+
+  hs.hotkey.bind({ "option", "ctrl" }, "h", yabai({
       { group = "window", command = "swap west" },
       { group = "window", command = "display west" },
       { group = "window", command = "space prev" },
     }, { keepFocus = true })
   )
 
-  hs.hotkey.bind(
-    { "option", "ctrl" },
-    "l",
-    yabai({
+  hs.hotkey.bind({ "option", "ctrl" }, "l", yabai({
       { group = "window", command = "swap east" },
       { group = "window", command = "display east" },
       { group = "window", command = "space next" },
     }, { keepFocus = true })
   )
 
-  hs.hotkey.bind({ "option", "ctrl" }, "j", yabai({ { group = "window", command = "swap south" } }))
-  hs.hotkey.bind({ "option", "ctrl" }, "k", yabai({ { group = "window", command = "swap north" } }))
+  hs.hotkey.bind({ "option", "ctrl" }, "j", yabai({
+    { group = "window", command = "swap south" },
+    { group = "window", command = "display south" },
+  }, { keepFocus = true }))
+
+  hs.hotkey.bind({ "option", "ctrl" }, "k", yabai({
+    { group = "window", command = "swap north" },
+    { group = "window", command = "display north" },
+  }, { keepFocus = true }))
+
   hs.hotkey.bind({ "option", "ctrl" }, "r", yabai({ { group = "space", command = "rotate 90" } }))
   hs.hotkey.bind({ "option", "ctrl" }, "f", yabai({ { group = "window", command = "toggle float" } }))
   hs.hotkey.bind({ "option", "ctrl" }, "n", sendFocusedWindowToNewSpace)

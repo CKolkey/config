@@ -30,6 +30,7 @@ return require("packer").startup({
         { "sindrets/diffview.nvim", config = c("diffview") },
       },
     },
+    { "akinsho/git-conflict.nvim", config = c("git_conflict"), tag = "*" },
 
     -- DAP
     -- { "anuvyklack/hydra.nvim", config = c("hydra") },
@@ -47,11 +48,7 @@ return require("packer").startup({
     { "neovim/nvim-lspconfig" },
     { "ray-x/lsp_signature.nvim" },
     { "stevearc/dressing.nvim" },
-    -- {
-    --   "NarutoXY/dim.lua",
-    --   requires = { "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
-    --   config = c("dim"),
-    -- },
+    { "folke/neodev.nvim" },
 
     -- Theme
     { "olimorris/onedarkpro.nvim", config = c("onedark") },
@@ -129,9 +126,7 @@ return require("packer").startup({
       { "windwp/nvim-autopairs", config = c("autopairs") },
       { "lukas-reineke/indent-blankline.nvim", config = c("indent_blankline") },
       { "andymass/vim-matchup", setup = s("matchup") },
-      -- { "code-biscuits/nvim-biscuits", config = c("codebiscuits") },
       { "RRethy/nvim-treesitter-endwise" },
-      { "abecodes/tabout.nvim", config = c("tabout") },
       { "AckslD/nvim-trevJ.lua" },
     },
 

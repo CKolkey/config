@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # global settings
 yabai -m config mouse_follows_focus          off
@@ -29,12 +29,5 @@ yabai -m config right_padding                2
 yabai -m config window_gap                   1
 yabai -m config window_shadow                float
 
-yabai -m rule --add app="^iStat*" sticky=on layer=above manage=off border=off
-yabai -m rule --add app="^System Preferences*" manage=off border=off
-yabai -m rule --add app="^Bartender*" manage=off
-yabai -m rule --add app="^Tuple" manage=off
-yabai -m rule --add app="^Finder$" title="(^Copy$)" manage=off border=off
-yabai -m rule --add app="^Outlook$" title="(Reminder)" manage=off border=off
-yabai -m rule --add app="^Outlook$" title="\d (Reminders)" manage=off border=off
-yabai -m rule --add app="^licecap*" manage=off
-yabai -m rule --add app="^VLC*" manage=off border=off
+yabai -m signal --add event=display_added action="ruby ${HOME}/.config/yabai/display_added.rb"
+yabai -m signal --add event=display_removed action="ruby ${HOME}/.config/yabai/display_added.rb"

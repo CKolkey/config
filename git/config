@@ -1,3 +1,5 @@
+# https://softwaredoug.com/blog/2022/11/09/idiot-proof-git-aliases.html
+# https://github.com/git-friendly/git-friendly/blob/main/pull
 [color]
   branch = auto
   diff = auto
@@ -32,6 +34,7 @@
   ci = commit
   fo = fetch origin
   dft = difftool
+  pick = cherry-pick
   recent = !git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' | rg -v '(staging|production|origin|refs|master|\\s([0-9]+)$)' | head -n 15 | fzf | cut -d' ' -f2 | xargs git checkout
 
   # Fetch repo and blow out local branch, favoring upstream commits
@@ -53,6 +56,10 @@
 
   # Removes a file from the index
   unstage = reset HEAD --
+
+  # https://stackoverflow.com/a/17843908/1973105
+  parent-branch = !git show-branch | grep '*' | grep -v $(git rev-parse --abbrev-ref HEAD) | head -n1 | sed 's/.*\\[\\(.*\\)\\].*/\\1/' | sed 's/[\\^~].*//'
+  parent = parent-branch
 
 [help]
   autocorrect = 0
@@ -98,3 +105,7 @@
 
 [delta]
   features = villsau
+
+# http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
+[url "git@github.com:ckolkey/"]
+  insteadOf = "git://github.com/ckolkey/"

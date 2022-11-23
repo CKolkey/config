@@ -20,7 +20,7 @@ local keys = {
       ['f'] = { mods = { 'alt' }, key = 'right' },
       ['b'] = { mods = { 'alt' }, key = 'left' },
       ['w'] = { macro = 'backwardsKillWord' },
-      ['e'] = { macro = 'forwardsKillWord' },
+      ['d'] = { macro = 'forwardsKillWord' },
     },
   },
 }

@@ -1,4 +1,4 @@
-nnoremap <buffer><leader>bb obinding.b<esc>:w<cr>^
+nnoremap <buffer><leader>bb odebugger<esc>:w<cr>^
 
 setlocal colorcolumn=120
 setlocal textwidth=120

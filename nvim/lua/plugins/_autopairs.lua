@@ -3,7 +3,7 @@ local M = {}
 M.config = function()
   local npairs = require("nvim-autopairs")
   local Rule = require("nvim-autopairs.rule")
-  local cond = require("nvim-autopairs.conds")
+  local ts_conds = require("nvim-autopairs.ts-conds")
 
   npairs.setup({
     map_bs = true,
@@ -18,6 +18,10 @@ M.config = function()
       local pair = opts.line:sub(opts.col - 1, opts.col)
       return vim.tbl_contains({ "()", "[]", "{}" }, pair)
     end),
+
+    Rule("#", "{}", "ruby")
+      :with_pair(ts_conds.is_ts_node({ 'string' }))
+      :set_end_pair_length(1),
 
     Rule("|", "|", "ruby")
       :with_pair(function()
@@ -54,11 +58,6 @@ M.config = function()
         return opts.prev_char:match(".%]") ~= nil
       end)
       :use_key("]"),
-
-    -- Add {} for JS anonymous functions
-    Rule("%(.*%)%s*%=>$", " {  }", { "typescript", "typescriptreact", "javascript" })
-      :use_regex(true)
-      :set_end_pair_length(2),
   })
 end
 
