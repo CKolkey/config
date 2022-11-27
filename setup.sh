@@ -10,7 +10,7 @@ then
 fi
 
 echo "Installing Brew Bundle"
-brew bundle --file=$($BREWFILE)
+brew bundle --file=$(echo $BREWFILE)
 
 echo "Installing language servers for JS"
 yarn global add vscode-langservers-extracted typescript-language-server typescript
