@@ -9,6 +9,8 @@ then
 fi
 
 echo "Installing Brew Bundle"
+BREWFILE=$(pwd)/Brewfile
+echo $BREWFILE
 brew bundle --file=$(pwd)/Brewfile
 
 echo "Installing language servers for JS"
