@@ -147,6 +147,7 @@ for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer"; do
   killall "${app}" > /dev/null 2>&1
 done
 
-# Setting Symlinks
-mkdir ~/.config
-ln -s ~/.config/hammerspoon/ ~/.hammerspoon
+if [[ ! -f "~/.config/" ]]; then
+  mkdir ~/.config
+  ln -s ~/.config/hammerspoon/ ~/.hammerspoon
+fi
