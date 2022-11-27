@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+BREWFILE=$(pwd)/Brewfile
 cd ~
 
 if ! command -v brew &> /dev/null
@@ -9,7 +10,6 @@ then
 fi
 
 echo "Installing Brew Bundle"
-BREWFILE=$(pwd)/Brewfile
 echo $BREWFILE
 brew bundle --file=$(pwd)/Brewfile
 
