@@ -147,7 +147,7 @@ for app in "cfprefsd" "Dock" "Finder" "Mail" "SystemUIServer"; do
   killall "${app}" > /dev/null 2>&1
 done
 
-if [[ ! -f "~/.config/" ]]; then
+if [[ ! -f "~/.config" ]]; then
   mkdir ~/.config
   ln -s ~/.config/hammerspoon/ ~/.hammerspoon
 fi
