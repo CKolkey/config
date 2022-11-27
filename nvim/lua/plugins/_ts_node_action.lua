@@ -1,6 +1,7 @@
 local M = {}
 
 local ts_utils = require("nvim-treesitter.ts_utils")
+local ts_indent = require("nvim-treesitter.indent")
 
 local function toggle_boolean(node)
   local start_row, start_col, end_row, end_col = node:range()
@@ -9,6 +10,7 @@ local function toggle_boolean(node)
 end
 
 local function collapse_child_nodes(node)
+  -- https://github.com/aarondiel/spread.nvim/blob/main/lua/spread.lua#L177
   local replacement = {}
   for child, _ in node:iter_children() do
     if child:named() then
@@ -23,6 +25,7 @@ local function toggle_multiline(node)
   local start_row, start_col, end_row, end_col = node:range()
 
   if start_row == end_row then
+    -- probably just take what you need: https://github.com/AckslD/nvim-trevJ.lua/blob/main/lua/trevj.lua#L195
     require("trevj").format_at_cursor()
   else
     vim.api.nvim_buf_set_text(0, start_row, start_col + 1, end_row, end_col - 1, collapse_child_nodes(node))
@@ -91,12 +94,11 @@ local function cycle_case(node)
   vim.api.nvim_buf_set_text(0, start_row, start_col, end_row, end_col, { format(words) })
 end
 
--- TODO: Get correct indent for line
 local function toggle_block(node)
   local start_row, start_col, end_row, end_col = node:range()
 
   local block_params
-  local block_body   = ""
+  local block_body = ""
   local replacement
 
   for child, _ in node:iter_children() do
@@ -111,13 +113,31 @@ local function toggle_block(node)
   end
 
   if start_row == end_row then
+    local indent_width = string.rep(" ", vim.o.shiftwidth)
+    local indent = string.rep(indent_width, ts_indent.get_indent(start_row))
+
+    -- print(start_row .. " - indenting: " .. ts_indent.get_indent(start_row))
+
     if block_params then
-      replacement = { "do" .. block_params, "  " .. block_body, "end" }
+      replacement = {
+        "do" .. block_params,
+        indent .. indent_width .. block_body,
+        indent .. "end",
+      }
     else
-      replacement = { "do", "  " .. block_body, "end" }
+      replacement = {
+        "do",
+        indent .. indent_width .. block_body,
+        indent .. "end",
+      }
     end
   else
-    block_body = table.concat(vim.split(block_body, "\n", { trimempty = true }), "; ")
+    -- block_body = table.concat(vim.split(block_body, "\n", { trimempty = true }), "; ")
+    if string.find(block_body, "\n") then
+      print("(TS:Action) Cannot collapse multi-line block")
+      return
+    end
+
     if block_params then
       replacement = { "{" .. block_params .. " " .. block_body .. " }" }
     else
@@ -207,7 +227,7 @@ local function multiline_conditional(node)
   vim.api.nvim_win_set_cursor(0, { start_row + 1, 0 })
 end
 
-local function toggle_ternary(node)
+local function toggle_ternary(node) -- WIP
   local start_row, start_col, end_row, end_col = node:range()
 
   for child, _ in node:iter_children() do
@@ -219,6 +239,10 @@ end
 local node_actions = {
   lua = {
     ["table_constructor"] = toggle_multiline,
+    ["arguments"] = toggle_multiline,
+    ["true"] = toggle_boolean,
+    ["false"] = toggle_boolean,
+    ["identifier"] = cycle_case,
   },
   ruby = {
     ["true"] = toggle_boolean,
@@ -245,17 +269,16 @@ function M.node_action()
     return
   end
 
-  local filetype = vim.o.filetype
-  if not node_actions[filetype] then
-    print("(TS:Action) No actions defined for filetype: '" .. filetype .. "'")
+  if not node_actions[vim.o.filetype] then
+    print("(TS:Action) No actions defined for filetype: '" .. vim.o.filetype .. "'")
     return
   end
 
-  local action = node_actions[filetype][node:type()]
+  local action = node_actions[vim.o.filetype][node:type()]
   if action then
     action(node)
   else
-    print("(TS:Action) No action defined for " .. filetype .. " node type: '" .. node:type() .. "'")
+    print("(TS:Action) No action defined for " .. vim.o.filetype .. " node type: '" .. node:type() .. "'")
   end
 end
 
