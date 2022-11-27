@@ -1,53 +1,53 @@
-# brew 'rbenv'
-# brew 'fnm'
-# brew 'ruby-build'
-brew 'fd'
-brew 'difftastic'
-brew 'ripgrep'
-brew 'fzf'
-brew 'neovim'
-brew 'fish'
-brew 'efm-langserver'
-brew 'exa'
-brew 'curl'
-brew 'htop'
-brew 'git'
-brew 'starship'
-brew 'tree-sitter'
-brew 'zoxide'
-brew 'postgresql'
-brew 'yarn'
-brew 'tmux'
-brew 'lua-language-server'
-brew 'bat'
-brew 'redis'
-brew 'git-delta'
-brew 'less'
-brew 'lefthook'
-brew 'prettier'
-brew 'entr'
-brew 'gh'
-brew 'jq'
-brew 'koekeishiya/formulae/yabai'
-brew 'atuin'
-brew 'tree'
-brew 'ffmpeg'
+# install rbenv
+# install fnm
+# install ruby-build
+# install postgresql
+install fd
+install difftastic
+install ripgrep
+install fzf
+install neovim
+install fish
+install efm-langserver
+install exa
+install curl
+install htop
+install git
+install starship
+install tree-sitter
+install zoxide
+install yarn
+install tmux
+install lua-language-server
+install bat
+install redis
+install git-delta
+install less
+install lefthook
+install prettier
+install entr
+install gh
+install jq
+install yabai
+install atuin
+install tree
+install ffmpeg
 
-tap 'natecraddock/taps'
-brew 'zf'
+tap natecraddock/taps https://www.github.com/natecraddock/taps
+install zf
 
-tap 'homebrew/cask-fonts'
-cask 'font-hack-nerd-font'
+tap homebrew/cask-fonts
+cask font-hack-nerd-font
 
-cask 'karabiner-elements'
-cask 'bitwarden'
-cask 'hammerspoon'
-cask 'google-chrome'
-cask 'slack'
-cask 'betterdisplay'
-cask 'kitty'
-cask 'syncthing'
-cask 'contexts'
-cask 'bartender'
+cask karabiner-elements
+cask bitwarden
+cask hammerspoon
+cask google-chrome
+cask slack
+cask betterdisplay
+cask kitty
+cask syncthing
+cask contexts
+cask bartender
 
-# vim:ft=ruby:
+# vim:ft=bash:

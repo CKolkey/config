@@ -9,14 +9,16 @@ then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+echo "Logging in with Github"
+gh auth login
+
+brew install gh
+
 echo "Installing Brew Bundle"
 brew bundle --file=$(echo $BREWFILE)
 
 echo "Installing language servers for JS"
 yarn global add vscode-langservers-extracted typescript-language-server typescript
-
-echo "Logging in with Github"
-gh auth login
 
 echo "Using fish shell"
 echo $(which fish) | sudo tee -a /etc/shells
