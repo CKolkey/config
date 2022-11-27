@@ -9,10 +9,9 @@ then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+brew install gh
 echo "Logging in with Github"
 gh auth login
-
-brew install gh
 
 echo "Installing Brew Bundle"
 brew bundle --file=$(echo $BREWFILE)

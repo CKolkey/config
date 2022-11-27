@@ -26,14 +26,13 @@ install less
 install lefthook
 install prettier
 install entr
-install gh
 install jq
 install yabai
 install atuin
 install tree
 install ffmpeg
 
-tap natecraddock/taps https://www.github.com/natecraddock/taps
+tap natecraddock/taps
 install zf
 
 tap homebrew/cask-fonts
