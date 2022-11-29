@@ -11,9 +11,13 @@ fish_add_path -g $HOME/.yarn/bin
 fish_add_path -g /usr/local/opt/curl/bin
 fish_add_path -g $HOME/.config/git/bin
 
+asdf_add_path
+
 if status is-interactive
   auto_ls
   direnv-hook
+  asdf-direnv-hook
+  asdf-install-hook
 
   atuin init fish | source
   starship init fish | source

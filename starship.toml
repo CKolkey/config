@@ -13,7 +13,7 @@ right_format = """
 $cmd_duration\
 $python\
 $ruby\
-$javascript\
+$nodejs\
 """
 
 [directory]
@@ -50,3 +50,7 @@ style = "yellow"
 [ruby]
 format = "[$symbol($version)]($style) "
 symbol = " "
+
+[nodejs]
+format = "[$symbol($version)]($style) "
+symbol = " "

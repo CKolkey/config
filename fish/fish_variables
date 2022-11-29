@@ -35,8 +35,7 @@ SETUVAR _fish_abbr_serve:ruby\x20\x2drun\x20\x2de\x20httpd\x20\x2e\x20\x2dp\x208
 SETUVAR _fish_abbr_v:nvim
 SETUVAR _fisher_jethrokuan_2F_z_files:/Users/u0158204/\x2econfig/fish/functions/__z\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_add\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_clean\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_complete\x2efish\x1e/Users/u0158204/\x2econfig/fish/conf\x2ed/z\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/Users/u0158204/\x2econfig/fish/functions/fisher\x2efish\x1e/Users/u0158204/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_plugins:jorgebucaran/fisher\x1erbenv/fish\x2drbenv\x1ejethrokuan/z\x40v5
-SETUVAR _fisher_rbenv_2F_fish_2D_rbenv_files:/Users/u0158204/\x2econfig/fish/functions/rbenv\x2efish\x1e/Users/u0158204/\x2econfig/fish/conf\x2ed/rbenv\x2efish\x1e/Users/u0158204/\x2econfig/fish/completions/rbenv\x2efish
+SETUVAR _fisher_plugins:jorgebucaran/fisher\x1ejethrokuan/z\x40v5
 SETUVAR fish_color_autosuggestion:969896
 SETUVAR fish_color_cancel:\x2d\x2dreverse
 SETUVAR fish_color_command:b294bb

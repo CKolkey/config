@@ -3,6 +3,7 @@
 # brew 'ruby-build'
 # brew 'postgresql'
 brew 'fd'
+brew 'asdf'
 brew 'difftastic'
 brew 'ripgrep'
 brew 'fzf'
