@@ -1,0 +1,3 @@
+return {
+  "antoinemadec/FixCursorHold.nvim",
+}
