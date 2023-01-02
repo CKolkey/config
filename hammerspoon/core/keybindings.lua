@@ -5,6 +5,8 @@ local M = {}
 local hotkeyModal = hs.hotkey.modal.new()
 
 local function feedKeys(mods, key)
+  if not key then return end
+
   hotkeyModal:exit()
   hs.eventtap.event.newKeyEvent(mods, key, true):post()
   hs.eventtap.event.newKeyEvent(mods, key, false):post()
@@ -12,16 +14,30 @@ local function feedKeys(mods, key)
 end
 
 local keys = {
+  ['kitty'] = {
+    [''] = { -- Remap keys with no modifier
+      ["§"] = { key = "`" },
+      -- ["±"] = { key = "~" }
+    },
+  },
   ['global'] = {
+    [''] = { -- Remap keys with no modifier
+      ["§"] = { key = "`" }
+    },
     ['ctrl'] = {
       ['n'] = { key = 'down' },
       ['p'] = { key = 'up' },
       ['r'] = { mods = { 'cmd' }, key = 'f' },
-      ['f'] = { mods = { 'alt' }, key = 'right' },
-      ['b'] = { mods = { 'alt' }, key = 'left' },
+      ['y'] = { mods = { 'cmd' }, key = 'c' },
       ['w'] = { macro = 'backwardsKillWord' },
       ['d'] = { macro = 'forwardsKillWord' },
+      ['f'] = { mods = { 'shift', 'alt' }, key = 'right' },
+      ['b'] = { mods = { 'shift', 'alt' }, key = 'left' },
     },
+    ['alt'] = {
+      ['b'] = { mods = { 'alt' }, key = 'left' },
+      ['f'] = { mods = { 'alt' }, key = 'right' },
+    }
   },
 }
 
@@ -52,12 +68,12 @@ local function callBinding(namespace, mods, key)
 end
 
 local function keybindingExists(namespace, mods, key)
-  return (keys[namespace] ~= nil and keys[namespace][mods] ~= nil and keys[namespace][mods][key] ~= nil)
+  return (keys[namespace] and keys[namespace][mods] and keys[namespace][mods][key])
 end
 
 local function currentApp()
   local app = hs.application.frontmostApplication()
-  if app ~= nil then
+  if app then
     return app:title()
   end
 end
@@ -80,10 +96,14 @@ local function currentNamespace(mods, key)
   end
 end
 
+local function bindingPermittedInApp(namespace)
+  return (namespace == 'global' and not appIsBlacklisted()) or namespace ~= 'global'
+end
+
 local function processKeystrokes(mods, key)
   return function()
     local namespace = currentNamespace(mods, key)
-    if not appIsBlacklisted() and keybindingExists(namespace, mods, key) then
+    if keybindingExists(namespace, mods, key) and bindingPermittedInApp(namespace) then
       callBinding(namespace, mods, key)
     else
       feedKeys(mods, key)

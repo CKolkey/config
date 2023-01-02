@@ -2,12 +2,20 @@ local M = {}
 
 local parse = require("lib.json").parse
 
+local function yabaiBinPath()
+  if os.capture("/usr/bin/arch") == "arm64" then
+    return "/opt/homebrew/bin/yabai"
+  else
+    return "/usr/local/bin/yabai"
+  end
+end
+
 local function _yabai(group, command)
-  return os.execute("/usr/local/bin/yabai -m " .. group .. " --" .. command)
+  return os.execute(yabaiBinPath() .. " -m " .. group .. " --" .. command)
 end
 
 local function query(command)
-  return parse(os.capture("/usr/local/bin/yabai -m query --" .. command, true))
+  return parse(os.capture(yabaiBinPath() .. " -m query --" .. command, true))
 end
 
 local function yabai(commands, options)
@@ -41,7 +49,7 @@ local function sendFocusedWindowToNewSpace()
   local window = hs.window.focusedWindow()
 
   local spaceID
-  for i, id in ipairs(getDisplaySpaces()) do
+  for _, id in ipairs(getDisplaySpaces()) do
     if emptySpaceOnDisplay(id) then
       spaceID = id
       break
