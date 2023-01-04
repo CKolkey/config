@@ -5,7 +5,14 @@ return {
     vim.notify = require("notify")
   end,
   config = {
-    background_colour = require("config.ui").colors.bg0,
+    background_colour = "InactiveWindow",
+    top_down = false,
+    -- on_open = function(win)
+    --   vim.wo[win].conceallevel = 3
+    --   vim.wo[win].concealcursor = ""
+    --   local buf = vim.api.nvim_win_get_buf(win)
+    --   vim.treesitter.start(buf, "markdown")
+    -- end,
     render = function(bufnr, notif, highlights)
       local message = {}
       for i, line in ipairs(notif.message) do
@@ -20,7 +27,7 @@ return {
           if i == 1 then
             prefix = " " .. notif.icon .. " │ "
           else
-            prefix = "    │ "
+            prefix = string.rep(" ", #notif.icon) .. "│ "
           end
 
           table.insert(message, prefix .. line)
@@ -33,18 +40,12 @@ return {
       -- Color Icon and vertical bar
       local namespace = require("notify.render.base").namespace()
       for i = 0, #message - 1 do
-        vim.api.nvim_buf_set_extmark(bufnr, namespace, i, 0, { hl_group = highlights.icon, end_col = 10, strict = false })
+        vim.api.nvim_buf_set_extmark(bufnr, namespace, i, 0, { hl_group = highlights.icon, end_col = 9, strict = false })
       end
     end,
     max_width = function()
-      return math.floor(vim.o.columns * 0.25)
+      return math.floor(vim.o.columns * 0.40)
     end,
-    icons = {
-      ERROR = require("config.ui").icons.error,
-      WARN = require("config.ui").icons.warning,
-      INFO = require("config.ui").icons.info,
-      DEBUG = require("config.ui").icons.debug,
-      TRACE = require("config.ui").icons.trace,
-    },
+    icons = Icons.diagnostics
   }
 }

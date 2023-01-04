@@ -41,6 +41,8 @@ local mappings = {
 
     ["K"] = require("ts-node-action").node_action,
 
+    ["<leader>bb"] = { require("utils.functions").debugger, { expr = true } },
+
     -- print from register on newline
     -- ["P"] = "o<esc>p==^",
 
@@ -53,11 +55,11 @@ local mappings = {
     ["<leader>gg"] = ":Neogit kind=vsplit<cr>",
     ["<leader>gA"] = function() -- Add all files in CWD
       vim.cmd([[silent exe '!git add . -f']])
-      vim.notify("Staged: " .. vim.fn.fnamemodify(".", ":~") .. "/", "info", { title = "Git" })
+      vim.notify("*Staged:* `" .. vim.fn.fnamemodify(".", ":~") .. "/`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
     ["<leader>ga"] = function() -- Add current file
       vim.cmd([[silent exe '!git add % -f']])
-      vim.notify("Staged: " .. vim.fn.expand("%:."), "info", { title = "Git" })
+      vim.notify("*Staged:* `" .. vim.fn.expand("%:.") .. "`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
     ["<leader>gb"] = "<cmd>Gitsigns toggle_current_line_blame<cr>",
 
@@ -86,7 +88,7 @@ local mappings = {
     ["J"] = "mzJ`z",
 
     -- Close split using c-q, close pane keeping split with c-w
-    ["<C-q>"] = ":call SmartCloseTerminal()<cr>:cclose<cr>:bd<Cr>",
+    ["<C-q>"] = ":call SmartCloseTerminal()<cr>:cclose<cr>:bd<cr>",
     ["<C-w>"] = { utils.delete_buf, { nowait = true } },
     ["<C-e>"] = "<C-w>c<cr>",
 
@@ -272,7 +274,7 @@ local mappings = {
         vim.api.nvim_feedkeys(vim.fn.expand('%:p:h') .. '/', 'c', false)
       end,
       { expr = true },
-    }
+    },
   },
 
   operator_pending = {
