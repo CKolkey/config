@@ -1,5 +1,5 @@
 # Prompt to install any missing tools when entering git repo
-function asdf-install-hook --on-variable PWD
+function asdf-install-hook --on-event fish_prompt
   if not test -d ".git/"
     return
   end
@@ -17,6 +17,8 @@ function asdf-install-hook --on-variable PWD
             if read_confirm "Install $plugin $plugin_version?"
               asdf install $plugin $plugin_version
             end
+          # else
+          #   asdf direnv local $plugin $plugin_version
           end
 
           break
