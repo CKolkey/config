@@ -4,6 +4,19 @@
 # Lefthook
 /.lefthook-local/
 
+# asdf
+.tool-versions
+
+# Local Gems
+Gemfile.dev
+Gemfile.dev.lock
+
+# Solargraph LSP Config
+.solargraph.yml
+
+# Vim Projections
+.projections.json
+
 # Config Git Repo
 .config.git
 

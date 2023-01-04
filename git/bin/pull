@@ -106,7 +106,7 @@ if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
     echo
     echo '⚔  Bundling gems...'
     change_dir 'Gemfile'
-    bundle check >/dev/null 2>&1 || bundle install
+    bundle check >/dev/null 2>&1 || bundle install | rg "(Fetching|Installing|Bundle)"
     reset_dir
   fi
 fi
@@ -119,7 +119,7 @@ if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
     if cmd_exists 'yarn'; then
       echo
       echo '⚔  Installing packages with yarn...'
-      yarn install
+      yarn install | rg -v "warning"
       yarned=1
     fi
     reset_dir

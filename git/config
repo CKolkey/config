@@ -36,6 +36,7 @@
   dft = difftool
   pick = cherry-pick
   recent = !git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' | rg -v '(staging|production|origin|refs|master|\\s([0-9]+)$)' | head -n 15 | fzf | cut -d' ' -f2 | xargs git checkout
+  p = !pull
 
   # Fetch repo and blow out local branch, favoring upstream commits
   reset-origin = !git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
@@ -66,6 +67,7 @@
 
 [push]
 	default = simple
+  autoSetupRemote = true
 
 [branch "master"]
   mergeoptions = --no-edit
