@@ -1,6 +1,5 @@
 return {
-  "vladdoster/remember.nvim",
-  config = function()
-    require("remember")
-  end
+  "ckolkey/remember.nvim",
+  enable = false,
+  config = {}
 }

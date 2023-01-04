@@ -1,3 +1,8 @@
+if vim.g.did_load_motions_helper then
+  return
+end
+vim.g.did_load_motions_helper = true
+
 -- Yells at you if you spam h/l to navigate on a line
 local id
 for _, key in ipairs({ "h", "l" }) do
@@ -8,10 +13,7 @@ for _, key in ipairs({ "h", "l" }) do
       print("Hold it!")
     else
       count = count + 1
-      vim.defer_fn(function()
-        count = count - 1
-      end, 5000)
-
+      vim.defer_fn(function() count = count - 1 end, 5000)
       return key
     end
   end, { expr = true })

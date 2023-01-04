@@ -7,12 +7,6 @@ return {
   config = {
     background_colour = "InactiveWindow",
     top_down = false,
-    -- on_open = function(win)
-    --   vim.wo[win].conceallevel = 3
-    --   vim.wo[win].concealcursor = ""
-    --   local buf = vim.api.nvim_win_get_buf(win)
-    --   vim.treesitter.start(buf, "markdown")
-    -- end,
     render = function(bufnr, notif, highlights)
       local message = {}
       for i, line in ipairs(notif.message) do
@@ -23,11 +17,13 @@ return {
             line = line .. "*"
           end
 
-          local prefix
-          if i == 1 then
-            prefix = " " .. notif.icon .. " │ "
-          else
-            prefix = string.rep(" ", #notif.icon) .. "│ "
+          local prefix = ""
+          if notif.icon then
+            if i == 1 then
+              prefix = " " .. notif.icon .. " │ "
+            else
+              prefix = string.rep(" ", #notif.icon) .. "│ "
+            end
           end
 
           table.insert(message, prefix .. line)
@@ -44,7 +40,7 @@ return {
       end
     end,
     max_width = function()
-      return math.floor(vim.o.columns * 0.40)
+      return math.floor(vim.o.columns * 0.75)
     end,
     icons = Icons.diagnostics
   }

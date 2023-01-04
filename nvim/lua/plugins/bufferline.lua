@@ -1,90 +1,89 @@
-local colors = require("config.ui").colors
-local icons = require("config.ui").icons
-
-local diagnostics = function(_count, level)
-  local icon = level:match("error") and icons.error or icons.warning
-  return " " .. icon
-end
-
 return {
   "akinsho/bufferline.nvim",
-  event = "BufAdd",
-  config = function()
-    require("bufferline").setup({
-      options = {
-        numbers = function(opts)
-          local success, index = pcall(require("harpoon.mark").get_index_of, vim.api.nvim_buf_get_name(opts.id))
-          if success and index and index > 0 then
-            return opts.raise(index)
-          else
-            return ""
-          end
-        end,
+  event = "VeryLazy",
+  config = {
+    options = {
+      numbers = function(opts)
+        local success, index = pcall(require("harpoon.mark").get_index_of, vim.api.nvim_buf_get_name(opts.id))
+        if success and index and index > 0 then
+          return opts.raise(index)
+        else
+          return ""
+        end
+      end,
+      separator_style = "thick",
+      themable = false,
+      diagnostics = false,
+      custom_filter = function(buf, _buf_nums)
+        if vim.bo[buf].buflisted
+            and not vim.bo[buf].mod
+            and vim.api.nvim_buf_get_name(buf) == ""
+            and vim.fn.bufwinnr(buf) < 0
+        then
+          return false
+        else
+          return true
+        end
+      end,
+      close_command = function()
+        require("mini.bufremove").delete()
+      end,
+      diagnostics_indicator = function(_, level)
+        return " " .. Icons.diagnostics[string.upper(level)]
+      end,
+      name_formatter = function(buffer)
+        return " " .. buffer.name
+      end,
+    },
 
-        separator_style = "thick",
+    highlights = {
+      -- background color of bar (empty)
+      fill = { bg = Colors.black, fg = Colors.none },
 
-        themable = false,
+      -- hidden tabs
+      background = { fg = Colors.grey_dim, bg = Colors.bg0 },
 
-        diagnostics = nil,
+      -- close button in top right of window
+      tab_close = { fg = Colors.black, bg = Colors.black },
 
-        close_command = require("mini.bufremove").delete,
+      -- hidden tab close button
+      close_button = { fg = Colors.grey_light, bg = Colors.bg0 },
 
-        diagnostics_indicator = diagnostics,
+      -- unfocused but visible tab
+      close_button_visible = { fg = Colors.grey_light, bg = Colors.bg1 },
 
-        name_formatter = function(buffer)
-          return " " .. buffer.name
-        end,
-      },
+      -- Visible but unfocused
+      buffer_visible = { fg = Colors.inactive, bg = Colors.bg1 },
 
-      highlights = {
-        -- background color of bar (empty)
-        fill = { bg = colors.black, fg = colors.none },
+      -- Active Tab close button
+      close_button_selected = { fg = Colors.fg, bg = Colors.none },
 
-        -- hidden tabs
-        background = { fg = colors.grey_dim, bg = colors.bg0 },
+      -- Active Buffer
+      buffer_selected = { fg = Colors.active, bg = Colors.none, bold = true },
 
-        -- close button in top right of window
-        tab_close = { fg = colors.black, bg = colors.black },
+      -- Modified hidden buffer
+      modified = { fg = Colors.red, bg = Colors.bg0 },
 
-        -- hidden tab close button
-        close_button = { fg = colors.grey_light, bg = colors.bg0 },
+      -- Inactive buffer that is unsaved
+      modified_visible = { fg = Colors.red, bg = Colors.bg1 },
 
-        -- unfocused but visible tab
-        close_button_visible = { fg = colors.grey_light, bg = colors.bg1 },
+      -- Active Buffer with modifications
+      modified_selected = { fg = Colors.red, bg = Colors.none, bold = true, italic = true },
 
-        -- Visible but unfocused
-        buffer_visible = { fg = colors.inactive, bg = colors.bg1 },
+      -- space between, hidden buffer
+      separator = { fg = Colors.black, bg = Colors.bg0 },
 
-        -- Active Tab close button
-        close_button_selected = { fg = colors.fg, bg = colors.none },
+      -- Space Between, focused buffer
+      separator_selected = { fg = Colors.black, bg = Colors.none },
 
-        -- Active Buffer
-        buffer_selected = { fg = colors.active, bg = colors.none, bold = true },
+      -- Space between, unfocused buffer
+      separator_visible = { fg = Colors.black, bg = Colors.bg1 },
 
-        -- Modified hidden buffer
-        modified = { fg = colors.red, bg = colors.bg0 },
+      -- left edge of active tab
+      indicator_selected = { fg = Colors.blue, bg = Colors.none },
 
-        -- Inactive buffer that is unsaved
-        modified_visible = { fg = colors.red, bg = colors.bg1 },
-
-        -- Active Buffer with modifications
-        modified_selected = { fg = colors.red, bg = colors.none, bold = true, italic = true },
-
-        -- space between, hidden buffer
-        separator = { fg = colors.black, bg = colors.bg0 },
-
-        -- Space Between, focused buffer
-        separator_selected = { fg = colors.black, bg = colors.none },
-
-        -- Space between, unfocused buffer
-        separator_visible = { fg = colors.black, bg = colors.bg1 },
-
-        -- left edge of active tab
-        indicator_selected = { fg = colors.blue, bg = colors.none },
-
-        -- Unfocused buffer number
-        numbers = { fg = colors.fg, bg = colors.bg0 },
-      },
-    })
-  end
+      -- Unfocused buffer number
+      numbers = { fg = Colors.fg, bg = Colors.bg0 },
+    },
+  }
 }

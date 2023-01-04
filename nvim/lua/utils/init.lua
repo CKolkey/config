@@ -1,14 +1,11 @@
 _G.utils = {}
 
+Icons  = require("config.ui").icons
+Colors = require("config.ui").colors
+
 -- Global deep-inspect function
 function P(...)
-  local objects = vim.tbl_map(vim.inspect, { ... })
-  print(unpack(objects))
-  return ...
-end
-
-function R(...)
-  return require(...)
+  vim.pretty_print(...)
 end
 
 function utils.delete_buf()
@@ -48,9 +45,13 @@ function utils.debounce(fn, time)
   end
 end
 
--- function utils.plugin(name)
---   return require("plugin." .. name)
--- end
+function utils.file_in_cwd(filename)
+  if vim.loop.fs_stat(vim.loop.cwd() .. "/" .. filename) then
+    return true
+  else
+    return false
+  end
+end
 
 -- Remove leading/trailing characters from string
 function utils.strip(string, chars)
@@ -132,68 +133,3 @@ function utils.table_wrap(obj)
     return { obj }
   end
 end
-
--- -- Sets vim.g scope variables for a table, with a prefix as namespace
--- -- ex: set_globals({ a = 1 }, "pre_") would set: vim.g.pre_a = 1
--- function utils.set_globals(table, prefix)
---   for opt, val in pairs(table) do
---     vim.g[prefix .. opt] = val
---   end
--- end
-
--- -- A map function that gets used by the modal keymappings.
--- -- Nice for one-off mappings
--- function utils.map(modes, key, result, options)
---   options = vim.tbl_deep_extend("force", {
---     remap = false,
---     silent = true,
---     expr = false,
---     nowait = false,
---   }, options or {})
---
---   for _, mode in ipairs(utils.table_wrap(modes)) do
---     vim.keymap.set(mode, key, result, options)
---   end
--- end
---
--- --- Modal Keymap Functions {{{
--- function utils.nnoremap(key, result, options)
---   utils.map("n", key, result, options)
--- end
---
--- function utils.nmap(key, result, options)
---   utils.map("n", key, result, { remap = true })
--- end
---
--- function utils.inoremap(key, result, options)
---   utils.map("i", key, result, options)
--- end
---
--- function utils.imap(key, result, options)
---   utils.map("i", key, result, { remap = true })
--- end
---
--- function utils.vnoremap(key, result, options)
---   utils.map("v", key, result, options)
--- end
---
--- function utils.vmap(key, result, options)
---   utils.map("v", key, result, { remap = true })
--- end
---
--- function utils.tnoremap(key, result, options)
---   utils.map("t", key, result, options)
--- end
---
--- function utils.tmap(key, result, options)
---   utils.map("t", key, result, { remap = true })
--- end
---
--- function utils.onoremap(key, result, options)
---   utils.map("o", key, result, options)
--- end
---
--- function utils.omap(key, result, options)
---   utils.map("o", key, result, { remap = true })
--- end
--- -- }}}

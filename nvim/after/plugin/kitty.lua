@@ -1,5 +1,10 @@
 -- Based on https://github.com/knubie/vim-kitty-navigator
 
+if vim.g.did_load_kitty then
+  return
+end
+vim.g.did_load_kitty = true
+
 local window_directions = { h = "left", j = "bottom", k = "top", l = "right" }
 
 -- Switches buffers if possible, otherwise attempts to switch KITTY window
@@ -20,5 +25,5 @@ end
 
 vim.api.nvim_create_user_command("KittyNavigateNorth", function() navigate("k") end, {})
 vim.api.nvim_create_user_command("KittyNavigateSouth", function() navigate("j") end, {})
-vim.api.nvim_create_user_command("KittyNavigateEast",  function() navigate("l") end, {})
-vim.api.nvim_create_user_command("KittyNavigateWest",  function() navigate("h") end, {})
+vim.api.nvim_create_user_command("KittyNavigateEast", function() navigate("l") end, {})
+vim.api.nvim_create_user_command("KittyNavigateWest", function() navigate("h") end, {})

@@ -83,4 +83,10 @@ local autoload_filetype = function()
   end
 end
 
+local reload_filetype = function()
+  load_snippets(vim.o.filetype)
+  vim.notify("Reloaded Snippets For " .. vim.o.filetype)
+end
+
 vim.api.nvim_create_user_command("LuasnipAutoloadFilteypeSnippets", autoload_filetype, {})
+vim.api.nvim_create_user_command("LuasnipReloadFilteypeSnippets", reload_filetype, {})

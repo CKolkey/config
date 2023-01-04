@@ -1,4 +1,4 @@
 return {
   "tpope/vim-projectionist",
-  ft = { "ruby", "eruby" },
+  enabled = utils.file_in_cwd(".projections.json")
 }

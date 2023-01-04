@@ -1,5 +1,6 @@
 return {
   "mfussenegger/nvim-dap",
+  enable = false,
   dependencies = {
     "rcarriga/nvim-dap-ui",
     "theHamsta/nvim-dap-virtual-text",
@@ -8,11 +9,7 @@ return {
   config = function()
     local dapui = require("dapui")
     dapui.setup({
-      icons = {
-        collapsed = require("config.ui").icons.collapsed,
-        expanded = require("config.ui").icons.expanded,
-        current_frame = require("config.ui").icons.current,
-      },
+      icons = Icons.misc,
 
       mappings = {
         -- Use a table to apply multiple mappings
@@ -69,16 +66,7 @@ return {
       controls = {
         enabled = true,
         element = "repl",
-        icons = {
-          pause = require("config.ui").icons.pause,
-          play = require("config.ui").icons.play,
-          step_into = require("config.ui").icons.step_into,
-          step_over = require("config.ui").icons.step_over,
-          step_out = require("config.ui").icons.step_out,
-          step_back = require("config.ui").icons.step_back,
-          run_last = require("config.ui").icons.run_last,
-          terminate = require("config.ui").icons.terminate,
-        },
+        icons = Icons.dap,
       },
 
       floating = {
@@ -125,14 +113,16 @@ return {
       virt_text_pos = "eol", -- position of virtual text, see `:h nvim_buf_set_extmark()`
       all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
       virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
-      virt_text_win_col = nil,                -- position the virtual text at a fixed window column (starting from the first text column) ,
+      virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
       -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
     })
 
-    vim.fn.sign_define("DapBreakpoint",          { text = require("config.ui").icons.dap_breakpoint, texthl = "", linehl = "", numhl = "" })
-    vim.fn.sign_define("DapBreakpointCondition", { text = require("config.ui").icons.dap_breakpoint_condition, texthl = "", linehl = "", numhl = "" })
-    vim.fn.sign_define("DapLogPoint",            { text = require("config.ui").icons.dap_log_point, texthl = "", linehl = "", numhl = "" })
-    vim.fn.sign_define("DapStopped",             { text = require("config.ui").icons.dap_stopped, texthl = "", linehl = "", numhl = "" })
-    vim.fn.sign_define("DapBreakpointRejected",  { text = require("config.ui").icons.dap_breakpoint_rejected, texthl = "", linehl = "", numhl = "" })
+    vim.fn.sign_define("DapBreakpoint", { text = Icons.dap.breakpoint, texthl = "", linehl = "", numhl = "" })
+    vim.fn.sign_define("DapBreakpointCondition",
+      { text = Icons.dap.breakpoint_condition, texthl = "", linehl = "", numhl = "" })
+    vim.fn.sign_define("DapLogPoint", { text = Icons.dap.log_point, texthl = "", linehl = "", numhl = "" })
+    vim.fn.sign_define("DapStopped", { text = Icons.dap.stopped, texthl = "", linehl = "", numhl = "" })
+    vim.fn.sign_define("DapBreakpointRejected",
+      { text = Icons.dap.breakpoint_rejected, texthl = "", linehl = "", numhl = "" })
   end,
 }

@@ -3,15 +3,14 @@ return {
   event = "BufReadPre",
   config = {
     filetype_exclude = {
-      "starter",
-      "vimwiki",
+      "lazy",
+      "neotest-summary",
       "man",
       "gitmessengerpopup",
       "diagnosticpopup",
       "lspinfo",
-      "packer",
       "help",
-      "neotree",
+      "neo-tree",
       "NeogitStatus",
       "checkhealth",
       "TelescopePrompt",

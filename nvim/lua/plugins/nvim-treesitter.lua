@@ -1,6 +1,5 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-
   dependencies = {
     "andymass/vim-matchup",
     "RRethy/nvim-treesitter-endwise",
@@ -10,11 +9,10 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
     "JoosepAlviste/nvim-ts-context-commentstring",
   },
-
-  build = ":TSUpdate",
-
   event = "BufReadPre",
-
+  build = function()
+    require('nvim-treesitter.install').update({ with_sync = true })()
+  end,
   init = function()
     require("nvim-treesitter").define_modules({
       fold = {
@@ -27,10 +25,24 @@ return {
       },
     })
   end,
-
   config = function()
     require("nvim-treesitter.configs").setup({
-      ensure_installed = { "lua", "vim", "ruby", "html", "diff", "fish", "gitignore", "help", "json", "yaml", "markdown", "markdown_inline" },
+      ensure_installed = {
+        "diff",
+        "fish",
+        "gitcommit",
+        "gitignore",
+        "help",
+        "html",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "ruby",
+        "vim",
+        "yaml",
+      },
+      auto_install = true,
       playground = {
         enable = true,
         disable = {},
@@ -144,8 +156,4 @@ return {
       },
     })
   end,
-
-  build = function()
-    require('nvim-treesitter.install').update({ with_sync = true })()
-  end
 }

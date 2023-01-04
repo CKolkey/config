@@ -6,12 +6,11 @@ c >= 3
 
 HelloWorld
 
-def method_call?(a, b, c)
+def method_call?(_a, _b, _c)
   true
 end
 
 method_call? ? "win" : "cheer"
-
 
 [1, 2, 3].each { |n| puts n }
 

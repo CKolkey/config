@@ -1,7 +1,10 @@
 local M = {}
 
 local function cursor_has_moved(bufnr)
-  return not vim.deep_equal(vim.api.nvim_win_get_cursor(0), vim.api.nvim_buf_get_var(bufnr, "format_curpos"))
+  return not vim.deep_equal(
+    vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()),
+    vim.api.nvim_buf_get_var(bufnr, "format_curpos")
+  )
 end
 
 local function no_result(result)
@@ -22,10 +25,10 @@ end
 
 local function abort_formatting(result, bufnr)
   return no_result(result)
-    or not_in_normal_mode()
-    or cursor_has_moved(bufnr)
-    or new_changedtick_value(bufnr)
-    or in_snippet()
+      or not_in_normal_mode()
+      or cursor_has_moved(bufnr)
+      or new_changedtick_value(bufnr)
+      or in_snippet()
 end
 
 local function write_error(err, ctx)
@@ -37,19 +40,18 @@ end
 
 local function write_buffer()
   vim.b.saving_format = true
-  vim.cmd.update()
-  -- vim.cmd([[
-  --     try
-  --       undojoin | update
-  --     catch /E790/
-  --       update
-  --     endtry
-  --   ]])
+  vim.cmd([[
+       try
+         undojoin | update
+       catch /E790/
+         update
+       endtry
+     ]])
   vim.b.saving_format = false
 end
 
 local function full_document_result(result)
-  return #result == 1 and result[1].range.start.line == 1
+  return #result == 1 and result[1].range.start.line <= 1
 end
 
 -- Add or Remove lines if buffer length differs from result length
@@ -92,7 +94,7 @@ local function apply_result(result, ctx)
   local buf_info
 
   if full_document_result(result) then
-    text_edits, buf_info = build_range_edits(result)
+    text_edits, buf_info = build_range_edits(result, ctx.bufnr)
     adjust_buffer_size(buf_info.current_rows, buf_info.new_rows, ctx.bufnr)
   else
     text_edits = result
@@ -103,7 +105,6 @@ local function apply_result(result, ctx)
   if ctx.bufnr == vim.api.nvim_get_current_buf() then
     write_buffer()
     print("Formatted Buffer")
-    -- vim.notify("Formatted Buffer", "info", { hide_from_history = true, timeout = 1000 })
 
     -- So Autosave doesn't double save
     vim.api.nvim_buf_set_var(ctx.bufnr, "last_format_changedtick", vim.api.nvim_buf_get_changedtick(ctx.bufnr))
@@ -136,8 +137,8 @@ end
 
 function M.callback(client, bufnr)
   if not vim.b.saving_format then
-    vim.b.format_changedtick = vim.api.nvim_buf_get_changedtick(0)
-    vim.b.format_curpos = vim.api.nvim_win_get_cursor(0)
+    vim.b.format_changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
+    vim.b.format_curpos = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
     client.request("textDocument/formatting", vim.lsp.util.make_formatting_params({}), nil, bufnr)
   end
 end

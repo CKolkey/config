@@ -1,12 +1,12 @@
 return {
   url = "https://gitlab.com/yorickpeterse/nvim-pqf.git",
-  ft = "quickfix",
+  ft = "qf",
   config = {
     signs = {
-      error = require("config.ui").icons.error,
-      warning = require("config.ui").icons.warning,
-      info = require("config.ui").icons.info,
-      hint = require("config.ui").icons.hint,
+      error   = Icons.diagnostics.ERROR,
+      warning = Icons.diagnostics.WARNING,
+      info    = Icons.diagnostics.INFO,
+      hint    = Icons.diagnostics.HINT,
     }
   }
 }

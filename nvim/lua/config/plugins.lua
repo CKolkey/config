@@ -8,6 +8,10 @@ end
 vim.opt.runtimepath:prepend(install_path)
 
 require("lazy").setup("plugins", {
-  defaults = { lazy = false },
-  checker = { enabled = true },
+  checker = {
+    enabled = true
+  },
+  install = {
+    colorscheme = { "onedark", "habamax" }
+  }
 })

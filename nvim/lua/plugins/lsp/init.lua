@@ -1,8 +1,15 @@
+local solargraph_cmd = function()
+  if utils.file_in_cwd(".solargraph.yml") then
+    return { "bundle", "exec", "solargraph", "stdio" }
+  else
+    return { "solargraph", "stdio" }
+  end
+end
+
 local servers = {
   solargraph = {
-    cmd = { "solargraph", "stdio" },
     -- cmd = { "nc", "localhost", "7658" },
-    -- cmd = { "bundle", "exec", "solargraph", "stdio" },
+    cmd = solargraph_cmd()
   },
   tsserver = {},
   sumneko_lua = {
@@ -43,20 +50,38 @@ local function on_attach(client, bufnr)
     require("lsp_signature").on_attach({ fixpos = true, padding = " " }, bufnr)
   end
 
+  if client.supports_method("textDocument/formatting") then
+    vim.api.nvim_buf_set_var(bufnr, "format_with_lsp", true)
+  end
+
   local keymaps = {
     normal = {
-      ["<c-]"]  = { vim.lsp.buf.definition, { buffer = true } },
-      ["gr"]    = { require("telescope.builtin").lsp_references, { buffer = true } },
-      ["gi"]    = { require("telescope.builtin").lsp_implementations, { buffer = true } },
-      ["<c-s>"] = { require("telescope.builtin").lsp_workspace_symbols, { buffer = true } },
+      ["<c-]"]             = { vim.lsp.buf.definition, { buffer = true } },
+      ["gr"]               = { require("telescope.builtin").lsp_references, { buffer = true } },
+      ["gi"]               = { require("telescope.builtin").lsp_implementations, { buffer = true } },
+      ["<c-s>"]            = { require("telescope.builtin").lsp_workspace_symbols, { buffer = true } },
+      ["<leader><leader>"] = { function() require("plugins.lsp.formatting").callback(client, bufnr) end,
+        { buffer = true } }
     }
   }
 
   local autocmds = {
     lsp_diagnostics_hover = {
       desc = "Show diagnostics when you hold cursor",
-      { event = "CursorHold", callback = require("plugins.lsp.diagnostics").callback, buffer = bufnr }
+      {
+        event = "CursorHold",
+        callback = require("plugins.lsp.diagnostics").callback,
+        buffer = bufnr
+      }
     },
+    lsp_format_on_save = {
+      desc = "Format buffer on save",
+      {
+        event    = "BufWritePost",
+        callback = function() require("plugins.lsp.formatting").callback(client, bufnr) end,
+        buffer   = bufnr,
+      }
+    }
   }
 
   require("utils.keymaps").load(keymaps)

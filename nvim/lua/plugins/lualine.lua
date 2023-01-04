@@ -3,8 +3,6 @@ return {
   event = "VeryLazy",
   config = function()
     local lualine = require("lualine")
-    local colors = require("config.ui").colors
-    local icons = require("config.ui").icons
 
     local conditions = {
       buffer_not_empty = function()
@@ -29,8 +27,8 @@ return {
         component_separators = "",
         section_separators = "",
         theme = {
-          normal = { c = { fg = colors.fg, bg = colors.bg0 } },
-          inactive = { c = { fg = colors.fg, bg = colors.bg0 } },
+          normal = { c = { fg = Colors.fg, bg = Colors.bg0 } },
+          inactive = { c = { fg = Colors.fg, bg = Colors.bg0 } },
         },
       },
       sections = {
@@ -61,26 +59,26 @@ return {
 
     local function mode_color()
       local color_table = {
-        n = colors.green,
-        i = colors.blue,
-        v = colors.purple,
-        [""] = colors.purple,
-        V = colors.purple,
-        c = colors.orange,
-        no = colors.red,
-        s = colors.orange,
-        S = colors.orange,
-        [""] = colors.orange,
-        ic = colors.yellow,
-        R = colors.red,
-        Rv = colors.red,
-        cv = colors.red,
-        ce = colors.red,
-        r = colors.red,
-        rm = colors.red,
-        ["r?"] = colors.cyan,
-        ["!"] = colors.red,
-        t = colors.yellow,
+        n = Colors.green,
+        i = Colors.blue,
+        v = Colors.purple,
+        [""] = Colors.purple,
+        V = Colors.purple,
+        c = Colors.orange,
+        no = Colors.red,
+        s = Colors.orange,
+        S = Colors.orange,
+        [""] = Colors.orange,
+        ic = Colors.yellow,
+        R = Colors.red,
+        Rv = Colors.red,
+        cv = Colors.red,
+        ce = Colors.red,
+        r = Colors.red,
+        rm = Colors.red,
+        ["r?"] = Colors.cyan,
+        ["!"] = Colors.red,
+        t = Colors.yellow,
       }
 
       return { fg = color_table[vim.fn.mode()] }
@@ -132,14 +130,14 @@ return {
       "filename",
       cond = conditions.buffer_not_empty,
       path = 1,
-      color = { fg = colors.purple },
+      color = { fg = Colors.purple },
     })
 
     ins_left({ "location" })
 
-    ins_left({ "progress", color = { fg = colors.fg } })
+    ins_left({ "progress", color = { fg = Colors.fg } })
 
-    -- ins_left { visual_progress, color = { fg = colors.fg } }
+    -- ins_left { visual_progress, color = { fg = Colors.fg } }
 
     ins_left({
       "diagnostics",
@@ -147,17 +145,17 @@ return {
       sources = { "nvim_diagnostic" },
       always_visible = true,
       symbols = {
-        error = " " .. icons.error,
-        warn = " " .. icons.warning,
-        info = " " .. icons.info,
-        hint = " " .. icons.hint,
+        error = " " .. Icons.diagnostics.ERROR,
+        warn = " " .. Icons.diagnostics.WARNING,
+        info = " " .. Icons.diagnostics.INFO,
+        hint = " " .. Icons.diagnostics.HINT,
       },
       padding = { left = 1 },
       diagnostics_color = {
-        error = { fg = colors.red },
-        warn = { fg = colors.yellow },
-        info = { fg = colors.blue },
-        hint = { fg = colors.green },
+        error = { fg = Colors.red },
+        warn = { fg = Colors.yellow },
+        info = { fg = Colors.blue },
+        hint = { fg = Colors.green },
       },
     })
 
@@ -188,19 +186,23 @@ return {
         return msg
       end,
       icon = " ",
-      color = { fg = colors.purple },
+      color = { fg = Colors.purple },
       cond = conditions.buffer_not_empty,
     })
 
     ins_right({
       "diff",
       colored = true,
-      symbols = { added = icons.added, modified = icons.modified, removed = icons.removed },
+      symbols = {
+        added    = Icons.git.status_added,
+        modified = Icons.git.status_modified,
+        removed  = Icons.git.status_removed
+      },
       cond = conditions.buffer_not_empty,
       diff_color = {
-        added = { fg = colors.green },
-        modified = { fg = colors.blue },
-        removed = { fg = colors.red },
+        added = { fg = Colors.green },
+        modified = { fg = Colors.blue },
+        removed = { fg = Colors.red },
       },
       source = buffer_git_diff,
     })
@@ -208,7 +210,7 @@ return {
     ins_right({
       "branch",
       icon = " ",
-      color = { fg = colors.purple },
+      color = { fg = Colors.purple },
     })
 
     ins_right({

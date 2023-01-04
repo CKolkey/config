@@ -53,15 +53,18 @@ local mappings = {
 
     -- Git
     ["<leader>gg"] = ":Neogit kind=vsplit<cr>",
+
     ["<leader>gA"] = function() -- Add all files in CWD
       vim.cmd([[silent exe '!git add . -f']])
       vim.notify("*Staged:* `" .. vim.fn.fnamemodify(".", ":~") .. "/`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
+
     ["<leader>ga"] = function() -- Add current file
       vim.cmd([[silent exe '!git add % -f']])
       vim.notify("*Staged:* `" .. vim.fn.expand("%:.") .. "`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
-    ["<leader>gb"] = "<cmd>Gitsigns toggle_current_line_blame<cr>",
+
+    ["<leader>gb"] = ":Gitsigns toggle_current_line_blame<cr>",
 
     -- Don't yank empty lines into the main register
     ["dd"] = {

@@ -1,6 +1,6 @@
 return {
   "stevearc/qf_helper.nvim",
-  ft = "quickfix",
+  ft = "qf",
   cmd = { "QPrev", "QNext", "QFToggle" },
   config = {
     prefer_loclist = true,
