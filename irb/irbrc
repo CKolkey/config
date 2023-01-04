@@ -1,20 +1,15 @@
 # vim: ft=ruby
 
-IRB.conf[:USE_AUTOCOMPLETE] = false
+IRB.conf[:USE_AUTOCOMPLETE] = true
 
-# require useful gems
 gems = %w[
-  pry
   active_support
+  awesome_print
 ]
-gems.each do |gem_name|
-  require gem_name
-rescue Object => e
-  puts "Couldn't require gem #{gem_name}"
-end
 
-# require useful stdlibs
 libs = %w[
+  pathname
+  set
   base64
   benchmark
   fileutils
@@ -24,14 +19,20 @@ libs = %w[
   time
   uri
 ]
-libs.each do |lib_name|
-  require lib_name
+
+
+(gems + libs).each do |pkg|
+  require pkg
 rescue Object => e
-  puts "Couldn't require lib #{lib_name}"
+  puts "Couldn't require #{pkg}"
 end
 
-require_relative '../ruby/rails_prompt' if defined?(Rails)
-require_relative '../ruby/pry_helpers'  if defined?(Pry)
-require_relative '../ruby/clipboard_io'
-require_relative '../ruby/reline_fzf_patch'
-require_relative '../ruby/object_helpers'
+require_relative "../ruby/require_benchmarking"
+require_relative "../ruby/rails_prompt" if defined?(Rails)
+# require_relative '../ruby/pry_helpers'  if defined?(Pry)
+require_relative "../ruby/clipboard_io"
+require_relative "../ruby/reline_fzf_patch"
+require_relative "../ruby/object_helpers"
+
+
+AwesomePrint.irb! if defined?(AwesomePrint)
