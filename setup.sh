@@ -35,4 +35,6 @@ if [[ ! -d "${HOME}/.config" ]]; then
   mkdir ~/.config
   ln -s ~/.config/hammerspoon/ ~/.hammerspoon
   ln -s ~/.config/asdf/config ~/.asdfrc
+  ln -s ~/.config/rdbg/rdbgrc.rb ~/.rdbgrc.rb
+  ln -s ~/.config/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
 fi

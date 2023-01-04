@@ -1,0 +1,20 @@
+{
+  /*
+   * https://developer.apple.com/documentation/appkit/nsstandardkeybindingresponding
+   * https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+   * https://github.com/alexdavid/keybindings
+   * https://github.com/jrus/cocoa-text-system
+   */
+
+  "^f" = "moveWordForward:";
+  "^b" = "moveWordBackward:";
+  "^F" = "moveWordForwardAndModifySelection:";
+  "^B" = "moveWordBackwardAndModifySelection:";
+  "^w" = "deleteWordForward:";
+  "^h" = "deleteWordBackwards:";
+  "^u" = "undo:";
+  "^p" = "moveUp:";
+  "^n" = "moveDown:";
+  "^y" = "copy:";
+  "^p" = "paste:";
+}
