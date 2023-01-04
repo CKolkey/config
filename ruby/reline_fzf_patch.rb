@@ -1,19 +1,22 @@
 module RelineFzfPatch
   private
 
+  RELINE_PATCH_LINE_TERMINATOR = '\\'.freeze
+
   # When ending a session, Reline writes history separated by newlines.
   # This parses them back into a single-string containing newline-literals
   # for fzf to handle nicely, and for better syntax highlighting
   def __clean_reline_history
     buffer = ''
     Reline::HISTORY.each_with_object([]) do |line, history|
-      if line.end_with?('\\')
+      next if line.size < 2
+
+      if line.end_with?(RELINE_PATCH_LINE_TERMINATOR)
         buffer += line.sub(/\\$/, "\n")
       elsif buffer.empty?
         history << line
       else
-        buffer += line
-        history << buffer
+        history << (buffer + line)
         buffer = ''
       end
     end
