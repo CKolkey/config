@@ -3,32 +3,32 @@ return {
   dependencies = {
     "andymass/vim-matchup",
     "RRethy/nvim-treesitter-endwise",
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    -- "windwp/nvim-ts-autotag",
     "nvim-treesitter/playground",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-refactor",
     "nvim-treesitter/nvim-treesitter-textobjects",
-    "JoosepAlviste/nvim-ts-context-commentstring",
   },
-  event = "BufReadPre",
+  -- event = "BufReadPre",
   build = function()
     require('nvim-treesitter.install').update({ with_sync = true })()
   end,
-  init = function()
-    require("nvim-treesitter").define_modules({
-      fold = {
-        attach = function()
-          vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-          vim.opt.foldmethod = "expr"
-          vim.cmd.normal("zx") -- recompute folds
-        end,
-        detach = function() end,
-      },
-    })
-  end,
   config = function()
+    -- require("nvim-treesitter").define_modules({
+    --   fold = {
+    --     attach = function()
+    --       vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+    --       vim.opt.foldmethod = "expr"
+    --       vim.cmd.normal("zx") -- recompute folds
+    --     end,
+    --     detach = function() end,
+    --   },
+    -- })
+
     require("nvim-treesitter.configs").setup({
-      ensure_installed = {
-        "diff",
+      auto_install          = true,
+      ensure_installed      = {
         "fish",
         "gitcommit",
         "gitignore",
@@ -42,8 +42,7 @@ return {
         "vim",
         "yaml",
       },
-      auto_install = true,
-      playground = {
+      playground            = {
         enable = true,
         disable = {},
         updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
@@ -61,12 +60,20 @@ return {
           show_help = "?",
         },
       },
-      query_linter = {
+      query_linter          = {
         enable = true,
         use_virtual_text = true,
         lint_events = { "BufWrite", "CursorHold" },
       },
-      refactor = {
+      refactor              = {
+        navigation = {
+          enable = true,
+          keymaps = {
+            goto_definition = "<c-]>",
+            goto_next_usage = "]]",
+            goto_previous_usage = "[[",
+          },
+        },
         highlight_definitions = {
           enable = true,
           disable = { "help" },
@@ -75,85 +82,23 @@ return {
         smart_rename = {
           enable = true,
           keymaps = {
-            smart_rename = "grr",
+            smart_rename = "R",
           },
         },
-      },
-      autotag = {
-        enable = true,
       },
       context_commentstring = {
         enable = true,
         enable_autocmd = false,
-        config = {
+        opts = {
           ruby = "# %s",
         },
       },
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = {
-        enable = false,
-      },
-      matchup = {
-        enable = true,
-        disable = { "help" },
-      },
-      textobjects = {
-        select = {
-          enable = false,
-          lookahead = false,
-          keymaps = {
-            ["ib"] = "@block.inner",
-            ["ab"] = "@block.outer",
-            ["ica"] = "@call.inner",
-            ["aca"] = "@call.outer",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-            ["aco"] = "@comment.outer",
-            ["iif"] = "@conditional.inner",
-            ["aif"] = "@conditional.outer",
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            -- ["il"] = "@loop.inner",
-            -- ["al"] = "@loop.outer",
-            -- ["ipa"] = "@parameter.inner",
-            -- ["apa"] = "@parameter.outer"
-          },
-        },
-        swap = {
-          enable = true,
-          swap_next = { [">"] = "@swappable" },
-          swap_previous = { ["<"] = "@swappable" },
-        },
-        move = {
-          enable = true,
-          set_jumps = true,
-          goto_next_start = {
-            ["]m"] = "@function.outer",
-            ["]]"] = "@class.outer",
-          },
-          goto_next_end = {
-            ["]M"] = "@function.outer",
-            ["]["] = "@class.outer",
-          },
-          goto_previous_start = {
-            ["[m"] = "@function.outer",
-            ["[["] = "@class.outer",
-          },
-          goto_previous_end = {
-            ["[M"] = "@function.outer",
-            ["[]"] = "@class.outer",
-          },
-        },
-      },
-      endwise = {
-        enable = true,
-      },
-      fold = {
-        enable = true,
-      },
+      autotag               = { enable = false, },
+      matchup               = { enable = true, },
+      indent                = { enable = true, },
+      highlight             = { enable = true, },
+      endwise               = { enable = true, },
+      --      fold                  = { enable = true, },
     })
   end,
 }

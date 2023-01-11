@@ -45,21 +45,21 @@ M.snippets = {
 }
 
 M.autosnippets = {
-  ["<"] = {
-    description = "Auto Tag",
-    "<",
-    i(1),
-    ">",
-    i(0),
-    f(function(args)
-      local last_char = string.sub(args[1][1], #args[1][1])
-      if last_char == "/" then
-        return ""
-      else
-        return "</" .. utils.strip(args[1][1], { "%s+.*" }) .. ">"
-      end
-    end, 1),
-  },
+  -- ["<"] = {
+  --   description = "Auto Tag",
+  --   "<",
+  --   i(1),
+  --   ">",
+  --   i(0),
+  --   f(function(args)
+  --     local last_char = string.sub(args[1][1], #args[1][1])
+  --     if last_char == "/" then
+  --       return ""
+  --     else
+  --       return "</" .. utils.strip(args[1][1], { "%s+.*" }) .. ">"
+  --     end
+  --   end, 1),
+  -- },
 }
 
 return M

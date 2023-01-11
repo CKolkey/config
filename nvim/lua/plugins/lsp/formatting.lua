@@ -1,10 +1,24 @@
 local M = {}
 
 local function cursor_has_moved(bufnr)
-  return not vim.deep_equal(
-    vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win()),
-    vim.api.nvim_buf_get_var(bufnr, "format_curpos")
-  )
+  local old = vim.api.nvim_buf_get_var(bufnr, "format_curpos")
+  local now = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+
+  -- P({
+  --   old = vim.api.nvim_buf_get_var(bufnr, "format_curpos"),
+  --   new = { now[1], now[2] - 1 },
+  --   now = now,
+  --   a = vim.deep_equal(old, { now[1], now[2] - 1 }),
+  --   b = vim.deep_equal(old, now),
+  --   c = not (vim.deep_equal(old, { now[1], now[2] - 1 }) or vim.deep_equal(old, now))
+  -- })
+
+  return not (vim.deep_equal(old, { now[1], now[2] - 1 }) or vim.deep_equal(old, now))
+end
+
+local function not_at_tip_of_undo_tree()
+  local tree = vim.fn.undotree()
+  return tree.seq_last ~= tree.seq_cur
 end
 
 local function no_result(result)
@@ -24,11 +38,23 @@ local function in_snippet()
 end
 
 local function abort_formatting(result, bufnr)
-  return no_result(result)
-      or not_in_normal_mode()
-      or cursor_has_moved(bufnr)
-      or new_changedtick_value(bufnr)
-      or in_snippet()
+  local no_res       = no_result(result)
+  local wrong_mode   = not_in_normal_mode()
+  local undo_tree    = not_at_tip_of_undo_tree()
+  local cursor_moved = cursor_has_moved(bufnr)
+  local new_tick     = new_changedtick_value(bufnr)
+  local snippet      = in_snippet()
+
+  -- P({
+  --   no_result               = no_res,
+  --   not_in_normal_mode      = wrong_mode,
+  --   not_at_tip_of_undo_tree = undo_tree,
+  --   cursor_has_moved        = cursor_moved,
+  --   new_changedtick_value   = new_tick,
+  --   in_snippet              = snippet
+  -- })
+
+  return no_res or wrong_mode or undo_tree or cursor_moved or new_tick or snippet
 end
 
 local function write_error(err, ctx)
@@ -131,15 +157,11 @@ local function handler(err, result, ctx)
   vim.fn.winrestview(view)
 end
 
-function M.setup()
-  vim.lsp.handlers["textDocument/formatting"] = handler
-end
-
 function M.callback(client, bufnr)
   if not vim.b.saving_format then
     vim.b.format_changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
-    vim.b.format_curpos = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    client.request("textDocument/formatting", vim.lsp.util.make_formatting_params({}), nil, bufnr)
+    vim.b.format_curpos      = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+    client.request("textDocument/formatting", vim.lsp.util.make_formatting_params({}), handler, bufnr)
   end
 end
 

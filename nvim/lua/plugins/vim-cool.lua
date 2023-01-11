@@ -1,3 +1,0 @@
-return {
-  "romainl/vim-cool",
-}

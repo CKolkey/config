@@ -1,6 +1,5 @@
 local function rails_app()
-  if utils.file_in_cwd("Gemfile.lock") and utils.file_in_cwd("config/environment.rb")
-  then
+  if utils.file_in_cwd("Gemfile.lock") and utils.file_in_cwd("config/environment.rb") then
     return true
   else
     return false
@@ -13,22 +12,37 @@ end
 
 _G.Rails = {
   root = vim.loop.cwd() .. "/",
+  fn = {},
   projections = {
-    { pattern = "app/controllers([%w_/]*)/([%w_]+)%.rb$", template = "spec/requests%s/%s_spec.rb" },
-    { pattern = "app/([%w_/]+)/([%w_]+)%.rb$", template = "spec/%s/%s_spec.rb" },
-    { pattern = "spec/([%w_/]+)/([%w_]+)_spec%.rb$", template = "app/%s/%s.rb" },
+    {
+      pattern  = "app/controllers([%w_/]*)/([%w_]+)%.rb$",
+      template = "spec/requests%s/%s_spec.rb"
+    },
+    {
+      pattern  = "spec/requests([%w_/]*)/([%w_]+)_spec%.rb$",
+      template = "app/controllers%s/%s.rb"
+    },
+    {
+      pattern  = "app/([%w_/]+)/([%w_]+)%.rb$",
+      template = "spec/%s/%s_spec.rb"
+    },
+    {
+      pattern  = "spec/([%w_/]+)/([%w_]+)_spec%.rb$",
+      template = "app/%s/%s.rb"
+    },
   },
-  fn = {}
 }
 
-function Rails.fn.find_alternate_file()
+function Rails.fn.find_alternate()
   local current = vim.fn.expand("%:p")
   if not vim.startswith(current, Rails.root) then
     return
   end
 
-  current, _ = current:gsub("^" .. Rails.root, "")
   local alternate
+
+  current, _ = current:gsub("^" .. Rails.root, "")
+
   for _, projection in ipairs(Rails.projections) do
     if current:match(projection.pattern) then
       local path, file = current:match(projection.pattern)
@@ -81,7 +95,7 @@ function Rails.fn.build_spec_file(filepath, open)
 end
 
 function Rails.fn.edit_alternate_file(cmd)
-  local alternate = Rails.fn.find_alternate_file()
+  local alternate = Rails.fn.find_alternate()
   if vim.loop.fs_stat(alternate) then
     vim.cmd[cmd](alternate)
   else
@@ -91,9 +105,12 @@ end
 
 function Rails.fn.get_last_migration()
   local migrations = {}
-  for file in vim.fs.dir(Rails.root .. "db/migrate/", { depth = 0 }) do
-    table.insert(migrations, file)
+  for file, type in vim.fs.dir(Rails.root .. "db/migrate/") do
+    if type == "file" then
+      table.insert(migrations, file)
+    end
   end
+
   return "db/migrate/" .. migrations[#migrations]
 end
 
@@ -113,8 +130,21 @@ Rails.commands = {
   ["Eschema"] = {
     fn = function() vim.cmd.edit("db/schema.rb") end
   },
+  ["Egemfile"] = {
+    fn = function() vim.cmd.edit("Gemfile") end
+  },
+  ["Eroutes"] = {
+    fn = function() vim.cmd.edit("config/routes.rb") end
+  },
+  ["Eenvrc"] = {
+    fn = function() vim.cmd.edit(".envrc") end
+  },
 }
 
 for cmd, def in pairs(Rails.commands) do
   vim.api.nvim_create_user_command(cmd, def.fn, def.opts or {})
 end
+
+vim.defer_fn(function()
+  vim.notify("Loaded Rails", vim.log.levels.INFO, { icon = " " })
+end, 1000)

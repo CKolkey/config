@@ -1,6 +1,7 @@
 return {
   "anuvyklack/pretty-fold.nvim",
-  config = {
+  enabled = false,
+  opts = {
     sections = {
       left = {
         'content',

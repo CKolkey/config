@@ -1,4 +1,5 @@
 return {
+
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
   dependencies = {
@@ -7,19 +8,38 @@ return {
     "saadparwaiz1/cmp_luasnip",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
-    "hrsh7th/cmp-nvim-lsp",
+    { "hrsh7th/cmp-nvim-lsp", config = true },
     "hrsh7th/cmp-cmdline",
     "lukas-reineke/cmp-rg",
     "hrsh7th/cmp-nvim-lsp-document-symbol",
     "onsails/lspkind-nvim",
-    -- { "tzachar/cmp-fuzzy-path", dependencies = { "tzachar/fuzzy.nvim" } },
-    -- { "tzachar/cmp-fuzzy-buffer", dependencies = { "tzachar/fuzzy.nvim" } },
   },
 
   config = function()
-    local cmp = require("cmp")
+    local cmp     = require("cmp")
     local luasnip = require("luasnip")
     local compare = require("cmp.config.compare")
+
+    -- Add parens to functions returned from cmp
+    cmp.event:on(
+      'confirm_done',
+      require('nvim-autopairs.completion.cmp').on_confirm_done(
+        {
+          filetypes = {
+            ruby = false,
+            ["*"] = {
+              ["("] = {
+                kind = {
+                  cmp.lsp.CompletionItemKind.Function,
+                  cmp.lsp.CompletionItemKind.Method,
+                },
+                handler = require('nvim-autopairs.completion.handlers')["*"]
+              }
+            },
+          }
+        }
+      )
+    )
 
     cmp.setup({
       window = {
@@ -49,7 +69,6 @@ return {
           compare.score,
           compare.exact,
           compare.recently_used,
-          -- require("cmp_fuzzy_buffer.compare"),
           compare.offset,
           compare.kind,
           compare.sort_text,
@@ -81,11 +100,20 @@ return {
           i = function(fallback)
             if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-            elseif luasnip.jumpable(1) then
-              luasnip.jump(1)
+              -- elseif luasnip.jumpable(1) then
+              -- luasnip.jump(1)
             else
               fallback()
             end
+          end,
+        },
+
+        ["<c-e>"] = {
+          i = function(fallback)
+            if cmp.visible() then
+              cmp.close()
+            end
+            fallback()
           end,
         },
 
@@ -93,8 +121,8 @@ return {
           i = function(fallback)
             if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
+              -- elseif luasnip.jumpable(-1) then
+              -- luasnip.jump(-1)
             else
               fallback()
             end
@@ -123,12 +151,10 @@ return {
       }),
 
       sources = {
-        { name = "path", priority_weight = 100 },
-        { name = "luasnip", priority_weight = 90, max_item_count = 5 },
-        { name = "treesitter", priority_weight = 85, max_item_count = 5 },
-        { name = "nvim_lsp", priority_weight = 80, max_item_count = 10 },
-        -- { name = "fuzzy_buffer", priority_weight = 70, max_item_count = 5 },
-        -- { name = "cmp_tabnine", priority_weight = 65 },
+        { name = "path", priority_weight = 100, max_item_count = 3 },
+        { name = "luasnip", priority_weight = 90, max_item_count = 2 },
+        { name = "nvim_lsp", priority_weight = 85, max_item_count = 10 },
+        { name = "treesitter", priority_weight = 80, max_item_count = 5 },
         {
           name = "rg",
           priority_weight = 60,
@@ -143,9 +169,11 @@ return {
 
     cmp.setup.cmdline("/", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = {
-        -- { name = "fuzzy_buffer", max_item_count = 15 },
-      },
+      sources = cmp.config.sources({
+        { name = 'nvim_lsp_document_symbol' }
+      }, {
+        { name = 'buffer' }
+      })
     })
 
     cmp.setup.cmdline(":", {

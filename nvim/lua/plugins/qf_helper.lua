@@ -2,7 +2,7 @@ return {
   "stevearc/qf_helper.nvim",
   ft = "qf",
   cmd = { "QPrev", "QNext", "QFToggle" },
-  config = {
+  opts = {
     prefer_loclist = true,
     sort_lsp_diagnostics = true,
     quickfix = {

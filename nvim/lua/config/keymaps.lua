@@ -21,10 +21,10 @@ local mappings = {
 
   normal = {
     -- Buffer/Window Movements
-    ["<C-h>"] = ":KittyNavigateWest<cr>",
-    ["<C-j>"] = ":KittyNavigateSouth<cr>",
-    ["<C-k>"] = ":KittyNavigateNorth<cr>",
-    ["<C-l>"] = ":KittyNavigateEast<cr>",
+    ["<C-h>"] = Kitty.navigate.left,
+    ["<C-j>"] = Kitty.navigate.bottom,
+    ["<C-k>"] = Kitty.navigate.top,
+    ["<C-l>"] = Kitty.navigate.right,
 
     ["<leader>ha"] = require("harpoon.mark").add_file,
     ["<leader>hh"] = require("harpoon.ui").toggle_quick_menu,
@@ -51,20 +51,35 @@ local mappings = {
     ["cn"] = "*``cgn",
     ["cN"] = "*``cgN",
 
+    -- Swap with next ts_node of same parent
+    [">"] = function()
+      local ts_utils  = require("nvim-treesitter.ts_utils")
+      local node      = ts_utils.get_node_at_cursor()
+      local next_node = ts_utils.get_next_node(node, false, false)
+      ts_utils.swap_nodes(node, next_node, vim.api.nvim_get_current_buf(), true)
+    end,
+
+    -- Swap with previous ts_node of same parent
+    ["<"] = function()
+      local ts_utils  = require("nvim-treesitter.ts_utils")
+      local node      = ts_utils.get_node_at_cursor()
+      local prev_node = ts_utils.get_previous_node(node, false, false)
+      ts_utils.swap_nodes(node, prev_node, vim.api.nvim_get_current_buf(), true)
+    end,
+
     -- Git
     ["<leader>gg"] = ":Neogit kind=vsplit<cr>",
-
+    ["<leader>gh"] = ":DiffviewFileHistory %<cr>",
+    ["<leader>gd"] = ":DiffviewOpen<cr>",
+    ["<leader>gb"] = ":Gitsigns toggle_current_line_blame<cr>",
     ["<leader>gA"] = function() -- Add all files in CWD
       vim.cmd([[silent exe '!git add . -f']])
       vim.notify("*Staged:* `" .. vim.fn.fnamemodify(".", ":~") .. "/`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
-
     ["<leader>ga"] = function() -- Add current file
       vim.cmd([[silent exe '!git add % -f']])
       vim.notify("*Staged:* `" .. vim.fn.expand("%:.") .. "`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
-
-    ["<leader>gb"] = ":Gitsigns toggle_current_line_blame<cr>",
 
     -- Don't yank empty lines into the main register
     ["dd"] = {
@@ -96,8 +111,10 @@ local mappings = {
     ["<C-e>"] = "<C-w>c<cr>",
 
     -- Cycle buffers
-    ["<m-h>"] = ":BufferLineCyclePrev<cr>",
-    ["<m-l>"] = ":BufferLineCycleNext<cr>",
+    ["<m-h>"] = ":BufferLineCycleWindowlessPrev<cr>",
+    ["<m-l>"] = ":BufferLineCycleWindowlessNext<cr>",
+    -- ["<m-h>"] = ":BufferLineCyclePrev<cr>",
+    -- ["<m-l>"] = ":BufferLineCycleNext<cr>",
 
     -- buffer splits
     ["<leader>sh"] = { ":leftabove  vnew<CR>:bprev<CR>", { nowait = true } },
@@ -111,12 +128,10 @@ local mappings = {
     ["<cr>"] = "o<Esc>",
 
     -- Center Search Results
-    ["n"] = "nzzzv",
-    ["N"] = "Nzzzv",
-    ["*"] = "*zzzv",
-    ["#"] = "#zzzv",
-    ["{"] = "{k^zzzv",
-    ["}"] = "}j^zzzv",
+    -- ["n"] = "nzzzv",
+    -- ["N"] = "Nzzzv",
+    -- ["*"] = "*zzzv",
+    -- ["#"] = "#zzzv",
 
     -- rebinds semi-colon in normal mode.
     [";"] = { ":", { silent = false, nowait = true } },
@@ -156,11 +171,7 @@ local mappings = {
     ["<space>"] = ":LeapOmni<cr>",
 
     -- Fast Find and Replace, fallback since LSP might override 'R'
-    ["R"] = {
-      ":%s/\\<<C-r><C-w>\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left>",
-      { silent = false },
-    },
-    ["<leader>R"] = {
+    ["<leader>r"] = {
       ":%s/\\<<C-r><C-w>\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left><C-r><C-w>",
       { silent = false },
     },
@@ -199,17 +210,19 @@ local mappings = {
     -- test Runner
     ["<leader>m"] = function()
       require("neotest").run.run({
-        extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
+        -- TODO: Extract formatter to gem
+        -- extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
       })
-      require("neotest").summary.open()
+      -- require("neotest").summary.open()
     end,
 
     ["<leader>M"] = function()
       require("neotest").run.run({
         vim.fn.expand("%"),
-        extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
+        -- TODO: Extract formatter to gem
+        -- extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
       })
-      require("neotest").summary.open()
+      -- require("neotest").summary.open()
     end,
   },
 

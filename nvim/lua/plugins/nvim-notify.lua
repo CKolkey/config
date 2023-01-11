@@ -4,7 +4,7 @@ return {
   init = function()
     vim.notify = require("notify")
   end,
-  config = {
+  opts = {
     background_colour = "InactiveWindow",
     top_down = false,
     render = function(bufnr, notif, highlights)

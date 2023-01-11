@@ -1,7 +1,7 @@
 return {
   "akinsho/git-conflict.nvim",
   event = "BufReadPre",
-  config = {
+  opts = {
     disable_diagnostics = true,
   },
 }

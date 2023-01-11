@@ -30,11 +30,11 @@ local definitions = {
     { event = { "FocusGained", "BufEnter", "CursorHold" }, command = "silent! checktime %" },
   },
 
-  line_number_toggle = {
-    desc = "Toggles Relative/Absolute Line Numbering for Ins/Norm Modes",
-    { event = "InsertLeave", command = "setlocal relativenumber" },
-    { event = "InsertEnter", command = "setlocal norelativenumber" },
-  },
+  -- line_number_toggle = {
+  --   desc = "Toggles Relative/Absolute Line Numbering for Ins/Norm Modes",
+  --   { event = "InsertLeave", command = "setlocal relativenumber" },
+  --   { event = "InsertEnter", command = "setlocal norelativenumber" },
+  -- },
 
   highlight_yank = {
     desc = "Visually highlight yanked area",

@@ -4,7 +4,6 @@ end
 vim.g.did_load_motions_helper = true
 
 -- Yells at you if you spam h/l to navigate on a line
-local id
 for _, key in ipairs({ "h", "l" }) do
   local count = 0
 

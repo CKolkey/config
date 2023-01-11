@@ -1,7 +1,7 @@
 return {
   url = "https://gitlab.com/yorickpeterse/nvim-pqf.git",
   ft = "qf",
-  config = {
+  opts = {
     signs = {
       error   = Icons.diagnostics.ERROR,
       warning = Icons.diagnostics.WARNING,

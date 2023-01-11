@@ -1,6 +1,6 @@
 return {
   "gbprod/substitute.nvim",
-  config = {
+  opts = {
     on_substitute = function(_)
       vim.cmd("normal ==")
     end

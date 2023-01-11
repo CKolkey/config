@@ -16,7 +16,7 @@ function mini.ai()
   local ai = require("mini.ai")
   ai.setup({
     custom_textobjects = {
-      o = ai.gen_spec.treesitter({
+      b = ai.gen_spec.treesitter({
         a = { "@block.outer", "@conditional.outer", "@loop.outer" },
         i = { "@block.inner", "@conditional.inner", "@loop.inner" },
       }, {}),
@@ -88,7 +88,14 @@ end
 return {
   "echasnovski/mini.nvim",
   dependencies = {
-    "JoosepAlviste/nvim-ts-context-commentstring"
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+      init = function()
+        -- no need to load the plugin, since we only need its queries
+        require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
+      end,
+    },
   },
   event = "VeryLazy",
   config = function()

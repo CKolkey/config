@@ -1,7 +1,7 @@
 return {
   "lukas-reineke/indent-blankline.nvim",
   event = "BufReadPre",
-  config = {
+  opts = {
     filetype_exclude = {
       "lazy",
       "neotest-summary",

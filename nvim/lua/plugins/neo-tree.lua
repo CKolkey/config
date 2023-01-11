@@ -31,7 +31,7 @@ return {
       return options
     end
   end,
-  config = {
+  opts = {
     close_if_last_window      = false,
     hide_root_node            = true,
     popup_border_style        = { " ", " ", " ", " ", " ", "▔", " ", " " },

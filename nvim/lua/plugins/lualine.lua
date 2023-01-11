@@ -1,6 +1,6 @@
 return {
   "nvim-lualine/lualine.nvim",
-  event = "VeryLazy",
+  -- event = "VeryLazy",
   config = function()
     local lualine = require("lualine")
 
@@ -16,13 +16,14 @@ return {
       check_git_workspace = function()
         local filepath = vim.fn.expand("%:p:h")
         local gitdir = vim.fn.finddir(".git", filepath .. ";")
+
         return gitdir and #gitdir > 0 and #gitdir < #filepath
       end,
     }
 
     local config = {
       options = {
-        disabled_filetypes = { "neotree" },
+        disabled_filetypes = { "terminal" },
         globalstatus = true,
         component_separators = "",
         section_separators = "",
@@ -34,18 +35,18 @@ return {
       sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_y = {},
-        lualine_z = {},
         lualine_c = {},
         lualine_x = {},
+        lualine_y = {},
+        lualine_z = {},
       },
       inactive_sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_y = {},
-        lualine_z = {},
         lualine_c = {},
         lualine_x = {},
+        lualine_y = {},
+        lualine_z = {},
       },
     }
 
@@ -165,6 +166,12 @@ return {
     --     return '%='
     --   end,
     -- }
+    --
+    ins_right({
+      require("lazy.status").updates,
+      cond = require("lazy.status").has_updates,
+      color = { fg = Colors.orange },
+    })
 
     ins_right({
       function()

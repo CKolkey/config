@@ -1,7 +1,9 @@
 return {
   "akinsho/bufferline.nvim",
-  event = "VeryLazy",
-  config = {
+  dependencies = {
+    { "roobert/bufferline-cycle-windowless.nvim", opts = { default_enabled = true } }
+  },
+  opts = {
     options = {
       numbers = function(opts)
         local success, index = pcall(require("harpoon.mark").get_index_of, vim.api.nvim_buf_get_name(opts.id))

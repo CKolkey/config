@@ -1,0 +1,15 @@
+-- local filetype = vim.fn.expand("%"):match("[^/]+$"):match("[%w_]+%.(.+)%..+")
+-- local parser
+-- if filetype == "html" then
+--   parser = "embedded_template"
+-- elseif filetype == "yml" then
+--   parser = "yaml"
+-- else
+--   print("(eruby): Unknown Filetype for Parser")
+-- end
+--
+-- if parser then
+--   vim.defer_fn(function()
+--     vim.treesitter.start(vim.api.nvim_get_current_buf(), parser)
+--   end, 1001)
+-- end

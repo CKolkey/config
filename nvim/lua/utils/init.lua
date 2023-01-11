@@ -1,7 +1,7 @@
 _G.utils = {}
 
-Icons  = require("config.ui").icons
-Colors = require("config.ui").colors
+Icons  = require("config.ui.icons")
+Colors = require("config.ui.colors")
 
 -- Global deep-inspect function
 function P(...)
@@ -13,37 +13,32 @@ function utils.delete_buf()
   MiniBufremove.delete()
 end
 
--- @params: fn, time
--- function utils.debounce(fn, time)
---   local running = false
---
--- end
 -- utils.debounce = require("nvim-treesitter-playground.utils").debounce
 -- https://github.com/runiq/neovim-throttle-debounce/blob/main/defer.lua
 -- https://github.com/nvim-treesitter/playground/blob/master/lua/nvim-treesitter-playground/utils.lua
-local run = false
-function utils.debounce(fn, time)
-  local timer = vim.loop.new_timer()
-
-  return function(...)
-    timer:stop()
-    run = true
-
-    local args = { ... }
-    timer:start(
-      time,
-      0,
-      vim.schedule_wrap(function()
-        timer:stop()
-        timer:close()
-        if run then
-          run = false
-          fn(unpack(args))
-        end
-      end)
-    )
-  end
-end
+-- local run = false
+-- function utils.debounce(fn, time)
+--   local timer = vim.loop.new_timer()
+--
+--   return function(...)
+--     timer:stop()
+--     run = true
+--
+--     local args = { ... }
+--     timer:start(
+--       time,
+--       0,
+--       vim.schedule_wrap(function()
+--         timer:stop()
+--         timer:close()
+--         if run then
+--           run = false
+--           fn(unpack(args))
+--         end
+--       end)
+--     )
+--   end
+-- end
 
 function utils.file_in_cwd(filename)
   if vim.loop.fs_stat(vim.loop.cwd() .. "/" .. filename) then

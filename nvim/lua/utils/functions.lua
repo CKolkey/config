@@ -1,14 +1,27 @@
 local M = {}
 
-function M.format()
-  if not vim.opt.modifiable:get() then return end
-  if vim.b.format_with_lsp then return end
+local function at_tip_of_undo_tree()
+  local tree = vim.fn.undotree()
+  return tree.seq_last == tree.seq_cur
+end
 
-  local view = vim.fn.winsaveview()
-  vim.cmd([[silent! keeppatterns keepjumps %s/\s\+$//e]]) -- Strip Trailing Whitespace
-  vim.cmd([[silent! keeppatterns keepjumps %s#\($\n\s*\)\+\%$##]]) -- Strip Empty lines at EOF
-  vim.fn.winrestview(view)
-  vim.cmd([[undojoin | silent! update]])
+function M.format()
+  if vim.b.format_with_lsp then return end
+  if not at_tip_of_undo_tree() then return end
+
+  if vim.bo.modifiable and vim.bo.modified then
+    local view = vim.fn.winsaveview()
+    vim.cmd([[silent! keeppatterns keepjumps %s/\s\+$//e]]) -- Strip Trailing Whitespace
+    vim.cmd([[silent! keeppatterns keepjumps %s#\($\n\s*\)\+\%$##]]) -- Strip Empty lines at EOF
+    vim.fn.winrestview(view)
+    vim.cmd([[
+       try
+         undojoin | silent! update
+       catch /E790/
+         silent! update
+       endtry
+     ]])
+  end
 end
 
 -- Insert debugger breakpoint for filetype

@@ -19,28 +19,28 @@ end
 return {
   "TimUntersberger/neogit",
   cmd = "Neogit",
-  config = function()
-    require("neogit").setup({
-      disable_hint = true,
-      disable_commit_confirmation = false,
-      disable_insert_on_commit = false,
-      kind = "vsplit",
-      signs = {
-        section = { " ", " " },
-        item = { " ", " " },
+  opts = {
+    console_timeout = 5000,
+    auto_show_console = true,
+    disable_hint = true,
+    disable_commit_confirmation = true,
+    disable_insert_on_commit = false,
+    kind = "vsplit",
+    integrations = {
+      diffview = true,
+    },
+    signs = {
+      section = { Icons.misc.collapsed, Icons.misc.expanded },
+      item = { Icons.misc.collapsed, Icons.misc.expanded },
+    },
+    mappings = {
+      status = {
+        [" "] = "Toggle",
+        ["l"] = "Toggle",
+        ["h"] = "Toggle",
+        ["B"] = git_branches,
+        ["b"] = git_branches,
       },
-      integrations = {
-        -- diffview = true,
-      },
-      mappings = {
-        status = {
-          [" "] = "Toggle",
-          ["l"] = "Toggle",
-          ["h"] = "Toggle",
-          ["B"] = git_branches,
-          ["b"] = git_branches,
-        },
-      },
-    })
-  end,
+    }
+  }
 }

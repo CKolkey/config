@@ -3,5 +3,5 @@ return {
   dependencies = {
     "winston0410/cmd-parser.nvim",
   },
-  config = {}
+  opts = {}
 }
