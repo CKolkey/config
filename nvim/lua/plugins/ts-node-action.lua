@@ -3,7 +3,7 @@ return {
   dependencies = {
     "nvim-treesitter"
   },
-  lazy = true,
-  dev = true,
-  dir = vim.fn.expand("~") .. "/code/ts-node-action/",
+  opts         = {},
+  dev          = true,
+  dir          = vim.fn.expand("~") .. "/code/ts-node-action/",
 }

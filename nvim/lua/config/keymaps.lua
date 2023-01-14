@@ -7,8 +7,6 @@ local mappings = {
     -- Readline Style Bindings
     ["<C-e>"] = "<end>",
     ["<C-a>"] = "<home>",
-    ["<C-f>"] = "<c-right>",
-    ["<C-b>"] = "<c-left>",
 
     -- Remove Arrow Keys
     ["<Up>"] = "<Nop>",
@@ -42,9 +40,6 @@ local mappings = {
     ["K"] = require("ts-node-action").node_action,
 
     ["<leader>bb"] = { require("utils.functions").debugger, { expr = true } },
-
-    -- print from register on newline
-    -- ["P"] = "o<esc>p==^",
 
     -- http://www.kevinli.co/posts/2017-01-19-multiple-cursors-in-500-bytes-of-vimscript/
     -- Change current word (dot repeatable)

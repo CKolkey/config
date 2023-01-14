@@ -21,6 +21,7 @@ return {
       end),
 
       -- Inserts #{} inside ruby strings for interpolation
+      -- TODO: Don't do this if it's the first character in the string and the method is "describe"
       Rule("#", "{}", "ruby")
           :with_pair(ts_conds.is_ts_node({ 'string' }))
           :set_end_pair_length(1),

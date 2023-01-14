@@ -1,56 +1,50 @@
--- local function rails_app()
---   if utils.file_in_cwd("Gemfile.lock") and utils.file_in_cwd("config/environment.rb") then
+-- local function in_gem()
+--   -- Should check for .gemspec file instead
+--   if utils.file_in_cwd("lib/") and utils.file_in_cwd("spec/") then
 --     return true
 --   else
 --     return false
 --   end
 -- end
 --
--- if _G.Rails or not rails_app() then
+-- if _G.Gem or not in_gem() then
 --   return
 -- end
 --
--- _G.Rails = {
+-- _G.Gem = {
 --   root = vim.loop.cwd() .. "/",
 --   fn = {},
---   icon = " ",
---   name = "Rails",
+--   icon = " ",
+--   name = "Gem",
 --   projections = {
 --     {
---       pattern  = "app/controllers([%w_/]*)/([%w_]+)%.rb$",
---       template = "spec/requests%s/%s_spec.rb"
+--       pattern  = "lib/([%w_/]+)/([%w_]+)%.rb$",
+--       template = "spec/lib/%s/%s_spec.rb"
 --     },
 --     {
---       pattern  = "spec/requests([%w_/]*)/([%w_]+)_spec%.rb$",
---       template = "app/controllers%s/%s.rb"
---     },
---     {
---       pattern  = "app/([%w_/]+)/([%w_]+)%.rb$",
---       template = "spec/%s/%s_spec.rb"
---     },
---     {
---       pattern  = "spec/([%w_/]+)/([%w_]+)_spec%.rb$",
---       template = "app/%s/%s.rb"
+--       pattern  = "spec/lib/([%w_/]+)/([%w_]+)_spec%.rb$",
+--       template = "lib/%s/%s.rb"
 --     },
 --   },
 -- }
 --
--- function Rails.fn.notice(message, level)
+-- function Gem.fn.notice(message, level)
 --   level = level or vim.log.levels.INFO
---   vim.notify(message, level, { icon = Rails.icon })
+--   vim.notify(message, level, { icon = Gem.icon })
 -- end
 --
--- function Rails.fn.find_alternate()
+-- function Gem.fn.find_alternate()
 --   local current = vim.fn.expand("%:p")
---   if not vim.startswith(current, Rails.root) then
+--   if not vim.startswith(current, Gem.root) then
 --     return
 --   end
 --
 --   local alternate
 --
---   current, _ = current:gsub("^" .. Rails.root, "")
+--   current, _ = current:gsub("^" .. Gem.root, "")
 --
---   for _, projection in ipairs(Rails.projections) do
+--   for _, projection in ipairs(Gem.projections) do
+--     -- The patterns/templates are wrong. Gotta get a bit fancy with the folder thats the gem name, etc
 --     if current:match(projection.pattern) then
 --       local path, file = current:match(projection.pattern)
 --       alternate = string.format(projection.template, path, file)
@@ -61,7 +55,7 @@
 --   return alternate
 -- end
 --
--- function Rails.fn.build_spec_file(filepath, open)
+-- function Gem.fn.build_spec_file(filepath, open)
 --   local definitions = require("nvim-treesitter.locals").get_definitions_lookup_table(0)
 --
 --   local class
@@ -83,7 +77,7 @@
 --   local template = {
 --     "# frozen_string_literal: true",
 --     "",
---     'require "rails_helper"',
+--     'require "spec_helper"',
 --     "",
 --     "RSpec.describe " .. class .. " do",
 --   }
@@ -101,59 +95,42 @@
 --   vim.cmd.write()
 -- end
 --
--- function Rails.fn.edit_alternate_file(cmd)
---   local alternate = Rails.fn.find_alternate()
+-- function Gem.fn.edit_alternate_file(cmd)
+--   local alternate = Gem.fn.find_alternate()
 --   if not alternate then
---     print("Rails: Couldn't find alternate file")
+--     print("Gem: Couldn't find alternate file")
 --   end
 --
 --   if vim.loop.fs_stat(alternate) then
 --     vim.cmd[cmd](alternate)
 --   else
---     Rails.fn.build_spec_file(alternate, cmd)
+--     Gem.fn.build_spec_file(alternate, cmd)
 --   end
 -- end
 --
--- function Rails.fn.get_last_migration()
---   local migrations = {}
---   for file, type in vim.fs.dir(Rails.root .. "db/migrate/") do
---     if type == "file" then
---       table.insert(migrations, file)
---     end
---   end
---
---   return "db/migrate/" .. migrations[#migrations]
--- end
---
--- Rails.commands = {
+-- Gem.commands = {
 --   ["A"] = {
---     fn = function() Rails.fn.edit_alternate_file("edit") end,
+--     fn = function() Gem.fn.edit_alternate_file("edit") end,
 --   },
 --   ["AS"] = {
---     fn = function() Rails.fn.edit_alternate_file("split") end,
+--     fn = function() Gem.fn.edit_alternate_file("split") end,
 --   },
 --   ["AV"] = {
---     fn = function() Rails.fn.edit_alternate_file("vsplit") end,
---   },
---   ["Emigration"] = {
---     fn = function() vim.cmd.edit(Rails.fn.get_last_migration()) end
---   },
---   ["Eschema"] = {
---     fn = function() vim.cmd.edit("db/schema.rb") end
+--     fn = function() Gem.fn.edit_alternate_file("vsplit") end,
 --   },
 --   ["Egemfile"] = {
 --     fn = function() vim.cmd.edit("Gemfile") end
 --   },
---   ["Eroutes"] = {
---     fn = function() vim.cmd.edit("config/routes.rb") end
+--   ["Egemspec"] = {
+--     fn = function() vim.cmd.edit("Gemfile") end
 --   },
 --   ["Eenvrc"] = {
 --     fn = function() vim.cmd.edit(".envrc") end
 --   },
 -- }
 --
--- for cmd, def in pairs(Rails.commands) do
+-- for cmd, def in pairs(Gem.commands) do
 --   vim.api.nvim_create_user_command(cmd, def.fn, def.opts or {})
 -- end
 --
--- vim.defer_fn(function() Rails.fn.notice("Loaded " .. Rails.name) end, 1000)
+-- vim.defer_fn(function() Gem.fn.notice("Loaded " .. Gem.name) end, 1000)

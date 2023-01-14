@@ -10,7 +10,7 @@ return {
     { "zz", function() require('ufo').peekFoldedLinesUnderCursor() end, desc = "Peed folded lines under cursor" },
   },
   opts = {
-    open_fold_hl_timeout = 150,
+    open_fold_hl_timeout = 0,
     fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
       local newVirtText = {}
       local suffix      = ('(%d lines) '):format(endLnum - lnum)
@@ -40,7 +40,7 @@ return {
       end
 
       if curWidth < width then
-        suffix = (' '):rep(width - curWidth - sufWidth) .. suffix
+        suffix = "  " .. (' '):rep(width - curWidth - sufWidth - 3) .. suffix
       end
 
       table.insert(newVirtText, { suffix, 'Todo' })

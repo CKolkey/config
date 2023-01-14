@@ -45,7 +45,7 @@ function mini.indentscope()
     draw = {
       animation = indentscope.gen_animation.exponentialOut,
     },
-    symbol = "│",
+    symbol = vim.g.indent_blankline_char,
   })
 end
 
