@@ -3,7 +3,7 @@ if exists("g:loaded_terminal_drawer")
 endif
 let g:loaded_terminal_drawer = 1
 
-let g:terminal_drawer_height   = 0.25
+let g:terminal_drawer_height   = 0.40
 let g:terminal_drawer_position = "botright"
 let g:terminal_drawer = { 'win_id': v:null, 'buffer_id': v:null, 'terminal_job_id': v:null, 'state': 'closed' }
 
