@@ -5,7 +5,7 @@ let g:loaded_terminal_drawer = 1
 
 let g:terminal_drawer_height   = 0.40
 let g:terminal_drawer_position = "botright"
-let g:terminal_drawer = { 'win_id': v:null, 'buffer_id': v:null, 'terminal_job_id': v:null, 'state': 'closed' }
+let g:terminal_drawer          = { 'win_id': v:null, 'buffer_id': v:null, 'terminal_job_id': v:null, 'state': 'closed' }
 
 function! ToggleTerminalDrawer() abort
   if win_gotoid(g:terminal_drawer.win_id)
@@ -45,7 +45,7 @@ function! OpenTerminalDrawer() abort
     let g:terminal_drawer.buffer_id = bufnr("")
   endtry
 
-  setlocal nobuflisted listchars= nonumber norelativenumber nowrap winfixwidth noruler signcolumn=no noshowmode scrolloff=0 filetype=terminal
+  setlocal nobuflisted nowrap signcolumn=no scrolloff=0 filetype=terminal
   startinsert!
 
   let b:minicursorword_disable = v:true

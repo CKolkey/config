@@ -22,8 +22,26 @@ _G.StatusColumn = {
       vim.cmd.execute("'" .. lnum .. "fold" .. state .. "'")
     end
   },
+
   display = {
+    line = function()
+      if vim.v.wrap then
+        return ""
+      end
+
+      local lnum = tostring(vim.v.lnum)
+      if #lnum == 1 then -- Prevent adding a tenth line from bumping the size of the column
+        return " " .. lnum
+      else
+        return lnum
+      end
+    end,
+
     fold = function()
+      if vim.v.wrap then
+        return ""
+      end
+
       local lnum = vim.v.lnum
       local icon = "  "
 
@@ -45,50 +63,59 @@ _G.StatusColumn = {
 
       return icon
     end
-  }
-}
+  },
 
-local sign_column = {
-  [[%s]]
-}
+  sections = {
+    sign_column = {
+      [[%s]]
+    },
+    line_number = {
+      [[%=%{v:lua.StatusColumn.display.line()}]]
+    },
+    spacing     = {
+      [[ ]]
+    },
+    folds       = {
+      [[%#FoldColumn#]], -- HL
+      [[%@v:lua.StatusColumn.handler.fold@]],
+      [[%{v:lua.StatusColumn.display.fold()}]]
+    },
+    border      = {
+      [[%#StatusColumnBorder#]], -- HL
+      [[▐]],
+    },
+    padding     = {
+      [[%#StatusColumnBuffer#]], -- HL
+      [[ ]],
+    },
+  },
 
--- vim.v.wrap
-local line_number = {
-  [[%=%{v:wrap ? "" : v:lnum}]]
-}
+  build = function(tbl)
+    local statuscolumn = {}
 
-local spacing = {
-  [[ ]]
-}
-
-local folds = {
-  [[%#FoldColumn#]], -- HL
-  [[%@v:lua.StatusColumn.handler.fold@]],
-  [[%{v:lua.StatusColumn.display.fold()}]]
-}
-
-local border = {
-  [[%#StatusColumnBorder#]], -- HL
-  [[▐]],
-}
-
-local padding = {
-  [[%#StatusColumnBuffer#]], -- HL
-  [[ ]],
-}
-
-local function build_statuscolumn(tbl)
-  local statuscolumn = {}
-
-  for _, value in ipairs(tbl) do
-    if type(value) == "string" then
-      table.insert(statuscolumn, value)
-    elseif type(value) == "table" then
-      table.insert(statuscolumn, build_statuscolumn(value))
+    for _, value in ipairs(tbl) do
+      if type(value) == "string" then
+        table.insert(statuscolumn, value)
+      elseif type(value) == "table" then
+        table.insert(statuscolumn, StatusColumn.build(value))
+      end
     end
+
+    return table.concat(statuscolumn)
+  end,
+
+  set_window = function(value)
+    vim.defer_fn(function()
+      vim.api.nvim_win_set_option(vim.api.nvim_get_current_win(), "statuscolumn", value)
+    end, 1)
   end
+}
 
-  return table.concat(statuscolumn)
-end
-
-vim.opt.statuscolumn = build_statuscolumn({ sign_column, line_number, spacing, folds, border, padding })
+vim.opt.statuscolumn = StatusColumn.build({
+  StatusColumn.sections.sign_column,
+  StatusColumn.sections.line_number,
+  StatusColumn.sections.spacing,
+  StatusColumn.sections.folds,
+  StatusColumn.sections.border,
+  StatusColumn.sections.padding
+})
