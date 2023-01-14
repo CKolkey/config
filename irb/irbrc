@@ -20,7 +20,6 @@ libs = %w[
   uri
 ]
 
-
 (gems + libs).each do |pkg|
   require pkg
 rescue Object => e
@@ -33,6 +32,5 @@ require_relative "../ruby/rails_prompt" if defined?(Rails)
 require_relative "../ruby/clipboard_io"
 require_relative "../ruby/reline_fzf_patch"
 require_relative "../ruby/object_helpers"
-
 
 AwesomePrint.irb! if defined?(AwesomePrint)
