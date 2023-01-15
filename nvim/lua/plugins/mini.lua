@@ -114,6 +114,19 @@ return {
     end
   },
   {
+    "echasnovski/mini.move",
+    config = function()
+      require("mini.move").setup({
+        mappings = {
+          right      = "", -- noop
+          left       = "", -- noop
+          line_left  = "", -- noop
+          line_right = "", -- noop
+        }
+      })
+    end,
+  },
+  {
     "echasnovski/mini.bufremove",
     config = function()
       require("mini.bufremove").setup({})

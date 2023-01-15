@@ -11,10 +11,6 @@ local mappings = {
     -- Remove Arrow Keys
     ["<Up>"] = "<Nop>",
     ["<Down>"] = "<Nop>",
-
-    -- Move lines up/down
-    ["<a-k>"] = "<esc>:m .-2<cr>==gi",
-    ["<a-j>"] = "<esc>:m .+1<cr>==gi",
   },
 
   normal = {
@@ -93,10 +89,6 @@ local mappings = {
     ["<Right>"] = ":QFToggle!<cr>",
     ["<left>"] = ":silent cf tmp/quickfix.out<CR>:QFToggle!<cr>",
 
-    -- Move current line / block with Alt-j/k a la vscode.
-    ["<m-k>"] = ":move .-2<CR>==",
-    ["<m-j>"] = ":move .+1<CR>==",
-
     -- Dont lose position when joining lines
     ["J"] = "mzJ`z",
 
@@ -108,8 +100,6 @@ local mappings = {
     -- Cycle buffers
     ["<m-h>"] = ":BufferLineCycleWindowlessPrev<cr>",
     ["<m-l>"] = ":BufferLineCycleWindowlessNext<cr>",
-    -- ["<m-h>"] = ":BufferLineCyclePrev<cr>",
-    -- ["<m-l>"] = ":BufferLineCycleNext<cr>",
 
     -- buffer splits
     ["<leader>sh"] = { ":leftabove  vnew<CR>:bprev<CR>", { nowait = true } },
@@ -121,12 +111,6 @@ local mappings = {
 
     -- Enter inserts newline without leaving Normal mode
     ["<cr>"] = "o<Esc>",
-
-    -- Center Search Results
-    -- ["n"] = "nzzzv",
-    -- ["N"] = "Nzzzv",
-    -- ["*"] = "*zzzv",
-    -- ["#"] = "#zzzv",
 
     -- rebinds semi-colon in normal mode.
     [";"] = { ":", { silent = false, nowait = true } },
@@ -143,9 +127,6 @@ local mappings = {
       { expr = true }
     },
 
-    -- No-op ex mode
-    ["q:"] = "",
-
     -- vv selects the whole line
     ["vv"] = "V",
 
@@ -155,9 +136,6 @@ local mappings = {
     -- More sane vertical navigation
     ["k"] = "gk",
     ["j"] = "gj",
-
-    -- Edit filetype file
-    ["<leader>ft"] = ":EditFtFile<cr>",
 
     -- Format File
     ["<leader><leader>"] = require("utils.functions").format,
@@ -191,15 +169,15 @@ local mappings = {
     ["<F13>"] = "<c-i>",
 
     -- Telescope
-    ["<c-g>"] = require("telescope.builtin").live_grep,
-    ["<c-f>"] = require("telescope.builtin").find_files,
-    ["<c-b>"] = require("telescope.builtin").buffers,
-    ["<c-z>"] = require("telescope.builtin").help_tags,
+    ["<c-g>"]     = require("telescope.builtin").live_grep,
+    ["<c-f>"]     = require("telescope.builtin").find_files,
+    ["<c-b>"]     = require("telescope.builtin").buffers,
+    ["<c-z>"]     = require("telescope.builtin").help_tags,
     ["<c-space>"] = require("telescope.builtin").grep_string,
 
     -- Substitute
-    ["s"] = require("substitute").operator,
-    ["S"] = require("substitute").eol,
+    ["s"]  = require("substitute").operator,
+    ["S"]  = require("substitute").eol,
     ["ss"] = require("substitute").line,
 
     -- test Runner
@@ -249,10 +227,6 @@ local mappings = {
     ["cn"] = [[vy/\V<C-R>=escape(@",'/\')<CR><CR>``cgn]],
     ["cN"] = [[vy/\V<C-R>=escape(@",'/\')<CR><CR>``cgN]],
 
-    -- Move current line / block with Alt-j/k ala vscode.
-    ["<m-k>"] = ":move '<-2<CR>gv-gv",
-    ["<m-j>"] = ":move '>+1<CR>gv-gv",
-
     -- Paste Last Yank by default
     ["p"] = '"0p',
     ["P"] = '"0P',
@@ -272,10 +246,6 @@ local mappings = {
   },
 
   visual_block = {
-    -- Move current line / block with Alt-j/k ala vscode.
-    ["<m-k>"] = ":move '<-2<CR>gv-gv",
-    ["<m-j>"] = ":move '>+1<CR>gv-gv",
-
     ["s"] = require("substitute").visual,
   },
 
