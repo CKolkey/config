@@ -25,12 +25,13 @@ _G.StatusColumn = {
 
   display = {
     line = function()
+      local lnum = tostring(vim.v.lnum)
+
       if vim.v.wrap then
-        return ""
+        return " " .. string.rep(" ", #lnum)
       end
 
-      local lnum = tostring(vim.v.lnum)
-      if #lnum == 1 then -- Prevent adding a tenth line from bumping the size of the column
+      if #lnum == 1 then
         return " " .. lnum
       else
         return lnum

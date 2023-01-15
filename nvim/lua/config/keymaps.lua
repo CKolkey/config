@@ -115,6 +115,10 @@ local mappings = {
     -- rebinds semi-colon in normal mode.
     [";"] = { ":", { silent = false, nowait = true } },
 
+    -- Forward/backward on Changelist
+    ["<m-i>"] = "g,",
+    ["<m-o>"] = "g;",
+
     -- rebind 'i' to do a smart-indent if its a blank line
     ["i"] = {
       function()
@@ -223,14 +227,6 @@ local mappings = {
     ["<"] = "<gv",
     [">"] = ">gv",
 
-    -- Change current selection (dot repeatable)
-    ["cn"] = [[vy/\V<C-R>=escape(@",'/\')<CR><CR>``cgn]],
-    ["cN"] = [[vy/\V<C-R>=escape(@",'/\')<CR><CR>``cgN]],
-
-    -- Paste Last Yank by default
-    ["p"] = '"0p',
-    ["P"] = '"0P',
-
     -- More sane vertical navigation
     ["k"] = "gk",
     ["j"] = "gj",
@@ -250,12 +246,19 @@ local mappings = {
   },
 
   command = {
+    -- Feeds absolute filepath of current buffer into cmd
     ["%%"] = {
       function()
         vim.api.nvim_feedkeys(vim.fn.expand('%:p:h') .. '/', 'c', false)
       end,
       { expr = true },
     },
+
+    -- Basic autocomplete
+    ["("] = { "()<left>", { silent = false } },
+    ["["] = { "[]<left>", { silent = false } },
+    ['"'] = { [[""<left>]], { silent = false } },
+    ["'"] = { [[''<left>]], { silent = false } },
   },
 
   operator_pending = {
