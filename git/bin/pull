@@ -104,7 +104,7 @@ git remote prune $remote >/dev/null 2>&1 &
 if [ "$GIT_FRIENDLY_NO_BUNDLE" != "true" ]; then
   if cmd_exists 'bundle' && has_changed 'Gemfile'; then
     echo
-    echo '⚔  Bundling gems...'
+    echo '   Bundling gems...'
     change_dir 'Gemfile'
     bundle check >/dev/null 2>&1 || bundle install | rg "(Fetching|Installing|Bundle)"
     reset_dir
@@ -118,7 +118,7 @@ if [ "$GIT_FRIENDLY_NO_YARN" != "true" ]; then
     change_dir 'yarn.lock' || change_dir 'package.json'
     if cmd_exists 'yarn'; then
       echo
-      echo '⚔  Installing packages with yarn...'
+      echo '   Installing packages with yarn...'
       yarn install | rg -v "warning"
       yarned=1
     fi
@@ -132,7 +132,7 @@ if [ "$GIT_FRIENDLY_NO_PNPM" != "true" ]; then
     change_dir 'pnpm-lock.yaml' || change_dir 'package.json'
     if cmd_exists 'pnpm'; then
       echo
-      echo '⚔  Installing packages with pnpm...'
+      echo '   Installing packages with pnpm...'
       pnpm install
       yarned=1
     fi
@@ -144,7 +144,7 @@ fi
 if [ "$GIT_FRIENDLY_NO_NPM" != "true" ]; then
   if cmd_exists 'npm' && has_changed 'package.json' && [ $yarned -eq 0 ]; then
     echo
-    echo '⚔  Installing packages with npm...'
+    echo '   Installing packages with npm...'
     change_dir 'package.json'
     npm install
     reset_dir
@@ -157,7 +157,7 @@ if [ "$GIT_FRIENDLY_NO_COMPOSER" != "true" ]; then
     change_dir 'composer.lock'
     if cmd_exists 'composer' || (cmd_exists 'php' && [ -f ./composer.phar ]); then
       echo
-      echo '⚔  Installing Composer packages...'
+      echo '   Installing Composer packages...'
       [ -f ./composer.phar ] && php composer.phar install || composer install
     fi
     reset_dir

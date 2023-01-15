@@ -13,6 +13,6 @@
 --require spec_helper
 <% end %>
 
---require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
---format QuickfixFormatter
---out tmp/quickfix.out
+# --require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
+# --format QuickfixFormatter
+# --out tmp/quickfix.out
