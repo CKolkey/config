@@ -14,9 +14,6 @@ asdf_add_path
 source_homebrew
 
 if status is-interactive
-  # alias -s ls 'exa --color=always --icons --group-directories-first'
-  # alias -s la 'exa --color=always --icons --group-directories-first --all'
-  # alias -s ll 'exa --color=always --icons --group-directories-first --all --long'
   set -U FZF_COMPLETE 0
 
   auto_ls

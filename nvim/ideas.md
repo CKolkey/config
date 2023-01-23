@@ -7,7 +7,7 @@ IDEAS
 # Auto-renaming identifier nodes
   Essentially, I want to be able to do a `ciw` on an identifier node IFF its the definition, and have all other
   references to that node auto-update. This should also work in insert mode.
- 
+
   - https://github.com/nvim-treesitter/nvim-treesitter-refactor/blob/master/lua/nvim-treesitter-refactor/smart_rename.lua
   - https://github.com/windwp/nvim-ts-autotag/blob/main/lua/nvim-ts-autotag/internal.lua
 

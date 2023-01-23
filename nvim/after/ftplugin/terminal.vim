@@ -1,0 +1,1 @@
+autocmd WinEnter <buffer> startinsert

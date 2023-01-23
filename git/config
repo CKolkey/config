@@ -31,7 +31,6 @@
   po = push origin
   st = status -sb
   br = branch
-  b = checkout -b
   ci = commit
   fo = fetch origin
   dft = difftool

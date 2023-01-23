@@ -31,6 +31,3 @@ yabai -m config window_shadow                float
 
 yabai -m signal --add event=display_added action="ruby ${HOME}/.config/yabai/display_added.rb"
 yabai -m signal --add event=display_removed action="ruby ${HOME}/.config/yabai/display_added.rb"
-
-# https://github.com/koekeishiya/yabai/issues/1471
-yabai -m rule --add label=slack_huddle app="^Slack$" subrole!=AXStandardWindow border=off

@@ -31,7 +31,7 @@ return {
     },
     signs = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },
-      item    = { Icons.misc.collapsed, Icons.misc.expanded },
+      item = { Icons.misc.collapsed, Icons.misc.expanded },
     },
     mappings = {
       status = {

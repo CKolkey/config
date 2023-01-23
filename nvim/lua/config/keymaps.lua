@@ -35,6 +35,9 @@ local mappings = {
 
     ["K"] = require("ts-node-action").node_action,
 
+    -- Toggle Folds
+    ["<tab>"] = "za",
+
     ["<leader>bb"] = { require("utils.functions").debugger, { expr = true } },
 
     -- http://www.kevinli.co/posts/2017-01-19-multiple-cursors-in-500-bytes-of-vimscript/
@@ -93,7 +96,7 @@ local mappings = {
     ["J"] = "mzJ`z",
 
     -- Close split using c-q, close pane keeping split with c-w
-    ["<C-q>"] = ":call SmartCloseTerminal()<cr>:cclose<cr>:bd<cr>",
+    ["<C-q>"] = ":cclose<cr>:bd<cr>",
     ["<C-w>"] = { utils.delete_buf, { nowait = true } },
     ["<C-e>"] = "<C-w>c<cr>",
 
@@ -166,41 +169,62 @@ local mappings = {
     ["H"] = "^",
     ["L"] = "g_",
 
-    -- Toggle Terminal
-    ["``"] = ":call ToggleTerminalDrawer()<cr>",
-
     -- jump list next ('<f13>' is what c-i sends, thanks to Karabiner. This addresses collision with Tab)
     ["<F13>"] = "<c-i>",
 
     -- Telescope
-    ["<c-g>"]     = require("telescope.builtin").live_grep,
-    ["<c-f>"]     = require("telescope.builtin").find_files,
+    -- https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+    ["<c-g>"] = function()
+      require("telescope").extensions.live_grep_args.live_grep_args({ debounce = 100 })
+      -- Insert Quotes
+      local keys = vim.api.nvim_replace_termcodes([[""<left>]], true, false, true)
+      vim.api.nvim_feedkeys(keys, 'c', false)
+    end,
+
+    -- Live grep, starting with cursor word
+    ["<c-space>"] = function()
+      local word = vim.fn.expand("<cword>")
+      require("telescope").extensions.live_grep_args.live_grep_args({ debounce = 100 })
+      local keys = vim.api.nvim_replace_termcodes([[""<left>]] .. word, true, false, true)
+      vim.api.nvim_feedkeys(keys, 'c', false)
+    end,
+    -- ["<c-f>"]     = require("telescope.builtin").find_files,
+    ["<c-f>"]     = function() require('telescope').extensions.smart_open.smart_open({ cwd_only = true }) end,
     ["<c-b>"]     = require("telescope.builtin").buffers,
     ["<c-z>"]     = require("telescope.builtin").help_tags,
-    ["<c-space>"] = require("telescope.builtin").grep_string,
 
     -- Substitute
     ["s"]  = require("substitute").operator,
     ["S"]  = require("substitute").eol,
     ["ss"] = require("substitute").line,
 
+    ["<leader>m"] = {
+      function()
+        return ":TermExec cmd='rspec " ..
+            vim.fn.expand("%:.") ..
+            ":" .. vim.fn.line(".") .. " --format failures --out tmp/quickfix.out --format Fuubar'<cr>"
+      end,
+      { expr = true }
+    },
+    ["<leader>M"] = {
+      function() return ":1TermExec cmd='rspec " .. vim.fn.expand("%:.") .. "'<cr>" end,
+      { expr = true }
+    },
     -- test Runner
-    ["<leader>m"] = function()
-      require("neotest").run.run({
-        -- TODO: Extract formatter to gem
-        -- extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
-      })
-      -- require("neotest").summary.open()
-    end,
+    -- ["<leader>m"] = function()
+    --   require("neotest").run.run({
+    --     extra_args = "--format failures --out tmp/quickfix.out",
+    --   })
+    --   -- require("neotest").summary.open()
+    -- end,
 
-    ["<leader>M"] = function()
-      require("neotest").run.run({
-        vim.fn.expand("%"),
-        -- TODO: Extract formatter to gem
-        -- extra_args = "--require=support/formatters/quickfix_formatter.rb --format QuickfixFormatter --out tmp/quickfix.out",
-      })
-      -- require("neotest").summary.open()
-    end,
+    -- ["<leader>M"] = function()
+    --   require("neotest").run.run({
+    --     vim.fn.expand("%"),
+    --     extra_args = "--format failures --out tmp/quickfix.out",
+    --   })
+    --   -- require("neotest").summary.open()
+    -- end,
   },
 
   terminal = {
@@ -217,9 +241,6 @@ local mappings = {
     -- You are probably looking at the wrong buffer
     ["jj"] = { "<c-k>", { remap = true } },
     ["kk"] = { "<c-k>", { remap = true } },
-
-    -- Toggle Terminal
-    ["``"] = "<C-\\><C-n>:call ToggleTerminalDrawer()<CR>",
   },
 
   visual = {

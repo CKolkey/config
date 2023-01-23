@@ -1,1 +1,0 @@
-StatusColumn.set_window(" ")

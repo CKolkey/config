@@ -10,21 +10,41 @@ return {
     { "zz", function() require('ufo').peekFoldedLinesUnderCursor() end, desc = "Peed folded lines under cursor" },
   },
   opts = {
-    open_fold_hl_timeout = 0,
-    fold_virt_text_handler = function(text, lnum, endLnum, width)
-      local suffix = "  "
-      local lines  = ('(%d lines) '):format(endLnum - lnum)
+    open_fold_hl_timeout = 150,
+    fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+      local newVirtText = {}
+      local suffix      = ('(%d lines) '):format(endLnum - lnum)
+      local sufWidth    = vim.fn.strdisplaywidth(suffix)
+      local targetWidth = width - sufWidth
+      local curWidth    = 0
 
-      local cur_width = 0
-      for _, section in ipairs(text) do
-        cur_width = cur_width + vim.fn.strdisplaywidth(section[1])
+      for _, chunk in ipairs(virtText) do
+        local chunkText  = chunk[1]
+        local hlGroup    = chunk[2]
+        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+
+        if targetWidth > curWidth + chunkWidth then
+          table.insert(newVirtText, chunk)
+        else
+          chunkText = truncate(chunkText, targetWidth - curWidth)
+          table.insert(newVirtText, { chunkText, hlGroup })
+
+          chunkWidth = vim.fn.strdisplaywidth(chunkText)
+          if curWidth + chunkWidth < targetWidth then
+            suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+          end
+          break
+        end
+
+        curWidth = curWidth + chunkWidth
       end
 
-      suffix = suffix .. (' '):rep(width - cur_width - vim.fn.strdisplaywidth(lines) - 3)
+      if curWidth < width then
+        suffix = (' '):rep(width - curWidth - sufWidth) .. suffix
+      end
 
-      table.insert(text, { suffix, 'Comment' })
-      table.insert(text, { lines, 'Todo' })
-      return text
+      table.insert(newVirtText, { suffix, 'Todo' })
+      return newVirtText
     end,
     preview = {
       win_config = {

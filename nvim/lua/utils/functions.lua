@@ -28,8 +28,7 @@ end
 function M.debugger()
   local breakpoint = {
     javascript = "debugger",
-    ruby       = 'debugger(pre: "info")',
-    lua        = "P()"
+    ruby       = 'debugger(pre: "info")'
   }
 
   if breakpoint[vim.o.filetype] then

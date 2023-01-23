@@ -1,122 +1,50 @@
-if _G.StatusColumn then
+if vim.g.status_column_built then
   return
 end
+vim.g.status_column_built = true
+-- StatusColumn Fold-icon click handler
+vim.cmd([[
+  function! FoldColumn(minwid, clicks, button, mods)
+    let s:lnum = getmousepos().line
 
-_G.StatusColumn = {
-  handler = {
-    fold = function()
-      local lnum = vim.fn.getmousepos().line
-
-      -- Only lines with a mark should be clickable
-      if vim.fn.foldlevel(lnum) <= vim.fn.foldlevel(lnum - 1) then
-        return
-      end
-
-      local state
-      if vim.fn.foldclosed(lnum) == -1 then
-        state = "close"
+    if foldlevel(s:lnum) > foldlevel(s:lnum - 1) " Only lines with the marks should be clickable
+      if foldclosed(s:lnum) == -1
+        execute s:lnum . "foldclose"
       else
-        state = "open"
-      end
+        execute s:lnum . "foldopen"
+      endif
+    endif
+  endfunction
+]])
 
-      vim.cmd.execute("'" .. lnum .. "fold" .. state .. "'")
-    end
+local sections = {
+  [[ %=%{v:wrap ? "" : v:lnum} ]], -- Line Number
+  { -- Folds
+    [[%#FoldColumn#]], -- HL
+    [[%@FoldColumn@]], -- Click Handler
+    [[%{foldlevel(v:lnum) > 0 ? (foldlevel(v:lnum) > foldlevel(v:lnum - 1) ? (foldclosed(v:lnum) == -1 ? " " : " ") : "  ") : "  " }]]
   },
-
-  display = {
-    line = function()
-      local lnum = tostring(vim.v.lnum)
-
-      if vim.v.wrap then
-        return " " .. string.rep(" ", #lnum)
-      end
-
-      if #lnum == 1 then
-        return " " .. lnum
-      else
-        return lnum
-      end
-    end,
-
-    fold = function()
-      if vim.v.wrap then
-        return ""
-      end
-
-      local lnum = vim.v.lnum
-      local icon = "  "
-
-      -- Line isn't in folding range
-      if vim.fn.foldlevel(lnum) <= 0 then
-        return icon
-      end
-
-      -- Not the first line of folding range
-      if vim.fn.foldlevel(lnum) <= vim.fn.foldlevel(lnum - 1) then
-        return icon
-      end
-
-      if vim.fn.foldclosed(lnum) == -1 then
-        icon = Icons.misc.expanded
-      else
-        icon = Icons.misc.collapsed
-      end
-
-      return icon
-    end
-  },
-
-  sections = {
-    sign_column = {
-      [[%s]]
-    },
-    line_number = {
-      [[%=%{v:lua.StatusColumn.display.line()}]]
-    },
-    spacing     = {
-      [[ ]]
-    },
-    folds       = {
-      [[%#FoldColumn#]], -- HL
-      [[%@v:lua.StatusColumn.handler.fold@]],
-      [[%{v:lua.StatusColumn.display.fold()}]]
-    },
-    border      = {
-      [[%#StatusColumnBorder#]], -- HL
-      [[▐]],
-    },
-    padding     = {
-      [[%#StatusColumnBuffer#]], -- HL
-      [[ ]],
-    },
-  },
-
-  build = function(tbl)
-    local statuscolumn = {}
-
-    for _, value in ipairs(tbl) do
-      if type(value) == "string" then
-        table.insert(statuscolumn, value)
-      elseif type(value) == "table" then
-        table.insert(statuscolumn, StatusColumn.build(value))
-      end
-    end
-
-    return table.concat(statuscolumn)
-  end,
-
-  set_window = function(value)
-    vim.defer_fn(function()
-      vim.api.nvim_win_set_option(vim.api.nvim_get_current_win(), "statuscolumn", value)
-    end, 1)
-  end
+  [[%s]], -- Sign Column
+  -- { -- Border
+  --   [[%#StatusColumnBorder#]], -- HL
+  --   [[┃]],
+  -- },
 }
 
-vim.opt.statuscolumn = StatusColumn.build({
-  StatusColumn.sections.sign_column,
-  StatusColumn.sections.line_number,
-  StatusColumn.sections.spacing,
-  StatusColumn.sections.folds,
-  StatusColumn.sections.border,
-  StatusColumn.sections.padding
-})
+-- Have this in an autocmd on WinCreate (whatever is when you enter a window for the first time) to build the proper
+-- column based on the filetype, or buffertype, or something
+local function build_statuscolumn(tbl)
+  local statuscolumn = {}
+
+  for _, value in ipairs(tbl) do
+    if type(value) == "string" then
+      table.insert(statuscolumn, value)
+    elseif type(value) == "table" then
+      table.insert(statuscolumn, build_statuscolumn(value))
+    end
+  end
+
+  return table.concat(statuscolumn)
+end
+
+vim.opt.statuscolumn = build_statuscolumn(sections)
