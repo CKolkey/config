@@ -23,11 +23,9 @@ M.formatting_on_attach = function(client, bufnr)
 
     require("autocmds").define("LspFormatOnSave", {
       {
-        event = "BufWritePost",
-        buffer = bufnr,
-        callback = function()
-          format_callback(client, bufnr)
-        end,
+        event    = "BufWritePost",
+        buffer   = bufnr,
+        callback = function() format_callback(client, bufnr) end,
       },
     })
 
