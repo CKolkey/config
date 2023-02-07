@@ -33,7 +33,7 @@ module RequireBenchmarking
     end
   end
 
-  $__REQUIRED = GlobalRequires.new
+  $REQUIRED = GlobalRequires.new
 
   alias_method :__original_require, :require
   alias_method :__original_require_relative, :require_relative
@@ -41,7 +41,7 @@ module RequireBenchmarking
   def require(file_name)
     result = nil
     time   = Benchmark.realtime { result = __original_require(file_name) }.round(3)
-    $__REQUIRED.add(file_name, time)
+    $REQUIRED.add(file_name, time)
 
     result
   end
@@ -72,6 +72,8 @@ end
 
 if ENV["BENCHMARK"]
   require "benchmark"
+  require "pathname"
+
   Kernel.prepend(RequireBenchmarking)
 end
 # rubocop:enable Style/GlobalVars

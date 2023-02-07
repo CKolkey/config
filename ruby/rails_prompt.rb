@@ -1,17 +1,20 @@
 # https://docs.ruby-lang.org/en/master/IRB.html#module-IRB-label-Customizing+the+IRB+Prompt
-module RailsPrompt
-  def self.formatted_env
-    bold  = ->(text) { "\033[1m#{text}\033[0m" }
-    red   = ->(text) { "\e[31m#{text}\e[0m" }
-    green = ->(text) { "\e[32m#{text}\e[0m" }
-    blue  = ->(text) { "\e[34m#{text}\e[0m" }
 
+return unless defined?(Rails)
+
+module RailsPrompt
+  BOLD  = ->(text) { "\033[1m#{text}\033[0m" }
+  RED   = ->(text) { "\e[31m#{text}\e[0m" }
+  GREEN = ->(text) { "\e[32m#{text}\e[0m" }
+  BLUE  = ->(text) { "\e[34m#{text}\e[0m" }
+
+  def self.formatted_env
     if Rails.env.production?
-      bold.call(red.call(Rails.env.upcase))
+      BOLD.call(RED.call(Rails.env.upcase))
     elsif Rails.env.development?
-      green.call(Rails.env.upcase[0, 3])
+      GREEN.call(Rails.env.upcase[0, 3])
     else
-      blue.call(Rails.env.upcase)
+      BLUE.call(Rails.env.upcase)
     end
   end
 

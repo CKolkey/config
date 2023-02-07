@@ -1,3 +1,5 @@
+
+
 module ObjectHelpers
   # list methods which aren't in superclass
   def local_methods(obj = self)
@@ -5,7 +7,7 @@ module ObjectHelpers
   end
 
   def local_caller
-    caller.grep(File.expand_path('.'))
+    caller.grep(File.expand_path("."))
   end
 
   def locals(their_binding)
@@ -22,13 +24,9 @@ module ObjectHelpers
   def ri(method = nil)
     unless method && method =~ /^[A-Z]/ # if class isn't specified
       klass = is_a?(Class) ? name : self.class.name
-      method = [klass, method].compact.join('#')
+      method = [klass, method].compact.join("#")
     end
-    system 'ri', method.to_s
-  end
-
-  def q
-    exit 1
+    system "ri", method.to_s
   end
 end
 
