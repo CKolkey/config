@@ -1,7 +1,6 @@
 --order random
 
 <% begin %>
-<% $LOAD_PATH << File.dirname(File.dirname(`gem which fuubar`.strip)) %>
 <% require('fuubar') %>
 --format Fuubar
 --color
@@ -13,6 +12,8 @@
 --require spec_helper
 <% end %>
 
---require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
---format QuickfixFormatter
+# --require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
+# --format QuickfixFormatter
+
+--format failures
 --out tmp/quickfix.out
