@@ -128,3 +128,11 @@ function utils.table_wrap(obj)
     return { obj }
   end
 end
+
+function utils.print_and_clear(text, delay)
+  print(text)
+  vim.fn.timer_start(
+    delay,
+    function() vim.cmd.echo([['']]) end
+  )
+end

@@ -28,7 +28,8 @@ end
 function M.debugger()
   local breakpoint = {
     javascript = "debugger",
-    ruby       = 'debugger(pre: "info")'
+    ruby       = 'debugger(pre: "info")',
+    lua        = "P()"
   }
 
   if breakpoint[vim.o.filetype] then
@@ -40,29 +41,27 @@ end
 
 -- Simple auto-save function that can be called via Autocmd
 function M.update_buffer(event)
-  local excluded_filetypes = {
-    "NeogitCommitView",
-    "terminal",
-    "TelescopePromptNormal",
-    "neo-tree",
-  }
+  -- and not vim.tbl_contains(excluded_filetypes, buffer.filetype)
+  -- local excluded_filetypes = {
+  --   "NeogitCommitView",
+  -- }
 
-  local last_saved_at = vim.b.last_saved_at or 0
-  local now           = vim.fn.strftime("%s")
-  local message       = function() return "Saved " .. vim.fn.strftime("%H:%M:%S") end
+  local callback = function()
+    utils.print_and_clear("Saved " .. vim.fn.strftime("%H:%M:%S"), 1300)
+  end
 
-  if vim.bo[event.buf].modifiable
-      and vim.bo[event.buf].mod
-      and now ~= last_saved_at -- Save at most once per second
-      and not vim.tbl_contains(excluded_filetypes, vim.bo[event.buf].filetype)
-      and not (vim.b.saving_format or false)
-      and (vim.b.last_format_changedtick or 0) ~= vim.api.nvim_buf_get_changedtick(event.buf)
+  local writable_buffer = vim.bo[event.buf].modifiable and vim.bo[event.buf].buftype == ""
+  local file_exists     = vim.fn.expand("%") ~= ""
+  local saved_recently  = (vim.b.timestamp or 0) == vim.fn.localtime()
+  local being_formatted = (vim.b.saving_format or false)
+
+  if writable_buffer
+      and file_exists
+      and not saved_recently
+      and not being_formatted
   then
-    vim.cmd.update()
-    print(message())
-    vim.api.nvim_buf_set_var(event.buf, "last_saved_at", now)
-    vim.fn.timer_start(1300, function() vim.cmd([[echon '']]) end)
-    vim.cmd.doautocmd("BufWritePost")
+    vim.cmd("silent update")
+    callback()
   end
 end
 

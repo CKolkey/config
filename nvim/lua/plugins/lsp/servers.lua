@@ -10,12 +10,52 @@ local solargraph_cmd = function()
   end
 end
 
+local prettierd = {
+  formatCommand = "prettierd ${INPUT}",
+  formatStdin = true,
+  env = { string.format("PRETTIERD_DEFAULT_CONFIG=%s/.prettierrc.json", vim.fn.getcwd()) },
+}
+
 return {
+  rust_analyzer = {},
   solargraph = {
     -- cmd = { "nc", "127.0.0.1", "7658" },
-    cmd = solargraph_cmd()
+    cmd = solargraph_cmd(),
+    -- capabilities = {
+    --   textDocument = {
+    --     publishDiagnostics = false,
+    --     formatting = false
+    --   }
+    -- }
   },
-  tsserver = {},
+  -- ruby_ls = {
+  --   cmd = { "bundle", "exec", "ruby-lsp" },
+  --   init_options = {
+  --     enabledFeatures = {
+  --       -- "codeActions",
+  --       "diagnostics",
+  --       "documentHighlights",
+  --       -- "documentSymbols",
+  --       "formatting",
+  --       -- "inlayHint",
+  --       "foldingRange",
+  --       "semanticTokens",
+  --     }
+  --   },
+  -- },
+  efm = {
+    init_options = { documentFormatting = true },
+    filetypes = { "javascript" },
+    settings = {
+      rootMarkers = { ".git/" },
+      languages = {
+        javascript = { prettierd }
+      }
+    }
+  },
+  tsserver = {
+    disable_formatting = true
+  },
   sumneko_lua = {
     settings = {
       Lua = {

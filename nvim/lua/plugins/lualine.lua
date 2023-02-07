@@ -1,6 +1,5 @@
 return {
   "nvim-lualine/lualine.nvim",
-  -- event = "VeryLazy",
   config = function()
     local lualine = require("lualine")
 
@@ -95,17 +94,6 @@ return {
       end
     end
 
-    -- Cool, but kinda dumb too
-    -- local function visual_progress()
-    --   local chars = { "▔▔", "🭶🭶", "🭷🭷", "🭸🭸", "🭹🭹", "🭺🭺", "🭻🭻", "▁▁" }
-    --   local current_line = vim.fn.line(".")
-    --   local total_lines = vim.fn.line("$")
-    --   local line_ratio = current_line / total_lines
-    --   local index = math.ceil(line_ratio * #chars)
-    --
-    --   return chars[index]
-    -- end
-
     ins_left({
       function()
         return "▉"
@@ -166,7 +154,7 @@ return {
     --     return '%='
     --   end,
     -- }
-    --
+
     ins_right({
       require("lazy.status").updates,
       cond = require("lazy.status").has_updates,

@@ -30,12 +30,6 @@ local definitions = {
     { event = { "FocusGained", "BufEnter", "CursorHold" }, command = "silent! checktime %" },
   },
 
-  -- line_number_toggle = {
-  --   desc = "Toggles Relative/Absolute Line Numbering for Ins/Norm Modes",
-  --   { event = "InsertLeave", command = "setlocal relativenumber" },
-  --   { event = "InsertEnter", command = "setlocal norelativenumber" },
-  -- },
-
   highlight_yank = {
     desc = "Visually highlight yanked area",
     {
@@ -47,7 +41,7 @@ local definitions = {
   },
 
   auto_resize = {
-    desc = "Resizes buffers when screen area is resized",
+    desc = "Resizes windows when screen area is resized",
     { event = "VimResized", command = "tabdo wincmd =" },
   },
 
@@ -58,12 +52,46 @@ local definitions = {
 
   auto_update_buffer = {
     desc = "Updates the buffer, with conditions",
-    { event = "InsertLeave", callback = require("utils.functions").update_buffer, nested = true }
+    {
+      event = { "InsertLeave", },
+      callback = require("utils.functions").update_buffer,
+      nested = true
+    }
+  },
+
+  buffer_changed_timestamp = {
+    desc = "Adds timestamp to buffer variables. Used by autosave function to throttle.",
+    {
+      event = { "BufWritePost", "BufEnter" },
+      callback = function(event)
+        vim.api.nvim_buf_set_var(event.buf, "timestamp", vim.fn.localtime())
+      end
+    }
   },
 
   cursor_position = {
     desc = "Keeps cursor position when leaving insert mode, and reloads last position when opening buffer",
     { event = "InsertLeave", command = "normal `^" },
+  },
+
+  hide_cursorline_in_inactive_windows = {
+    desc = "Only show cursorline in active buffer",
+    {
+      event = { "WinLeave", "WinEnter" },
+      callback = function(event)
+        local win_id = vim.api.nvim_get_current_win()
+        vim.wo[win_id].cursorline = event.event == "WinEnter"
+      end
+    }
+  },
+
+  read_secrets_as_binary = {
+    desc = "Reads work secrets as binary files to prevent \n at EOL",
+    {
+      event = { "BufEnter" },
+      pattern = "*/pro-secrets/**",
+      command = "setl binary noeol",
+    }
   },
 }
 

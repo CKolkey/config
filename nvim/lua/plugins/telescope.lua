@@ -5,28 +5,32 @@ return {
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     "nvim-telescope/telescope-ui-select.nvim",
     "natecraddock/telescope-zf-native.nvim",
-    "nvim-lua/plenary.nvim"
+    "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope-live-grep-args.nvim",
+    "danielfalk/smart-open.nvim",
+    "kkharji/sqlite.lua",
   },
   config = function()
+    local actions = require("telescope.actions")
     require("telescope").setup({
       defaults = {
-        borderchars = {
-          prompt = { " ", " ", " ", " ", " ", " ", " ", " " },
+        borderchars       = {
+          prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
           results = { " ", " ", " ", " ", " ", " ", " ", " " },
           preview = { "", "", "", "▌", "▌", "", "", "▌" },
         },
-        layout_config = {
+        layout_config     = {
           prompt_position = "top",
-          preview_cutoff = 120,
-          height = 0.99,
-          width = 0.99,
+          preview_cutoff  = 120,
+          height          = 0.99,
+          width           = 0.99,
         },
-        show_line = false,
-        prompt_title = false,
-        results_title = false,
-        preview_title = false,
-        prompt_prefix = " ",
-        sorting_strategy = "ascending",
+        show_line         = false,
+        prompt_title      = false,
+        results_title     = false,
+        preview_title     = false,
+        prompt_prefix     = " ",
+        sorting_strategy  = "ascending",
         vimgrep_arguments = {
           "rg",
           "--color=never",
@@ -37,15 +41,15 @@ return {
           "--smart-case",
           "--trim",
         },
-        mappings = {
+        mappings          = {
           i = {
-            ["<esc>"] = require("telescope.actions").close,
-            ["<tab>"] = require("telescope.actions").toggle_selection + require("telescope.actions").move_selection_next,
-            ["<s-tab>"] = require("telescope.actions").toggle_selection + require("telescope.actions").move_selection_previous,
-            ["<c-n>"] = require("telescope.actions").move_selection_next,
-            ["<c-q>"] = require("telescope.actions").send_selected_to_qflist,
-            ["<cr>"] = function(prompt_bufnr)
-              local actions = require("telescope.actions")
+            ["<esc>"]   = actions.close,
+            ["<tab>"]   = actions.toggle_selection + actions.move_selection_next,
+            ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
+            ["<c-n>"]   = actions.move_selection_next,
+            ["<c-q>"]   = actions.send_selected_to_qflist,
+            ["<c-s>"]   = actions.file_split,
+            ["<cr>"]    = function(prompt_bufnr)
               local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
               if #picker:get_multi_selection() > 1 then
                 actions.send_selected_to_qflist(prompt_bufnr)
@@ -57,7 +61,6 @@ return {
                 actions.select_default(prompt_bufnr)
               end
             end,
-            ["<c-s>"] = require("telescope.actions").file_split,
           },
         },
       },
@@ -67,25 +70,34 @@ return {
         }
       },
       extensions = {
+        smart_open = {
+          match_algorithm = "fzf",
+        },
         ["ui-select"] = {
-          require("telescope.themes").get_dropdown(),
+          require("telescope.themes").get_dropdown({
+            borderchars = {
+              prompt = { " ", " ", " ", " ", " ", " ", " ", " " },
+              results = { " ", " ", " ", " ", " ", " ", " ", " " },
+              preview = { "", "", "", "▌", "▌", "", "", "▌" },
+            },
+          }),
         },
-        fzf = {
-          fuzzy = true,
-          override_generic_sorter = true,
-          override_file_sorter = false,
-          case_mode = "smart_case",
-        },
-        ["zf-native"] = {
-          file = {
-            enable = true,
-            highlight_results = true,
-            match_filename = true,
-          },
-          generic = {
-            enable = false,
-          },
-        },
+        -- fzf = {
+        --   fuzzy                   = true,
+        --   override_generic_sorter = true,
+        --   override_file_sorter    = false,
+        --   case_mode               = "smart_case",
+        -- },
+        -- ["zf-native"] = {
+        --   file = {
+        --     enable            = true,
+        --     highlight_results = true,
+        --     match_filename    = true,
+        --   },
+        --   generic = {
+        --     enable = false,
+        --   },
+        -- },
       },
     })
   end

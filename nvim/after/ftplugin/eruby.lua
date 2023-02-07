@@ -13,3 +13,12 @@
 --     vim.treesitter.start(vim.api.nvim_get_current_buf(), parser)
 --   end, 1001)
 -- end
+--
+-- (function()
+--   local buf = vim.api.nvim_get_current_buf()
+--   vim.schedule(
+--     function()
+--       vim.treesitter.start(buf, parser)
+--     end
+--   )
+-- end)()

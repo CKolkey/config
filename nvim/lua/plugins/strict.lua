@@ -1,0 +1,3 @@
+return {
+  "emileferreira/nvim-strict"
+}

@@ -1,4 +1,3 @@
 return {
-  "mrjones2014/smart-splits.nvim",
-  enable = false
+  "mrjones2014/smart-splits.nvim"
 }

@@ -14,4 +14,11 @@ M.snippets = {
   },
 }
 
+M.autosnippets = {
+  ["!="] = {
+    description = "Fix dumb lua not-equals operator",
+    "~="
+  }
+}
+
 return M

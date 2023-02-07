@@ -4,15 +4,6 @@ local function cursor_has_moved(bufnr)
   local old = vim.api.nvim_buf_get_var(bufnr, "format_curpos")
   local now = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
 
-  -- P({
-  --   old = vim.api.nvim_buf_get_var(bufnr, "format_curpos"),
-  --   new = { now[1], now[2] - 1 },
-  --   now = now,
-  --   a = vim.deep_equal(old, { now[1], now[2] - 1 }),
-  --   b = vim.deep_equal(old, now),
-  --   c = not (vim.deep_equal(old, { now[1], now[2] - 1 }) or vim.deep_equal(old, now))
-  -- })
-
   return not (vim.deep_equal(old, { now[1], now[2] - 1 }) or vim.deep_equal(old, now))
 end
 
@@ -126,14 +117,10 @@ local function apply_result(result, ctx)
     text_edits = result
   end
 
-  vim.lsp.util.apply_text_edits(text_edits, ctx.bufnr, vim.lsp.get_client_by_id(ctx.client_id).offset_encoding)
-
   if ctx.bufnr == vim.api.nvim_get_current_buf() then
+    vim.lsp.util.apply_text_edits(text_edits, ctx.bufnr, vim.lsp.get_client_by_id(ctx.client_id).offset_encoding)
     write_buffer()
-    print("Formatted Buffer")
-
-    -- So Autosave doesn't double save
-    vim.api.nvim_buf_set_var(ctx.bufnr, "last_format_changedtick", vim.api.nvim_buf_get_changedtick(ctx.bufnr))
+    utils.print_and_clear("Formatted Buffer " .. vim.fn.strftime("%H:%M:%S"), 1300)
   end
 end
 

@@ -1,21 +1,44 @@
-a == 1
-b > 2
-c >= 3
-
 "win" if true
 
-HelloWorld
+->(_a, _b) { "Hi" }
 
-def method_call?(_a, _b, _c)
-  true
+->(_a, _b) { stuff }
+
+Test.new.method_call? ? "win" : "cheer"
+
+def something
+  [2, 3, 1].each { |n| }
 end
 
-method_call? ? "win" : "cheer"
+def something
+  { "b" => { a: 1, b: 2, c: 3 }, "a" => [2, 3, 1], "c" => 3 + 2 }
+end
 
-[1, 2, 3].each { |n| puts n }
+tsNodeAction
 
-[1, 2, 3].each { puts "Yes" }
+def test(data: 1, thing: 2)
+  something
+end
 
-{ "a" => [1, 2, 3], "b" => { a: 1, b: 2, c: 3 }, "c" => 3 + 2 }
+def something
+  [[]]
+end
 
-ts_node_action
+class Something
+  def new(thing)
+    puts thing
+  end
+
+  def other(_thing)
+    [1, 2, 3]
+  end
+end
+
+if params[:glossary_slug].nil? || params[:glossary_slug] == "All"
+  nil
+else
+    params[:glossary_slug]
+end
+
+this
+

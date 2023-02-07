@@ -1,5 +1,6 @@
 return {
   "akinsho/bufferline.nvim",
+  enabled = true,
   dependencies = {
     { "roobert/bufferline-cycle-windowless.nvim", opts = { default_enabled = true } }
   },

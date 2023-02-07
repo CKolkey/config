@@ -1,0 +1,1 @@
+StatusColumn.set_window(" ")

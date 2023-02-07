@@ -15,10 +15,26 @@ local mappings = {
 
   normal = {
     -- Buffer/Window Movements
-    ["<C-h>"] = Kitty.navigate.left,
-    ["<C-j>"] = Kitty.navigate.bottom,
-    ["<C-k>"] = Kitty.navigate.top,
-    ["<C-l>"] = Kitty.navigate.right,
+    ["<C-h>"]     = Kitty.navigate.left,
+    ["<C-j>"]     = Kitty.navigate.bottom,
+    ["<C-k>"]     = Kitty.navigate.top,
+    ["<C-l>"]     = Kitty.navigate.right,
+    ["<M-left>"]  = Kitty.navigate.left,
+    ["<M-down>"]  = Kitty.navigate.bottom,
+    ["<M-up>"]    = Kitty.navigate.top,
+    ["<M-right>"] = Kitty.navigate.right,
+
+    -- Move windows around
+    ["<C-M-left>"]  = "<cmd>WinShift left<CR>",
+    ["<C-M-up>"]    = "<cmd>WinShift up<CR>",
+    ["<C-M-right>"] = "<cmd>WinShift right<CR>",
+    ["<C-M-down>"]  = "<cmd>WinShift down<CR>",
+
+    -- Resize Splits
+    ["<C-left>"]  = require('smart-splits').resize_left,
+    ["<C-up>"]    = require('smart-splits').resize_up,
+    ["<C-right>"] = require('smart-splits').resize_right,
+    ["<C-down>"]  = require('smart-splits').resize_down,
 
     ["<leader>ha"] = require("harpoon.mark").add_file,
     ["<leader>hh"] = require("harpoon.ui").toggle_quick_menu,
@@ -90,7 +106,16 @@ local mappings = {
     ["<Up>"] = ":QPrev<cr>",
     ["<Down>"] = ":QNext<cr>",
     ["<Right>"] = ":QFToggle!<cr>",
-    ["<left>"] = ":silent cf tmp/quickfix.out<CR>:QFToggle!<cr>",
+    ["<left>"] = function()
+      if utils.file_in_cwd("tmp/quickfix.out") then
+        vim.cmd("silent cf tmp/quickfix.out")
+        vim.cmd("QFSort")
+        vim.cmd("QFToggle!")
+        vim.notify("Loaded Quickfix", vim.log.levels.INFO)
+      else
+        vim.notify("No quickfix file", vim.log.levels.WARN)
+      end
+    end,
 
     -- Dont lose position when joining lines
     ["J"] = "mzJ`z",
@@ -152,7 +177,7 @@ local mappings = {
 
     -- Fast Find and Replace, fallback since LSP might override 'R'
     ["<leader>r"] = {
-      ":%s/\\<<C-r><C-w>\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left><C-r><C-w>",
+      "ma:%s/\\<<C-r><C-w>\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left><C-r><C-w>`a",
       { silent = false },
     },
 
@@ -192,39 +217,28 @@ local mappings = {
     ["<c-f>"]     = function() require('telescope').extensions.smart_open.smart_open({ cwd_only = true }) end,
     ["<c-b>"]     = require("telescope.builtin").buffers,
     ["<c-z>"]     = require("telescope.builtin").help_tags,
+    ["<m-r>"]     = "<cmd>Telescope resume<cr>",
 
     -- Substitute
     ["s"]  = require("substitute").operator,
     ["S"]  = require("substitute").eol,
     ["ss"] = require("substitute").line,
 
-    ["<leader>m"] = {
-      function()
-        return ":TermExec cmd='rspec " ..
-            vim.fn.expand("%:.") ..
-            ":" .. vim.fn.line(".") .. " --format failures --out tmp/quickfix.out --format Fuubar'<cr>"
-      end,
-      { expr = true }
-    },
-    ["<leader>M"] = {
-      function() return ":1TermExec cmd='rspec " .. vim.fn.expand("%:.") .. "'<cr>" end,
-      { expr = true }
-    },
-    -- test Runner
-    -- ["<leader>m"] = function()
-    --   require("neotest").run.run({
-    --     extra_args = "--format failures --out tmp/quickfix.out",
-    --   })
-    --   -- require("neotest").summary.open()
-    -- end,
+    ["<leader>m"] = function()
+      local cmd = "bundle exec rspec " .. vim.fn.expand("%:.") .. ":" .. vim.fn.line(".") ..
+          " --format failures --out tmp/quickfix.out --format Fuubar"
 
-    -- ["<leader>M"] = function()
-    --   require("neotest").run.run({
-    --     vim.fn.expand("%"),
-    --     extra_args = "--format failures --out tmp/quickfix.out",
-    --   })
-    --   -- require("neotest").summary.open()
-    -- end,
+      require("toggleterm").exec_command("cmd='" .. cmd .. "'")
+    end,
+
+    ["<leader>M"] = function()
+      local cmd = "bundle exec rspec " ..
+          vim.fn.expand("%:.") .. " --format failures --out tmp/quickfix.out --format Fuubar"
+      require("toggleterm").exec_command("cmd='" .. cmd .. "'")
+    end,
+
+    ["<leader>ts"] = ":ToggleTermSendVisualSelection<CR>",
+    ["<leader>tl"] = ":ToggleTermSendCurrentLine<CR>",
   },
 
   terminal = {

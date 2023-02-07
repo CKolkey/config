@@ -1,5 +1,6 @@
 return {
   "nvim-neotest/neotest",
+  enabled = false,
   lazy = true,
   dependencies = {
     "olimorris/neotest-rspec",

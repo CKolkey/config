@@ -19,6 +19,17 @@ end
 return {
   "TimUntersberger/neogit",
   cmd = "Neogit",
+  init = function()
+    require("neogit.lib.notification").create = function(message, level)
+      vim.notify(
+        message,
+        level or vim.log.levels.INFO,
+        { title = "Neogit", icon = " " }
+      )
+
+      return nil
+    end
+  end,
   opts = {
     console_timeout = 5000,
     auto_show_console = true,
@@ -31,7 +42,7 @@ return {
     },
     signs = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },
-      item = { Icons.misc.collapsed, Icons.misc.expanded },
+      item    = { Icons.misc.collapsed, Icons.misc.expanded },
     },
     mappings = {
       status = {

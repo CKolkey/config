@@ -4,28 +4,17 @@ return {
     "andymass/vim-matchup",
     "RRethy/nvim-treesitter-endwise",
     "JoosepAlviste/nvim-ts-context-commentstring",
-    -- "windwp/nvim-ts-autotag",
     "nvim-treesitter/playground",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-refactor",
     "nvim-treesitter/nvim-treesitter-textobjects",
+    -- "theHamsta/nvim-treesitter-pairs", -- TODO: Check this out
   },
   -- event = "BufReadPre",
   build = function()
     require('nvim-treesitter.install').update({ with_sync = true })()
   end,
   config = function()
-    -- require("nvim-treesitter").define_modules({
-    --   fold = {
-    --     attach = function()
-    --       vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-    --       vim.opt.foldmethod = "expr"
-    --       vim.cmd.normal("zx") -- recompute folds
-    --     end,
-    --     detach = function() end,
-    --   },
-    -- })
-
     require("nvim-treesitter.configs").setup({
       auto_install          = true,
       ensure_installed      = {
@@ -90,7 +79,10 @@ return {
         enable = true,
         enable_autocmd = false,
         opts = {
-          ruby = "# %s",
+          ruby = {
+            __default = "# %s",
+            body_statement = "<%# %s"
+          },
         },
       },
       autotag               = { enable = false, },
@@ -98,7 +90,6 @@ return {
       indent                = { enable = true, },
       highlight             = { enable = true, },
       endwise               = { enable = true, },
-      --      fold                  = { enable = true, },
     })
   end,
 }

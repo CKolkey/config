@@ -6,8 +6,13 @@ return {
   end,
   opts = {
     background_colour = "InactiveWindow",
-    top_down = false,
-    render = function(bufnr, notif, highlights)
+    top_down          = false,
+    icons             = Icons.diagnostics,
+    fps               = 60,
+    max_width         = function()
+      return math.floor(vim.o.columns * 0.75)
+    end,
+    render            = function(bufnr, notif, highlights)
       local message = {}
       for i, line in ipairs(notif.message) do
         if line ~= "" then
@@ -32,16 +37,11 @@ return {
 
       vim.api.nvim_buf_set_option(bufnr, "filetype", "markdown")
       vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, message)
-
       -- Color Icon and vertical bar
       local namespace = require("notify.render.base").namespace()
       for i = 0, #message - 1 do
         vim.api.nvim_buf_set_extmark(bufnr, namespace, i, 0, { hl_group = highlights.icon, end_col = 9, strict = false })
       end
     end,
-    max_width = function()
-      return math.floor(vim.o.columns * 0.75)
-    end,
-    icons = Icons.diagnostics
   }
 }

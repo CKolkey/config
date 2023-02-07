@@ -1,11 +1,7 @@
 return {
   fillchars   = {
-    foldopen  = "",
-    foldclose = "",
-    fold      = " ",
-    foldsep   = " ",
-    diff      = "╱",
-    eob       = " ",
+    diff = "╱",
+    eob  = " ",
   },
   listchars   = {
     space    = " ",
@@ -16,6 +12,10 @@ return {
     nbsp     = "␣",
   },
   diagnostics = {
+    " ",
+    " ",
+    " ",
+    " ",
     ERROR   = " ",
     WARNING = " ",
     INFO    = " ",
@@ -60,5 +60,6 @@ return {
     folder_closed = "",
     folder_open   = "",
     file          = "",
+    v_border      = "▐",
   },
 }

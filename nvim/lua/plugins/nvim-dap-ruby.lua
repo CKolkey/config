@@ -1,6 +1,6 @@
 return {
   "suketa/nvim-dap-ruby",
-  enable = false,
+  enabled = false,
   ft = "ruby",
   opts = {},
 }

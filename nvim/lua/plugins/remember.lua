@@ -1,5 +1,5 @@
 return {
   "ckolkey/remember.nvim",
-  enable = false,
+  enabled = true,
   opts = {}
 }
