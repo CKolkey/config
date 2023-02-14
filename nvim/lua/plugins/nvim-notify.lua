@@ -1,27 +1,18 @@
 return {
   "rcarriga/nvim-notify",
-  event = "VeryLazy",
   init = function()
     vim.notify = require("notify")
   end,
   opts = {
-    background_colour = "InactiveWindow",
-    top_down          = false,
-    icons             = Icons.diagnostics,
-    fps               = 60,
-    max_width         = function()
-      return math.floor(vim.o.columns * 0.75)
-    end,
-    render            = function(bufnr, notif, highlights)
+    timeout   = 2000,
+    -- background_colour = "InactiveWindow",
+    top_down  = false,
+    icons     = Icons.diagnostics,
+    max_width = function() return math.floor(vim.o.columns * 0.75) end,
+    render    = function(bufnr, notif, highlights)
       local message = {}
       for i, line in ipairs(notif.message) do
         if line ~= "" then
-          -- Replace heading with bold
-          if string.match(line, "^# ") then
-            line, _ = line:gsub("^# ", "*")
-            line = line .. "*"
-          end
-
           local prefix = ""
           if notif.icon then
             if i == 1 then
@@ -31,6 +22,8 @@ return {
             end
           end
 
+          -- Replace `heading` with `bold`
+          line, _ = line:gsub("^# (.+)", "*%1*")
           table.insert(message, prefix .. line)
         end
       end

@@ -273,9 +273,26 @@ require("utils.autocmds").load({
 
         table.insert(lines, { { "", "Comment" } })
 
-        local ns = vim.api.nvim_create_namespace("ror")
+        local ns = vim.api.nvim_create_namespace("rails_model_table_columns")
+        local first_line = vim.api.nvim_buf_get_lines(event.buf, 0, 1, false)[1]
+        local extmark_line
+
+        if first_line == "# frozen_string_literal: true" then
+          extmark_line = 1
+        else
+          extmark_line = 0
+        end
+
         vim.api.nvim_buf_clear_namespace(event.buf, ns, 0, -1)
-        vim.api.nvim_buf_set_extmark(event.buf, ns, 1, 0, { virt_lines = lines })
+        vim.api.nvim_buf_set_extmark(event.buf, ns, extmark_line, 0, { virt_lines = lines, virt_lines_above = true })
+
+        -- If virt lines are above line 0, the window won't show them until you scroll up, so this does that for you.
+        -- Might be some bugs here.
+        if extmark_line == 0 then
+          vim.defer_fn(function()
+            vim.fn.winrestview({ topfill = #lines })
+          end, 10)
+        end
       end
     }
   }

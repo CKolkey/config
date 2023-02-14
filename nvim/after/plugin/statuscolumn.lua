@@ -4,13 +4,6 @@ end
 
 _G.StatusColumn = {}
 
-StatusColumn.set_window = function(value, defer, win)
-  vim.defer_fn(function()
-    win = win or vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_option(win, "statuscolumn", value)
-  end, defer or 1)
-end
-
 local function is_virtual_line()
   return vim.v.virtnum < 0
 end
@@ -23,12 +16,23 @@ local function not_in_fold_range()
   return vim.fn.foldlevel(vim.v.lnum) <= 0
 end
 
-local function not_fold_start()
-  return vim.fn.foldlevel(vim.v.lnum) <= vim.fn.foldlevel(vim.v.lnum - 1)
+local function not_fold_start(line)
+  line = line or vim.v.lnum
+  return vim.fn.foldlevel(line) <= vim.fn.foldlevel(line - 1)
 end
 
-local function fold_opened()
-  return vim.fn.foldclosed(vim.v.lnum) == -1
+local function fold_opened(line)
+  return vim.fn.foldclosed(line or vim.v.lnum) == -1
+end
+
+local function git_sign()
+  return vim.fn.sign_getplaced(
+    vim.api.nvim_get_current_buf(),
+    {
+      group = "gitsigns_vimfn_signs_",
+      lnum = vim.v.lnum
+    }
+  )[1].signs[1]
 end
 
 local function line_number()
@@ -59,18 +63,19 @@ local function fold_icon()
   return icon
 end
 
+local highlights_cache = {}
+
 local function border_highlight()
-  local line_highlight = function(sign)
-    if sign.name:find("GitSign") then
-      return vim.fn.sign_getdefined(sign.name)[1].texthl
+  local sign = git_sign()
+  if sign then
+    if not highlights_cache[sign.name] then
+      highlights_cache[sign.name] = vim.fn.sign_getdefined(sign.name)[1].texthl
     end
+
+    return highlights_cache[sign.name]
+  else
+    return "StatusColumnBorder"
   end
-
-  local buf       = vim.api.nvim_get_current_buf()
-  local signs     = vim.fn.sign_getplaced(buf, { group = "*", lnum = vim.v.lnum })[1].signs
-  local highlight = vim.tbl_map(line_highlight, signs)[1]
-
-  return highlight or "StatusColumnBorder"
 end
 
 local number = function()
@@ -78,7 +83,7 @@ local number = function()
 end
 
 local fold = function()
-  return { "%#FoldColumn#", "%@v:lua.StatusColumn.handler.fold@", fold_icon() }
+  return { "%#FoldColumn#", "%@v:lua.StatusColumn.fold_click_handler@", fold_icon() }
 end
 
 local border = function()
@@ -97,4 +102,19 @@ StatusColumn.build = function()
   return table.concat(vim.tbl_flatten({ number(), fold(), border(), padding() }))
 end
 
-vim.opt.statuscolumn = [[%!v:lua.StatusColumn.build()]]
+StatusColumn.fold_click_handler = function()
+  local line = vim.fn.getmousepos().line
+
+  if not_fold_start(line) then
+    return
+  end
+
+  vim.cmd.execute("'" .. line .. "fold" .. (fold_opened(line) and "close" or "open") .. "'")
+end
+
+StatusColumn.set_window = function(value, defer, win)
+  vim.defer_fn(function()
+    win = win or vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_option(win, "statuscolumn", value)
+  end, defer or 1)
+end

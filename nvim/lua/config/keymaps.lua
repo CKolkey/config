@@ -15,14 +15,14 @@ local mappings = {
 
   normal = {
     -- Buffer/Window Movements
-    ["<C-h>"]     = Kitty.navigate.left,
-    ["<C-j>"]     = Kitty.navigate.bottom,
-    ["<C-k>"]     = Kitty.navigate.top,
-    ["<C-l>"]     = Kitty.navigate.right,
-    ["<M-left>"]  = Kitty.navigate.left,
-    ["<M-down>"]  = Kitty.navigate.bottom,
-    ["<M-up>"]    = Kitty.navigate.top,
-    ["<M-right>"] = Kitty.navigate.right,
+    ["<C-h>"] = Kitty.navigate.left,
+    ["<C-j>"] = Kitty.navigate.bottom,
+    ["<C-k>"] = Kitty.navigate.top,
+    ["<C-l>"] = Kitty.navigate.right,
+    -- ["<M-left>"]  = Kitty.navigate.left,
+    -- ["<M-down>"]  = Kitty.navigate.bottom,
+    -- ["<M-up>"]    = Kitty.navigate.top,
+    -- ["<M-right>"] = Kitty.navigate.right,
 
     -- Move windows around
     ["<C-M-left>"]  = "<cmd>WinShift left<CR>",
@@ -78,16 +78,17 @@ local mappings = {
     end,
 
     -- Git
-    ["<leader>gg"] = ":Neogit kind=vsplit<cr>",
+    ["<leader>gg"] = ":Neogit<cr>",
     ["<leader>gh"] = ":DiffviewFileHistory %<cr>",
     ["<leader>gd"] = ":DiffviewOpen<cr>",
+    ["<leader>gw"] = ":Gitsigns toggle_word_diff<cr>",
     ["<leader>gb"] = ":Gitsigns toggle_current_line_blame<cr>",
-    ["<leader>gA"] = function() -- Add all files in CWD
-      vim.cmd([[silent exe '!git add . -f']])
-      vim.notify("*Staged:* `" .. vim.fn.fnamemodify(".", ":~") .. "/`", vim.log.levels.INFO, { icon = Icons.git.added })
+    ["<leader>gA"] = function()
+      vim.cmd([[Gitsigns stage_buffer]])
+      vim.notify("*Staged:* `" .. vim.fn.expand("%:.") .. "`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
-    ["<leader>ga"] = function() -- Add current file
-      vim.cmd([[silent exe '!git add % -f']])
+    ["<leader>ga"] = function()
+      vim.cmd([[Gitsigns stage_hunk]])
       vim.notify("*Staged:* `" .. vim.fn.expand("%:.") .. "`", vim.log.levels.INFO, { icon = Icons.git.added })
     end,
 
@@ -117,8 +118,20 @@ local mappings = {
       end
     end,
 
-    -- Dont lose position when joining lines
-    ["J"] = "mzJ`z",
+    -- Retain cursor position when joining lines, and remove spaces from method chains
+    ["J"] = function()
+      vim.cmd("normal! mzJ")
+
+      local col     = vim.fn.col(".")
+      local context = string.sub(vim.fn.getline("."), col - 1, col + 1)
+      if context == ") ." or context == ") :" or context:match("%( .") then
+        vim.cmd("undojoin | normal! x")
+      elseif context == ",)" then
+        vim.cmd("undojoin | normal! hx")
+      end
+
+      vim.cmd("normal! `z")
+    end,
 
     -- Close split using c-q, close pane keeping split with c-w
     ["<C-q>"] = ":cclose<cr>:bd<cr>",
@@ -177,7 +190,7 @@ local mappings = {
 
     -- Fast Find and Replace, fallback since LSP might override 'R'
     ["<leader>r"] = {
-      "ma:%s/\\<<C-r><C-w>\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left><C-r><C-w>`a",
+      "mz:%s/\\<<C-r><C-w>\\>//g | silent update | normal! `z<S-Left><S-Left><S-Left><S-Left><S-Left><S-Left><Left><Left><Left><C-r><C-w>",
       { silent = false },
     },
 

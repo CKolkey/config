@@ -25,6 +25,8 @@ function M.format()
 end
 
 -- Insert debugger breakpoint for filetype
+-- TODO: For ruby, we should be aware if we're in the middle of a method chain
+--       and use `.tap { |o| debugger(pre: "info"); o }`
 function M.debugger()
   local breakpoint = {
     javascript = "debugger",

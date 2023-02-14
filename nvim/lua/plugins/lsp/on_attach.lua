@@ -19,7 +19,7 @@ return function(options)
     end
 
     if client.supports_method("workspace/symbol") then
-      keymaps.normal["gs"] = { telescope.lsp_workspace_symbols, opts }
+      keymaps.normal["<c-s>"] = { telescope.lsp_workspace_symbols, opts }
     end
 
     if client.supports_method("textDocument/publishDiagnostics")

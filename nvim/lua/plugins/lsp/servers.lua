@@ -56,7 +56,7 @@ return {
   tsserver = {
     disable_formatting = true
   },
-  sumneko_lua = {
+  lua_ls = {
     settings = {
       Lua = {
         format = {
