@@ -7,7 +7,7 @@
 Test.new.method_call? ? "win" : "cheer"
 
 def something
-  [2, 3, 1].each { |n| }
+  [2, 3, 1].each { |_n| 1 }
 end
 
 def something
@@ -27,6 +27,7 @@ end
 class Something
   def new(thing)
     puts thing
+    puts other + [1]
   end
 
   def other(_thing)
@@ -34,11 +35,6 @@ class Something
   end
 end
 
-if params[:glossary_slug].nil? || params[:glossary_slug] == "All"
-  nil
-else
-    params[:glossary_slug]
-end
-
 this
 
+[1, 2, 3].each { |_n| puts "hi" }
