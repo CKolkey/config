@@ -1,5 +1,3 @@
-
-
 module ObjectHelpers
   # list methods which aren't in superclass
   def local_methods(obj = self)

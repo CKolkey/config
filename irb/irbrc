@@ -2,24 +2,32 @@
 
 IRB.conf[:USE_AUTOCOMPLETE] = false
 
-gems = %w[ active_support awesome_print ]
+gems = %w[active_support awesome_print]
 
 libs = %w[
   pathname base64 benchmark fileutils
   json securerandom stringio time uri
 ]
 
+patches = %w[
+  require_benchmarking
+  rails_prompt
+  clipboard_io
+  reline_fzf_patch
+  object_helpers
+  irb_helpers
+]
+
 (gems + libs).each do |pkg|
   require pkg
-rescue
-  puts "(couldn't require #{pkg})"
+rescue StandardError
+  puts "(couldn't require lib: #{pkg})"
+end
+
+patches.each do |patch|
+  require_relative "../ruby/#{patch}"
+rescue StandardError
+  puts "(couldn't require patch: '#{patch}')"
 end
 
 AwesomePrint.irb! if defined?(AwesomePrint)
-
-require_relative "../ruby/require_benchmarking"
-require_relative "../ruby/rails_prompt"
-require_relative "../ruby/clipboard_io"
-require_relative "../ruby/reline_fzf_patch"
-require_relative "../ruby/object_helpers"
-require_relative "../ruby/irb_helpers"
