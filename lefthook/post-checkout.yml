@@ -9,3 +9,5 @@ post-checkout:
       run: ruby $HOME/.config/lefthook/post-checkout/bundle-checker.rb
     code-coverage-changed-tag:
       run: git tag -f code_coverage_diff $(git rev-parse master)
+    build-ruby-tags:
+      run: "ctags -R {app,lib}/**/*.rb"

@@ -1,0 +1,5 @@
+pre-commit:
+  parallel: true
+  commands:
+    build-ruby-tags:
+      run: "ctags -R {app,lib}/**/*.rb"
