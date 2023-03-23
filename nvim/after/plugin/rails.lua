@@ -203,7 +203,7 @@ for cmd, def in pairs(Rails.commands) do
 end
 
 function Rails.fn.parse_schema()
-  local schema    = io.open("db/schema.rb", "r"):read("*a")
+  local schema    = utils.safe_read_file("db/schema.rb")
   local tree_root = vim.treesitter.get_string_parser(schema, "ruby", {}):parse()[1]:root()
   local query     = vim.treesitter.query.parse_query("ruby", [[
           (call
@@ -213,7 +213,7 @@ function Rails.fn.parse_schema()
           )
         ]])
 
-  local tables = {}
+  local tables    = {}
   local table
   for id, node in query:iter_captures(tree_root, schema, 0, -1) do
     local text = vim.treesitter.query.get_node_text(node, schema)
@@ -228,7 +228,7 @@ function Rails.fn.parse_schema()
 end
 
 function Rails.fn.schema_tables()
-  local timestamp = io.popen("stat -f %m db/schema.rb", "r"):read()
+  local timestamp = utils.safe_read_proc("stat -f %m db/schema.rb")
 
   if Rails.db_schema.timestamp ~= timestamp then
     Rails.db_schema.tables    = Rails.fn.parse_schema()
@@ -240,8 +240,9 @@ end
 
 function Rails.fn.model_inflection(model)
   local function pluralize(name)
-    local call = [[ruby -ractive_support/inflector -e 'puts ActiveSupport::Inflector.pluralize("]] .. name .. [[")']]
-    return io.popen(call):read()
+    return utils.safe_read_proc(
+      [[ruby -ractive_support/inflector -e 'puts ActiveSupport::Inflector.pluralize("]] .. name .. [[")']]
+    )
   end
 
   if not Rails.db_schema.inflections[model] then
@@ -278,21 +279,22 @@ require("utils.autocmds").load({
         local extmark_line
 
         if first_line == "# frozen_string_literal: true" then
-          extmark_line = 1
+          extmark_line = 2
         else
-          extmark_line = 0
+          extmark_line = 1
         end
 
         vim.api.nvim_buf_clear_namespace(event.buf, ns, 0, -1)
         vim.api.nvim_buf_set_extmark(event.buf, ns, extmark_line, 0, { virt_lines = lines, virt_lines_above = true })
 
+        -- TODO: Still kinda weird
         -- If virt lines are above line 0, the window won't show them until you scroll up, so this does that for you.
         -- Might be some bugs here.
-        if extmark_line == 0 then
-          vim.defer_fn(function()
-            vim.fn.winrestview({ topfill = #lines })
-          end, 10)
-        end
+        -- if extmark_line == 0 then
+        --   vim.defer_fn(function()
+        --     vim.fn.winrestview({ topfill = #lines })
+        --   end, 10)
+        -- end
       end
     }
   }

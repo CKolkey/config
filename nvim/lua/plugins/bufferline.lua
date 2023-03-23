@@ -2,11 +2,21 @@ return {
   "akinsho/bufferline.nvim",
   enabled = true,
   dependencies = {
-    { "roobert/bufferline-cycle-windowless.nvim", opts = { default_enabled = true } }
+    "runiq/neovim-throttle-debounce",
+    { "roobert/bufferline-cycle-windowless.nvim", opts = { default_enabled = true } },
   },
+  init = function()
+    local original_fn = require("bufferline.utils").get_buf_count
+
+    local fn, timer = require("throttle-debounce").throttle_leading(original_fn, 100)
+    require("bufferline.utils").get_buf_count = function()
+      timer:stop()
+      return fn()
+    end
+  end,
   opts = {
     options = {
-      numbers = function(opts)
+      numbers               = function(opts)
         local success, index = pcall(require("harpoon.mark").get_index_of, vim.api.nvim_buf_get_name(opts.id))
         if success and index and index > 0 then
           return opts.raise(index)
@@ -14,10 +24,10 @@ return {
           return ""
         end
       end,
-      separator_style = "thick",
-      themable = false,
-      diagnostics = false,
-      custom_filter = function(buf, _buf_nums)
+      separator_style       = "thick",
+      themable              = false,
+      diagnostics           = false,
+      custom_filter         = function(buf, _buf_nums)
         if vim.bo[buf].buflisted
             and not vim.bo[buf].mod
             and vim.api.nvim_buf_get_name(buf) == ""
@@ -28,13 +38,13 @@ return {
           return true
         end
       end,
-      close_command = function()
+      close_command         = function()
         require("mini.bufremove").delete()
       end,
       diagnostics_indicator = function(_, level)
         return " " .. Icons.diagnostics[string.upper(level)]
       end,
-      name_formatter = function(buffer)
+      name_formatter        = function(buffer)
         return " " .. buffer.name
       end,
     },

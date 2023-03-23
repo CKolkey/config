@@ -27,12 +27,12 @@ end
 
 local function git_sign()
   return vim.fn.sign_getplaced(
-    vim.api.nvim_get_current_buf(),
-    {
-      group = "gitsigns_vimfn_signs_",
-      lnum = vim.v.lnum
-    }
-  )[1].signs[1]
+        vim.api.nvim_get_current_buf(),
+        {
+          group = "gitsigns_vimfn_signs_",
+          lnum = vim.v.lnum
+        }
+      )[1].signs[1]
 end
 
 local function line_number()
@@ -118,3 +118,5 @@ StatusColumn.set_window = function(value, defer, win)
     vim.api.nvim_win_set_option(win, "statuscolumn", value)
   end, defer or 1)
 end
+
+-- vim.opt.statuscolumn = "%{%v:lua.StatusColumn.build()%}"

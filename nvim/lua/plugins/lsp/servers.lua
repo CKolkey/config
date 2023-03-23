@@ -28,21 +28,6 @@ return {
     --   }
     -- }
   },
-  -- ruby_ls = {
-  --   cmd = { "bundle", "exec", "ruby-lsp" },
-  --   init_options = {
-  --     enabledFeatures = {
-  --       -- "codeActions",
-  --       "diagnostics",
-  --       "documentHighlights",
-  --       -- "documentSymbols",
-  --       "formatting",
-  --       -- "inlayHint",
-  --       "foldingRange",
-  --       "semanticTokens",
-  --     }
-  --   },
-  -- },
   efm = {
     init_options = { documentFormatting = true },
     filetypes = { "javascript" },
@@ -59,15 +44,22 @@ return {
   lua_ls = {
     settings = {
       Lua = {
+        runtime = {
+          version = "Lua 5.1",
+          -- path = {
+          --   '?.lua',
+          --   '?/init.lua',
+          -- }
+        },
         format = {
-          enable = true,
+          enable = false,
           defaultConfig = {
-            indent_style = "space",
-            indent_size = "2",
-            quote_style = "AutoPreferDouble",
+            indent_style     = "space",
+            indent_size      = "2",
+            quote_style      = "AutoPreferDouble",
             call_parentheses = "Always",
-            column_width = "120",
-            line_endings = "Unix",
+            column_width     = "120",
+            line_endings     = "Unix",
           },
         },
         diagnostics = {

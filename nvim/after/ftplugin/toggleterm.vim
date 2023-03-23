@@ -1,0 +1,1 @@
+au WinEnter <buffer> startinsert

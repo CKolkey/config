@@ -1,13 +1,15 @@
 return {
   'kevinhwang91/nvim-ufo',
+  enabled = true,
   dependencies = {
     'kevinhwang91/promise-async'
   },
+  dev = true,
   event = "BufRead",
   keys = {
     { "zR", function() require('ufo').openAllFolds() end, desc = "Open all folds" },
     { "zM", function() require('ufo').closeAllFolds() end, desc = "Close all folds" },
-    { "zz", function() require('ufo').peekFoldedLinesUnderCursor() end, desc = "Peed folded lines under cursor" },
+    { "zz", function() require('ufo').peekFoldedLinesUnderCursor() end, desc = "Peek folded lines under cursor" },
   },
   opts = {
     open_fold_hl_timeout = 0,

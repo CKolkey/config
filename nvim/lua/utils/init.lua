@@ -5,7 +5,7 @@ Colors = require("config.ui.colors")
 
 -- Global deep-inspect function
 function P(...)
-  vim.pretty_print(...)
+  vim.print(...)
 end
 
 function utils.delete_buf()
@@ -13,39 +13,38 @@ function utils.delete_buf()
   MiniBufremove.delete()
 end
 
--- utils.debounce = require("nvim-treesitter-playground.utils").debounce
--- https://github.com/runiq/neovim-throttle-debounce/blob/main/defer.lua
--- https://github.com/nvim-treesitter/playground/blob/master/lua/nvim-treesitter-playground/utils.lua
--- local run = false
--- function utils.debounce(fn, time)
---   local timer = vim.loop.new_timer()
---
---   return function(...)
---     timer:stop()
---     run = true
---
---     local args = { ... }
---     timer:start(
---       time,
---       0,
---       vim.schedule_wrap(function()
---         timer:stop()
---         timer:close()
---         if run then
---           run = false
---           fn(unpack(args))
---         end
---       end)
---     )
---   end
--- end
-
 function utils.file_in_cwd(filename)
   if vim.loop.fs_stat(vim.loop.cwd() .. "/" .. filename) then
     return true
   else
     return false
   end
+end
+
+-- @param filename string
+-- @param mode string
+function utils.safe_read_file(filename, mode)
+  local file, err = io.open(filename, 'r')
+  if not file then
+    error(err)
+  end
+
+  local content = file:read(mode or "*a")
+  io.close(file)
+
+  return content
+end
+
+function utils.safe_read_proc(cmd)
+  local proc, err = io.popen(cmd, "r")
+  if not proc then
+    error(err)
+  end
+
+  local content = proc:read()
+  io.close(proc)
+
+  return content
 end
 
 -- Remove leading/trailing characters from string

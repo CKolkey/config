@@ -17,11 +17,14 @@ function M.hover()
           animate           = false,
           on_open           = function(win_id)
             vim.api.nvim_create_autocmd(
-              { "ExitPre", "BufHidden", "BufLeave", "CursorMoved", "CursorMovedI", "WinScrolled" },
+              { "ExitPre", "BufHidden", "BufLeave", "CursorMoved", "CursorMovedI" },
               {
                 buffer   = 0,
                 once     = true,
-                callback = function() pcall(vim.api.nvim_win_close, win_id, true) end
+                callback = function()
+                  pcall(vim.api.nvim_win_close, win_id, true)
+                  return true
+                end
               }
             )
           end,

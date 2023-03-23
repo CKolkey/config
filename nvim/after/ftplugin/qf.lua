@@ -1,3 +1,3 @@
-vim.cmd([[
-  execute('resize ' . min([10, len(getqflist())]))
-]])
+vim.cmd([[setl nospell]])
+vim.cmd("QFResize")
+vim.cmd("QFSort")

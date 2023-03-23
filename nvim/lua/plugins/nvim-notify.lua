@@ -5,7 +5,6 @@ return {
   end,
   opts = {
     timeout   = 2000,
-    -- background_colour = "InactiveWindow",
     top_down  = false,
     icons     = Icons.diagnostics,
     max_width = function() return math.floor(vim.o.columns * 0.75) end,

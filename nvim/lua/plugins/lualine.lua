@@ -1,5 +1,6 @@
 return {
   "nvim-lualine/lualine.nvim",
+  enabled = false,
   config = function()
     local lualine = require("lualine")
 
@@ -7,27 +8,16 @@ return {
       buffer_not_empty = function()
         return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
       end,
-
-      hide_in_width = function()
-        return vim.fn.winwidth(0) > 80
-      end,
-
-      check_git_workspace = function()
-        local filepath = vim.fn.expand("%:p:h")
-        local gitdir = vim.fn.finddir(".git", filepath .. ";")
-
-        return gitdir and #gitdir > 0 and #gitdir < #filepath
-      end,
     }
 
     local config = {
       options = {
-        disabled_filetypes = { "terminal" },
-        globalstatus = true,
+        disabled_filetypes   = { "terminal" },
+        globalstatus         = true,
         component_separators = "",
-        section_separators = "",
-        theme = {
-          normal = { c = { fg = Colors.fg, bg = Colors.bg0 } },
+        section_separators   = "",
+        theme                = {
+          normal   = { c = { fg = Colors.fg, bg = Colors.bg0 } },
           inactive = { c = { fg = Colors.fg, bg = Colors.bg0 } },
         },
       },
@@ -59,26 +49,26 @@ return {
 
     local function mode_color()
       local color_table = {
-        n = Colors.green,
-        i = Colors.blue,
-        v = Colors.purple,
-        [""] = Colors.purple,
-        V = Colors.purple,
-        c = Colors.orange,
-        no = Colors.red,
-        s = Colors.orange,
-        S = Colors.orange,
-        [""] = Colors.orange,
-        ic = Colors.yellow,
-        R = Colors.red,
-        Rv = Colors.red,
-        cv = Colors.red,
-        ce = Colors.red,
-        r = Colors.red,
-        rm = Colors.red,
+        n      = Colors.green,
+        i      = Colors.blue,
+        v      = Colors.purple,
+        [""]  = Colors.purple,
+        V      = Colors.purple,
+        c      = Colors.orange,
+        no     = Colors.red,
+        s      = Colors.orange,
+        S      = Colors.orange,
+        [""]  = Colors.orange,
+        ic     = Colors.yellow,
+        R      = Colors.red,
+        Rv     = Colors.red,
+        cv     = Colors.red,
+        ce     = Colors.red,
+        r      = Colors.red,
+        rm     = Colors.red,
         ["r?"] = Colors.cyan,
-        ["!"] = Colors.red,
-        t = Colors.yellow,
+        ["!"]  = Colors.red,
+        t      = Colors.yellow,
       }
 
       return { fg = color_table[vim.fn.mode()] }

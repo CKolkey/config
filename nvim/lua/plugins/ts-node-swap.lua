@@ -1,5 +1,5 @@
 return {
-  "ckolkey/ts-node-action",
+  "ckolkey/ts-node-swap",
   dependencies = { "nvim-treesitter" },
   opts         = {},
   dev          = true,

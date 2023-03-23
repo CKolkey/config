@@ -90,6 +90,7 @@ M.snippets = {
   fro = {
     description = "Ruby Magic String Literal Comment",
     "# frozen_string_literal: true",
+    newline()
   },
   ar = {
     description = "attr_reader",

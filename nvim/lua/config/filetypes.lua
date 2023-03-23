@@ -3,7 +3,9 @@ vim.filetype.add({
   },
   filename = {
     ['.envrc'] = 'bash',
+    ['Brewfile'] = 'brewfile',
   },
   pattern = {
+    ['.*ignore$'] = "gitignore"
   }
 })

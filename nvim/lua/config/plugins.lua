@@ -8,6 +8,11 @@ end
 vim.opt.rtp:prepend(install_path)
 
 require("lazy").setup("plugins", {
+  dev = {
+    path     = "~/code/",
+    patterns = { "ckolkey" },
+    fallback = true,
+  },
   checker = {
     enabled = true
   },

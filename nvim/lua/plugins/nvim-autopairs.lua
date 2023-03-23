@@ -21,10 +21,11 @@ return {
     local ts_conds   = require("nvim-autopairs.ts-conds")
 
     auto_pairs.setup({
-      map_bs    = true,
-      map_cr    = true,
-      check_ts  = true,
-      fast_wrap = {},
+      map_bs           = true,
+      map_cr           = true,
+      check_ts         = true,
+      fast_wrap        = {},
+      disable_in_macro = true,
     })
 
     -- auto_pairs.remove_rule('(')
@@ -42,13 +43,13 @@ return {
       -- Inserts #{} inside ruby strings for interpolation
       -- TODO: Don't do this if it's the first character in the string and the method is "describe"
       rule("#", "{}", "ruby")
-          :with_pair(ts_conds.is_ts_node({ 'string' }))
-          :set_end_pair_length(1),
+      :with_pair(ts_conds.is_ts_node({ 'string' }))
+      :set_end_pair_length(1),
 
       rule("|", "|", "ruby")
-          :with_pair(function() return true end)
-          :with_move(function(opts) return opts.prev_char:match("|") ~= nil end)
-          :use_key("|"),
+      :with_pair(function() return true end)
+      :with_move(function(opts) return opts.prev_char:match("|") ~= nil end)
+      :use_key("|"),
 
       -- Adding space inside brackets
       rule(" ", " "):with_pair(function(opts)
@@ -57,27 +58,27 @@ return {
       end),
 
       rule("( ", " )")
-          :with_pair(function() return false end)
-          :with_move(function(opts) return opts.prev_char:match(".%)") ~= nil end)
-          :use_key(")"),
+      :with_pair(function() return false end)
+      :with_move(function(opts) return opts.prev_char:match(".%)") ~= nil end)
+      :use_key(")"),
 
       rule("{ ", " }")
-          :with_pair(function() return false end)
-          :with_move(function(opts) return opts.prev_char:match(".%}") ~= nil end)
-          :use_key("}"),
+      :with_pair(function() return false end)
+      :with_move(function(opts) return opts.prev_char:match(".%}") ~= nil end)
+      :use_key("}"),
 
       rule("[ ", " ]")
-          :with_pair(function() return false end)
-          :with_move(function(opts) return opts.prev_char:match(".%]") ~= nil end)
-          :use_key("]"),
+      :with_pair(function() return false end)
+      :with_move(function(opts) return opts.prev_char:match(".%]") ~= nil end)
+      :use_key("]"),
 
       -- 'move through' commas
       rule("", ",")
-          :with_move(function(opts) return opts.char == "," end)
-          :with_pair(function() return false end)
-          :with_del(function() return false end)
-          :with_cr(function() return false end)
-          :use_key(","),
+      :with_move(function(opts) return opts.char == "," end)
+      :with_pair(function() return false end)
+      :with_del(function() return false end)
+      :with_cr(function() return false end)
+      :use_key(","),
     })
   end
 }

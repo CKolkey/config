@@ -7,8 +7,7 @@ return {
     "natecraddock/telescope-zf-native.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
-    "danielfalk/smart-open.nvim",
-    "kkharji/sqlite.lua",
+    { "nvim-telescope/telescope-file-browser.nvim", dev = true }
   },
   config = function()
     local actions = require("telescope.actions")
@@ -31,12 +30,16 @@ return {
         preview_title     = false,
         prompt_prefix     = " ",
         sorting_strategy  = "ascending",
+        file_ignore_patterns = {
+          '^.git/*'
+        },
         vimgrep_arguments = {
           "rg",
           "--color=never",
           "--no-heading",
           "--with-filename",
           "--line-number",
+          "--hidden",
           "--column",
           "--smart-case",
           "--trim",
@@ -66,12 +69,43 @@ return {
       },
       pickers = {
         find_files = {
-          find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "--color=never" }
+          find_command = {
+            "fd",
+            "--type",
+            "f",
+            "--strip-cwd-prefix",
+            "--color=never",
+            "--hidden",
+          }
         }
       },
       extensions = {
-        smart_open = {
-          match_algorithm = "fzf",
+        ["zf-native"] = {
+          file = {
+            enable = true,
+            highlight_results = true,
+            match_filename = true,
+          },
+          generic = {
+            enable = true,
+            highlight_results = true,
+            match_filename = false,
+          },
+        },
+        file_browser = {
+          layout_config = {
+            height = 0.4,
+            prompt_position = "top",
+          },
+          theme = "ivy",
+          hide_parent_dir = true,
+          layout_strategy = "bottom_pane",
+          previewer = false,
+          prompt_path = true,
+          hidden = true,
+          respect_gitignore = false,
+          grouped = true,
+          border = false,
         },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown({
@@ -82,22 +116,6 @@ return {
             },
           }),
         },
-        -- fzf = {
-        --   fuzzy                   = true,
-        --   override_generic_sorter = true,
-        --   override_file_sorter    = false,
-        --   case_mode               = "smart_case",
-        -- },
-        -- ["zf-native"] = {
-        --   file = {
-        --     enable            = true,
-        --     highlight_results = true,
-        --     match_filename    = true,
-        --   },
-        --   generic = {
-        --     enable = false,
-        --   },
-        -- },
       },
     })
   end

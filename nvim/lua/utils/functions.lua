@@ -67,4 +67,38 @@ function M.update_buffer(event)
   end
 end
 
+--https://github.com/arsham/shark/blob/master/lua/commands.lua#L138
+function M.unlink_snippets()
+  local session = require("luasnip.session")
+  local cur_buf = vim.api.nvim_get_current_buf()
+
+  while true do
+    local node = session.current_nodes[cur_buf]
+    if not node then
+      return
+    end
+    local user_expanded_snip = node.parent
+    -- find 'outer' snippet.
+    while user_expanded_snip.parent do
+      user_expanded_snip = user_expanded_snip.parent
+    end
+
+    user_expanded_snip:remove_from_jumplist()
+    -- prefer setting previous/outer insertNode as current node.
+    session.current_nodes[cur_buf] = user_expanded_snip.prev.prev or user_expanded_snip.next.next
+  end
+end
+
+-- quick.command("Profile", function()
+--   vim.cmd.profile("start /tmp/profile.log")
+--   vim.cmd.profile("file *")
+--   vim.cmd.profile("func *")
+--   vim.keymap.set("n", "<localleader>ss", function()
+--     vim.cmd.profile("dump")
+--     vim.cmd.profile("stop")
+--     vim.keymap.del("n", "<localleader>ss")
+--     vim.notify("Profile has been saved!")
+--   end)
+-- end, { desc = "start profiling to /tmp/profile.log. <leader>ss to stop!" })
+--
 return M

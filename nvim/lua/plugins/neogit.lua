@@ -1,56 +1,52 @@
-local git_branches = function()
-  require("telescope.builtin").git_branches({
-    layout_config = {
-      height = 25,
-      prompt_position = "top",
-      preview_cutoff = 120,
-      width = 0.5,
-    },
-    border = true,
-    prompt_prefix = "  ",
-    prompt_title = "Branches",
-    previewer = false,
-    layout_strategy = "vertical",
-    sorting_strategy = "ascending",
-    theme = "ivy",
-  })
-end
-
 return {
-  "TimUntersberger/neogit",
+  "ckolkey/neogit",
   cmd = "Neogit",
+  dev = true,
   init = function()
-    require("neogit.lib.notification").create = function(message, level)
-      vim.notify(
-        message,
-        level or vim.log.levels.INFO,
-        { title = "Neogit", icon = " " }
-      )
+    local instance = require("notify").instance(
+      { timeout = 800, background_colour = "NeogitNotification", top_down = false, stages = "fade_in_slide_out" }
+    )
 
-      return nil
+    require("neogit.lib.notification").create = function(message, level)
+      local timeout
+      if level then
+        timeout = 5000
+      end
+
+      instance.notify(message, level or vim.log.levels.INFO, { title = "Neogit", icon = " ", timeout = timeout })
     end
   end,
   opts = {
-    console_timeout = 5000,
-    auto_show_console = true,
-    disable_hint = true,
+    console_timeout             = 10000,
+    auto_show_console           = true,
+    disable_hint                = true,
     disable_commit_confirmation = true,
-    disable_insert_on_commit = false,
-    kind = "vsplit",
-    integrations = {
-      diffview = true,
+    disable_insert_on_commit    = true,
+    kind                        = "tab",
+    use_per_project_settings    = true,
+    remember_settings           = true,
+    ignored_settings             = {
+      "NeogitPushPopup--force-with-lease",
+      "NeogitPushPopup--force",
+      "NeogitCommitPopup--allow-empty",
     },
-    signs = {
+    integrations                = {
+      diffview = true,
+      telescope = true,
+    },
+    signs                       = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },
       item    = { Icons.misc.collapsed, Icons.misc.expanded },
     },
-    mappings = {
+    commit_popup = {
+      kind = "vsplit"
+    },
+    mappings                    = {
       status = {
         [" "] = "Toggle",
         ["l"] = "Toggle",
         ["h"] = "Toggle",
-        ["B"] = git_branches,
-        ["b"] = git_branches,
+        ["z"] = "StashPopup",
       },
     }
   }

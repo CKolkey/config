@@ -1,3 +1,4 @@
+require("extensions")
 require("utils")
 require("config.options")
 require("config.filetypes")
@@ -9,5 +10,10 @@ vim.api.nvim_create_autocmd("User", {
     require("config.keymaps")
     require("config.autocmds")
     require("config.diagnostics")
+
+    if os.getenv("PROFILE") then
+      require("plenary.profile").start("profile.log", { flame = true })
+      vim.api.nvim_create_autocmd("VimLeavePre", { callback = require("plenary.profile").stop })
+    end
   end,
 })
