@@ -42,10 +42,12 @@ local function getDisplaySpaces()
 end
 
 local function emptySpaceOnDisplay(spaceID)
-  return query("spaces --space " .. spaceID).windows[1] == nil
+  local result = query("spaces --space " .. spaceID)
+  return result and result["first-window"] == 0 and result["last-window"] == 0
 end
 
-local function sendFocusedWindowToNewSpace()
+local function sendFocusedWindowToNewSpace(opts)
+  opts = opts or {}
   local window = hs.window.focusedWindow()
 
   local spaceID
@@ -63,7 +65,9 @@ local function sendFocusedWindowToNewSpace()
   _yabai("window", "space " .. (spaceID or "last"))
   _yabai("space", "focus " .. (spaceID or "last"))
 
-  window:focus()
+  if opts.keepFocus then
+    window:focus()
+  end
 end
 
 function M.load()
@@ -113,7 +117,8 @@ function M.load()
 
   hs.hotkey.bind({ "option", "ctrl" }, "r", yabai({ { group = "space", command = "rotate 90" } }))
   hs.hotkey.bind({ "option", "ctrl" }, "f", yabai({ { group = "window", command = "toggle float" } }))
-  hs.hotkey.bind({ "option", "ctrl" }, "n", sendFocusedWindowToNewSpace)
+  hs.hotkey.bind({ "option", "ctrl" }, "n", function() sendFocusedWindowToNewSpace({keepFocus = true}) end)
+  hs.hotkey.bind({ "option", "ctrl" }, "m", sendFocusedWindowToNewSpace)
 
   return M
 end

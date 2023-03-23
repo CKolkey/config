@@ -1,173 +1,151 @@
 -- https://github.com/megalithic/dotfiles/blob/main/config/hammerspoon/console.lua
-local log = hs.logger.new("[console]", "warning")
+-- local log = hs.logger.new("[console]", "warning")
 
-local module = {}
+local obj = {}
 
-module.init = function()
-	-- some global functions for console
-	inspect = hs.inspect
-	i = hs.inspect
-	r = hs.reload
-	c = hs.console.clearConsole
-	a = hs.alert
-	p = print
-	u = hs.checkForUpdates
-	help = hs.help
-	docs = hs.hsdocs
-	settings = hs.openPreferences
+obj.__index = obj
+obj.name = "config"
 
-	-- reload  = reloadHS
 
-	-- Example:
-	-- hs.task.new("/usr/local/bin/zsh", function(task, out, err) print(hs.inspect(task), hs.inspect(out), hs.inspect(err)) end, {"-c", "echo", "$(which jq)"}):start()
-	task = function(cmd, args)
-		hs.task.new(cmd, function(task, out, err)
-			print(
-				string.format(
-					"\r\ntask: %s\r\n out: %s\r\n err: %s",
-					hs.inspect(task),
-					hs.inspect(out),
-					hs.inspect(err)
-				)
-			)
-		end, args):start()
-	end
+function obj:init(opts)
+  opts = opts or {}
 
-	dumpWindows = function(app)
-		if type(app) == "string" then
-			app = hs.application.get(app)
-		end
+-- some global functions for console
+  I = hs.inspect
+  R = hs.reload
+  CC = hs.console.clearConsole
+  A = hs.alert
+  P = print
+  H = hs.help
+  D = hs.hsdocs
+  S = hs.openPreferences
 
-		windows = app == nil and hs.window.allWindows() or app:allWindows()
+  -- reload  = reloadHS
 
-		hs.fnutils.each(windows, function(win)
-			print(hs.inspect({
-				id = win:id(),
-				title = win:title(),
-				app = win:application():name(),
-				bundleID = win:application():bundleID(),
-				role = win:role(),
-				subrole = win:subrole(),
-				frame = win:frame(),
-				isFullScreen = win:isFullScreen(),
-				isStandard = win:isStandard(),
-				isMinimized = win:isMinimized(),
-				-- buttonZoom       = axuiWindowElement(win):attributeValue('AXZoomButton'),
-				-- buttonFullScreen = axuiWindowElement(win):attributeValue('AXFullScreenButton'),
-				-- isResizable      = axuiWindowElement(win):isAttributeSettable('AXSize')
-			}))
-		end)
-	end
+  Windows = function(app)
+    if type(app) == "string" then
+      app = hs.application.get(app)
+    end
 
-	listWindows = dumpWindows
+    local windows = app == nil and hs.window.allWindows() or app:allWindows()
 
-	dumpUsbDevices = function()
-		hs.fnutils.each(hs.usb.attachedDevices(), function(usb)
-			print(hs.inspect(usb))
-			-- print(
-			--   hs.inspect(
-			--     {
-			--       productID = usb:productID(),
-			--       productName = usb:productName(),
-			--       vendorID = usb:vendorID(),
-			--       vendorName = usb:vendorName()
-			--     }
-			--   )
-			-- )
-		end)
-	end
+    hs.fnutils.each(
+      windows,
+      function(win)
+        print(
+          hs.inspect(
+            {
+              id = win:id(),
+              title = win:title(),
+              app = win:application():name(),
+              bundleID = win:application():bundleID(),
+              role = win:role(),
+              subrole = win:subrole(),
+              frame = win:frame(),
+              isFullScreen = win:isFullScreen(),
+              isStandard = win:isStandard(),
+              isMinimized = win:isMinimized()
+              -- buttonZoom       = axuiWindowElement(win):attributeValue('AXZoomButton'),
+              -- buttonFullScreen = axuiWindowElement(win):attributeValue('AXFullScreenButton'),
+              -- isResizable      = axuiWindowElement(win):isAttributeSettable('AXSize')
+            }
+          )
+        )
+      end
+    )
+  end
 
-	dumpCurrentInputAudioDevice = function()
-		d = hs.audiodevice.defaultInputDevice()
-		print(hs.inspect({
-			name = d:name(),
-			uid = d:uid(),
-			muted = d:muted(),
-			volume = d:volume(),
-			device = d,
-		}))
-	end
+  Usb = function()
+    hs.fnutils.each(
+      hs.usb.attachedDevices(),
+      function(usb)
+        print(hs.inspect(usb))
+        -- print(
+        --   hs.inspect(
+        --     {
+        --       productID = usb:productID(),
+        --       productName = usb:productName(),
+        --       vendorID = usb:vendorID(),
+        --       vendorName = usb:vendorName()
+        --     }
+        --   )
+        -- )
+      end
+    )
+  end
 
-	dumpCurrentOutputAudioDevice = function()
-		d = hs.audiodevice.defaultOutputDevice()
-		print(hs.inspect({
-			name = d:name(),
-			uid = d:uid(),
-			muted = d:muted(),
-			volume = d:volume(),
-			device = d,
-		}))
-	end
+  AudioInput = function()
+    local d = hs.audiodevice.defaultInputDevice()
+    print(
+      hs.inspect(
+        {
+          name = d:name(),
+          uid = d:uid(),
+          muted = d:muted(),
+          volume = d:volume(),
+          device = d
+        }
+      )
+    )
+  end
 
-	dumpScreens = function()
-		hs.fnutils.each(hs.screen.allScreens(), function(s)
-			print(hs.inspect({
-				name = s:name(),
-				id = s:id(),
-				position = s:position(),
-				frame = s:frame(),
-			}))
-		end)
-	end
+  AudioOutput = function()
+    local d = hs.audiodevice.defaultOutputDevice()
+    print(
+      hs.inspect(
+        {
+          name = d:name(),
+          uid = d:uid(),
+          muted = d:muted(),
+          volume = d:volume(),
+          device = d
+        }
+      )
+    )
+  end
 
-	timestamp = function(date)
-		date = date or hs.timer.secondsSinceEpoch()
-		return os.date("%F %T" .. ((tostring(date):match("(%.%d+)$")) or ""), math.floor(date))
-	end
+  Screens = function()
+    hs.fnutils.each(
+      hs.screen.allScreens(),
+      function(s)
+        print(
+          hs.inspect(
+            {
+              name = s:name(),
+              id = s:id(),
+              position = s:position(),
+              frame = s:frame()
+            }
+          )
+        )
+      end
+    )
+  end
 
-	local darkMode = true
-	local fontStyle = { name = "Operator Mono", size = 15 }
+  Time = function(date)
+    date = date or hs.timer.secondsSinceEpoch()
+    return os.date("%F %T" .. ((tostring(date):match("(%.%d+)$")) or ""), math.floor(date))
+  end
 
-	-- console styling
+  local darkMode = true
+  local fontStyle = {name = "Operator Mono", size = 15}
 
-	local darkGrayColor = {
-		red = 26 / 255,
-		green = 28 / 255,
-		blue = 39 / 255,
-		alpha = 1.0,
-	}
-	local whiteColor = {
-		white = 1.0,
-		alpha = 1.0,
-	}
-	local lightGrayColor = {
-		white = 1.0,
-		alpha = 0.9,
-	}
-	local purpleColor = {
-		red = 171 / 255,
-		green = 126 / 255,
-		blue = 251 / 255,
-		alpha = 1.0,
-	}
-	local grayColor = {
-		red = 24 * 4 / 255,
-		green = 24 * 4 / 255,
-		blue = 24 * 4 / 255,
-		alpha = 1.0,
-	}
-	local blackColor = {
-		white = 0.0,
-		alpha = 1.0,
-	}
+  -- console styling
 
-	hs.console.darkMode(darkMode)
-	hs.console.consoleFont(fontStyle)
-	hs.console.alpha(0.985)
+	local darkGrayColor = { red = 26 / 255, green = 28 / 255, blue = 39 / 255, alpha = 1.0 }
+	local whiteColor = { white = 1.0, alpha = 1.0 }
+	local purpleColor = { red = 171 / 255, green = 126 / 255, blue = 251 / 255, alpha = 1.0 }
+	local grayColor = { red = 24 * 4 / 255, green = 24 * 4 / 255, blue = 24 * 4 / 255, alpha = 1.0 }
 
-	if darkMode then
-		hs.console.outputBackgroundColor(darkGrayColor)
-		hs.console.consoleCommandColor(whiteColor)
-		hs.console.consoleResultColor(purpleColor)
-		hs.console.consolePrintColor(grayColor)
-	else
-		hs.console.consoleCommandColor(blackColor)
-		hs.console.consoleResultColor(grayColor)
-		hs.console.consolePrintColor(grayColor)
-	end
+  hs.console.darkMode(darkMode)
+  hs.console.consoleFont(fontStyle)
+  hs.console.alpha(0.985)
+	hs.console.outputBackgroundColor(darkGrayColor)
+	hs.console.consoleCommandColor(whiteColor)
+	hs.console.consoleResultColor(purpleColor)
+	hs.console.consolePrintColor(grayColor)
 
-	-- no toolbar
-	-- hs.console.toolbar(nil)
+  return self
 end
 
-return module
+return obj

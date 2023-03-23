@@ -16,6 +16,10 @@ local apps = {
     bundleID = "net.kovidgoyal.kitty",
     launch_key = "k",
   },
+  ["Emacs"] = {
+    bundleID = "org.gnu.Emacs",
+    launch_key = "m",
+  },
   ["Slack"] = {
     bundleID = "com.tinyspeck.slackmacgap",
     launch_key = "s",
