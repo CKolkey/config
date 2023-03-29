@@ -193,9 +193,20 @@ local mappings = {
     -- Telescope
     -- https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
     ["<c-g>"]            = function()
+      local filetype = vim.fn.expand("%:e")
+      if filetype == "" then
+        filetype = "*"
+      end
+
       require("telescope").extensions.live_grep_args.live_grep_args({ debounce = 100 })
-      -- Insert Quotes
-      local keys = vim.api.nvim_replace_termcodes([[""<left>]], true, false, true)
+
+      local keys = vim.api.nvim_replace_termcodes(
+        [["" -g "*.]] .. filetype .. [["<c-a><right>]],
+        true,
+        false,
+        true
+      )
+
       vim.api.nvim_feedkeys(keys, 'c', false)
     end,
 
@@ -232,8 +243,17 @@ local mappings = {
     -- Live grep, starting with cursor word
     ["<c-space>"]        = function()
       local word = vim.fn.expand("<cword>")
+      local filetype = vim.fn.expand("%:e")
+
       require("telescope").extensions.live_grep_args.live_grep_args({ debounce = 100 })
-      local keys = vim.api.nvim_replace_termcodes([[""<left>]] .. word, true, false, true)
+
+      local keys = vim.api.nvim_replace_termcodes(
+        [["" -g "*.]] .. filetype .. [["<c-a><right>]] .. word,
+        true,
+        false,
+        true
+      )
+
       vim.api.nvim_feedkeys(keys, 'c', false)
     end,
     -- ["<c-f>"]            = function() require('telescope').extensions.smart_open.smart_open({ cwd_only = true }) end,

@@ -1,8 +1,14 @@
 --- Converts given string to CamelCase.
 ---@param str string
 ---@return string, integer
-function string.camelcase(str)
-  return str:gsub('_(.)', str.upper):gsub('^(.)', str.upper)
+function string.camelcase(str, opts)
+  opts = opts or {}
+
+  if opts.constantize then
+    return str:gsub('_(.)', str.upper):gsub('^(.)', str.upper)
+  else
+    return str:gsub('_(.)', str.upper)
+  end
 end
 
 --- Converts given string to underscore.

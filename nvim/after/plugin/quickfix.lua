@@ -31,7 +31,7 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "MergeConflicts",
   function()
-    vim.cmd([[silent grep "'<<<<<<< HEAD'"]])
+    vim.cmd([[silent grep "<<<<<<< HEAD"]])
     vim.cmd.QFToggle()
   end,
   {}

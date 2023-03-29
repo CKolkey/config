@@ -74,3 +74,4 @@ cwd
 Overmind
 FileSelectViewBuffer
 async
+RemoteSelectViewBuffer

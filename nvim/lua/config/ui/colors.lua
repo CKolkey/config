@@ -36,6 +36,7 @@ return {
   line_blue   = "#363a4e",
   purple      = "#C792EA",
   bg_purple   = "#a377bf",
+  md_purple   = "#c3a7e5",
   lt_purple   = "#eadff0",
   line_purple = "#383746",
   active      = "#98c379",

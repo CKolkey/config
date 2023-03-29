@@ -87,7 +87,7 @@ local function build_range_edits(result, bufnr)
   local text_edits = {}
 
   local buf_text = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  local new_text = vim.split(result[1].newText, "\n", { trimempty = true })
+  local new_text = vim.lsp.util.trim_empty_lines(vim.split(result[1].newText, "\n"))
 
   for line, text in ipairs(new_text) do
     if text ~= buf_text[line] then
@@ -107,8 +107,7 @@ local function build_range_edits(result, bufnr)
 end
 
 local function apply_result(result, ctx)
-  local text_edits
-  local buf_info
+  local text_edits, buf_info
 
   if full_document_result(result) then
     text_edits, buf_info = build_range_edits(result, ctx.bufnr)

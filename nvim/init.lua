@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 require("extensions")
 require("utils")
 require("config.options")

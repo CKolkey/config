@@ -31,7 +31,8 @@ return {
         prompt_prefix     = " ",
         sorting_strategy  = "ascending",
         file_ignore_patterns = {
-          '^.git/*'
+          '^.git/*',
+          '^app/assets/builds/*'
         },
         vimgrep_arguments = {
           "rg",
@@ -82,35 +83,35 @@ return {
       extensions = {
         ["zf-native"] = {
           file = {
-            enable = true,
+            enable            = true,
             highlight_results = true,
-            match_filename = true,
+            match_filename    = true,
           },
           generic = {
-            enable = true,
+            enable            = true,
             highlight_results = true,
-            match_filename = false,
+            match_filename    = false,
           },
         },
         file_browser = {
           layout_config = {
-            height = 0.4,
+            height          = 0.4,
             prompt_position = "top",
           },
-          theme = "ivy",
-          hide_parent_dir = true,
-          layout_strategy = "bottom_pane",
-          previewer = false,
-          prompt_path = true,
-          hidden = true,
+          theme             = "ivy",
+          hide_parent_dir   = true,
+          layout_strategy   = "bottom_pane",
+          previewer         = false,
+          prompt_path       = true,
+          hidden            = true,
           respect_gitignore = false,
-          grouped = true,
-          border = false,
+          grouped           = true,
+          border            = false,
         },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown({
             borderchars = {
-              prompt = { " ", " ", " ", " ", " ", " ", " ", " " },
+              prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
               results = { " ", " ", " ", " ", " ", " ", " ", " " },
               preview = { "", "", "", "▌", "▌", "", "", "▌" },
             },

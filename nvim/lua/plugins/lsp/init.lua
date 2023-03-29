@@ -11,6 +11,7 @@ return {
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     local completion   = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
+    capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
     capabilities.textDocument.completion   = completion.textDocument.completion
     capabilities.textDocument.foldingRange = {
       dynamicRegistration = false,

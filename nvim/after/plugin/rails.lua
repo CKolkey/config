@@ -205,7 +205,7 @@ end
 function Rails.fn.parse_schema()
   local schema    = utils.safe_read_file("db/schema.rb")
   local tree_root = vim.treesitter.get_string_parser(schema, "ruby", {}):parse()[1]:root()
-  local query     = vim.treesitter.query.parse_query("ruby", [[
+  local query     = vim.treesitter.query.parse("ruby", [[
           (call
             method: (identifier) @method (#eq? @method "create_table")
             arguments: (argument_list (string (string_content) @table))
@@ -216,7 +216,7 @@ function Rails.fn.parse_schema()
   local tables    = {}
   local table
   for id, node in query:iter_captures(tree_root, schema, 0, -1) do
-    local text = vim.treesitter.query.get_node_text(node, schema)
+    local text = vim.treesitter.get_node_text(node, schema)
     if query.captures[id] == "table" then
       table = text
     elseif query.captures[id] == "columns" then

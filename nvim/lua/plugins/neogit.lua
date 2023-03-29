@@ -2,20 +2,6 @@ return {
   "ckolkey/neogit",
   cmd = "Neogit",
   dev = true,
-  init = function()
-    local instance = require("notify").instance(
-      { timeout = 800, background_colour = "NeogitNotification", top_down = false, stages = "fade_in_slide_out" }
-    )
-
-    require("neogit.lib.notification").create = function(message, level)
-      local timeout
-      if level then
-        timeout = 5000
-      end
-
-      instance.notify(message, level or vim.log.levels.INFO, { title = "Neogit", icon = " ", timeout = timeout })
-    end
-  end,
   opts = {
     console_timeout             = 10000,
     auto_show_console           = true,
@@ -32,7 +18,6 @@ return {
     },
     integrations                = {
       diffview = true,
-      telescope = true,
     },
     signs                       = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },

@@ -14,8 +14,6 @@ vim.opt_local.list = false
 vim.opt_local.wrap = true
 vim.opt_local.linebreak = true
 
-vim.b.EditorConfig_disable = 1
-
 vim.cmd([[setlocal comments+=fb:*]])
 vim.cmd([[setlocal comments+=fb:-]])
 vim.cmd([[setlocal comments+=fb:+]])

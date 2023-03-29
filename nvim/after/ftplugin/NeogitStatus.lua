@@ -3,6 +3,7 @@ local winhl  = vim.api.nvim_win_get_option(win_id, "winhighlight")
 vim.api.nvim_win_set_option(win_id, "winhighlight", winhl .. "Normal:NeogitNormal")
 vim.api.nvim_win_set_option(win_id, "spell", false)
 vim.api.nvim_win_set_option(win_id, "colorcolumn", "")
+vim.api.nvim_win_set_option(win_id, "list", false)
 
 vim.cmd([[au ExitPre <buffer> tabclose | quit]])
 
