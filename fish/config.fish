@@ -1,7 +1,7 @@
 set -gx XDG_CONFIG_HOME $HOME/.config/
 
+# Work
 fish_add_path -g $HOME/code/karnov/jin/bin
-fish_add_path -g $HOME/code/google-cloud-sdk/bin
 
 fish_add_path -g $HOME/.local/bin
 fish_add_path -g $HOME/.pyenv/bin
@@ -20,7 +20,11 @@ if status is-interactive
   auto_ls
   direnv-hook
   asdf-install-hook
-
-  # atuin init fish | source
+  # rtx activate fish | source
   starship init fish | source
+  # source "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.fish.inc"
 end
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH

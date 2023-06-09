@@ -21,6 +21,7 @@ SETUVAR _fish_abbr_da:direnv\x20allow
 SETUVAR _fish_abbr_disk:ncdu
 SETUVAR _fish_abbr_g:git
 SETUVAR _fish_abbr_ls:exa\x20\x2d\x2dcolor=always\x20\x2d\x2dicons\x20\x2d\x2dgroup\x2ddirectories\x2dfirst\x20\x2d\x2dall\x20\x2d\x2dlong
+SETUVAR _fish_abbr_ber:bundle\x20exec\x20rspec\x20\x2d\x2doptions\x20\x24XDG\x5fCONFIG\x5fHOME\x22rspec\x2foptions\x22
 SETUVAR _fish_abbr_g:git
 SETUVAR _fish_abbr_gcop:git\x20checkout\x20\x28pbpaste\x29
 SETUVAR _fish_abbr_gst:git\x20st
