@@ -28,7 +28,6 @@
 
 [alias]
   co = checkout
-  po = push origin
   st = status -sb
   br = branch
   cb = checkout -b
@@ -36,6 +35,7 @@
   fo = fetch origin
   dft = difftool
   pick = cherry-pick
+  jump = "!$(brew --prefix git)/share/git-core/contrib/git-jump/git-jump"
   recent = !git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' | rg -v '(staging|production|origin|refs|master|\\s([0-9]+)$)' | head -n 15 | fzf | cut -d' ' -f2 | xargs git checkout
   p = !pull
 
@@ -48,7 +48,7 @@
   sw = !git branch --merged master | grep -v 'master$' | xargs git branch -d && git remote prune origin
 
   # http://www.jukie.net/bart/blog/pimping-out-git-log
-  lg = log --graph --all --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)%an%Creset %C(yellow)%d%Creset'
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
   # Serve local repo. http://coderwall.com/p/eybtga
   # Then other can access via `git clone git://#{YOUR_IP_ADDRESS}/
