@@ -1,4 +1,5 @@
 brew "asdf"
+brew "bash-language-server"
 brew "bat"
 brew "curl"
 brew "difftastic"
@@ -37,7 +38,6 @@ brew "yabai"
 brew "yarn"
 brew "zf"
 brew "zoxide"
-
 tap "homebrew/cask-fonts"
 cask "font-hack-nerd-font"
 
@@ -55,6 +55,7 @@ cask "raycast"
 cask "flux"
 cask "hex-fiend"
 cask "istycal"
+cask "sloth"
 
 # Ruby Build Deps ? Not sure if needed
 brew "ruby-build"
