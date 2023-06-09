@@ -1,6 +1,7 @@
 return {
   "lukas-reineke/indent-blankline.nvim",
   event = "BufReadPre",
+  enabled = true,
   init = function()
     vim.g.indent_blankline_char = "▎"
     vim.g.indent_blankline_char_blankline = "▎"
@@ -8,7 +9,6 @@ return {
   opts = {
     filetype_exclude               = {
       "lazy",
-      "neotest-summary",
       "man",
       "gitmessengerpopup",
       "diagnosticpopup",

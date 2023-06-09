@@ -1,9 +1,7 @@
 return {
-
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
   dependencies = {
-    -- "tzachar/cmp-tabnine", run = "./install.sh",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
     "hrsh7th/cmp-buffer",
@@ -13,6 +11,7 @@ return {
     "lukas-reineke/cmp-rg",
     "hrsh7th/cmp-nvim-lsp-document-symbol",
     "onsails/lspkind-nvim",
+    "dmitmel/cmp-cmdline-history",
   },
 
   config = function()
@@ -46,19 +45,17 @@ return {
         documentation = cmp.config.window.bordered(),
         completion = {
           winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-          col_offset = -3,
+          col_offset = -4,
           side_padding = 0,
         },
       },
-
+      
       formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
-          local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
-          local strings = vim.split(kind.kind, "%s", { trimempty = true })
-          kind.kind = " " .. strings[1] .. " "
-          kind.menu = "    (" .. strings[2] .. ")"
-
+          local kind = require("lspkind").cmp_format({ mode = "text", maxwidth = 50 })(entry, vim_item)
+          kind.menu = "    (" .. kind.kind .. ")"
+          kind.kind = " " .. (Icons.lsp_kind[kind.kind] or "XX") .. " "
           return kind
         end,
       },
@@ -100,8 +97,6 @@ return {
           i = function(fallback)
             if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-              -- elseif luasnip.jumpable(1) then
-              -- luasnip.jump(1)
             else
               fallback()
             end
@@ -121,8 +116,6 @@ return {
           i = function(fallback)
             if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-              -- elseif luasnip.jumpable(-1) then
-              -- luasnip.jump(-1)
             else
               fallback()
             end
@@ -169,20 +162,19 @@ return {
 
     cmp.setup.cmdline("/", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources({
-        { name = 'nvim_lsp_document_symbol' }
-      }, {
-        { name = 'buffer' }
-      })
+      sources = cmp.config.sources(
+        { { name = 'nvim_lsp_document_symbol' } },
+        { { name = 'buffer' } }
+      )
     })
 
     cmp.setup.cmdline(":", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources({
-        { name = "path", max_item_count = 5 },
-      }, {
-        { name = "cmdline", max_item_count = 10 },
-      }),
+      sources = cmp.config.sources(
+        { { name = "path", max_item_count = 20 } },
+        { { name = "cmdline", max_item_count = 30 } },
+        { { name = "cmdline_history", max_item_count = 10 } }
+      ),
     })
   end,
 }

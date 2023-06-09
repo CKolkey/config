@@ -21,15 +21,15 @@ local function fold_opened(line)
   return vim.fn.foldclosed(line or vim.v.lnum) == -1
 end
 
-local function git_sign()
-  return vim.fn.sign_getplaced(
-        vim.api.nvim_get_current_buf(),
-        {
-          group = "gitsigns_vimfn_signs_",
-          lnum = vim.v.lnum
-        }
-      )[1].signs[1]
-end
+-- local function git_sign()
+--   return vim.fn.sign_getplaced(
+--         vim.api.nvim_get_current_buf(),
+--         {
+--           group = "gitsigns_vimfn_signs_",
+--           lnum = vim.v.lnum
+--         }
+--       )[1].signs[1]
+-- end
 
 local Number = {
   { provider = "%=" },
@@ -81,10 +81,10 @@ local Fold = {
 
 local Border = {
   init     = function(self)
-      local sign = vim.fn.sign_getplaced(
-        vim.api.nvim_get_current_buf(),
+    local sign = vim.fn.sign_getplaced(
+      vim.api.nvim_get_current_buf(),
       { group = "gitsigns_vimfn_signs_", lnum = vim.v.lnum }
-      )[1].signs[1]
+    )[1].signs[1]
 
     self.highlight = sign and sign.name
   end,

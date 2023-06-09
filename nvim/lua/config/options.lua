@@ -35,6 +35,7 @@ local opts = {
   signcolumn     = "yes:1",
   smartcase      = true,
   smartindent    = true,
+  smoothscroll   = true,
   softtabstop    = 2,
   spell          = true,
   spelllang      = 'en_us',

@@ -47,9 +47,9 @@ return function(options)
       }
     end
 
-    if client.supports_method("textDocument/signatureHelp") then
-      require("lsp_signature").on_attach({ fixpos = true, padding = " " }, bufnr)
-    end
+    -- if client.supports_method("textDocument/signatureHelp") then
+    --   require("lsp_signature").on_attach({ fixpos = true, padding = " " }, bufnr)
+    -- end
 
     if client.supports_method("textDocument/codeAction") then
       keymaps.normal["<leader>ca"] = { vim.lsp.buf.code_action, opts }
@@ -57,6 +57,10 @@ return function(options)
 
     if client.supports_method("textDocument/rename") then
       keymaps.normal["R"] = { vim.lsp.buf.rename, opts }
+    end
+
+    if client.supports_method("textDocument/definition") then
+      require("plugins.lsp.definition").setup()
     end
 
     if client.supports_method("textDocument/formatting") and not options.disable_formatting then

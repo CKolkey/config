@@ -1,8 +1,21 @@
 return {
   "NvChad/nvim-colorizer.lua",
-  event = "BufReadPre",
   opts = {
-    filetypes = { "*", "!lazy" },
-    buftype = { "*", "!prompt", "!nofile" },
+    user_default_options = {
+      names = false,
+    },
+    filetypes = {
+      "*",
+      "!lazy",
+      "!TelescopePrompt",
+      "!TelescopeResults",
+      "!TelescopePreview",
+    },
+    buftypes = {
+      "*",
+      "!prompt",
+      "!nofile",
+      "!popup",
+    },
   }
 }

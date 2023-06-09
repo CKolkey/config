@@ -1,39 +1,38 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  enabled = true,
   dependencies = {
     "andymass/vim-matchup",
     "RRethy/nvim-treesitter-endwise",
-    "JoosepAlviste/nvim-ts-context-commentstring",
     "nvim-treesitter/playground",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-refactor",
     "nvim-treesitter/nvim-treesitter-textobjects",
-    -- "theHamsta/nvim-treesitter-pairs", -- TODO: Check this out
   },
-  -- event = "BufReadPre",
   build = function()
     require('nvim-treesitter.install').update({ with_sync = true })()
   end,
   opts = function()
     require("nvim-treesitter.configs").setup({
-      auto_install          = true,
+      auto_install          = false,
       ignore_install        = {},
       ensure_installed      = {
         -- "comment",
+        "bash",
         "fish",
         "gitcommit",
         "gitignore",
-        "help",
         "html",
         "json",
         "lua",
+        "luap",
         "markdown",
         "markdown_inline",
+        "regex",
         "ruby",
         "vim",
+        "vimdoc",
         "yaml",
-        "regex",
-        "luap",
       },
       playground            = {
         enable          = true,
@@ -79,16 +78,16 @@ return {
           },
         },
       },
-      context_commentstring = {
-        enable         = true,
-        enable_autocmd = false,
-        opts           = {
-          ruby = {
-            __default      = "# %s",
-            body_statement = "<%# %s"
-          },
-        },
-      },
+      -- context_commentstring = {
+      --   enable         = true,
+      --   enable_autocmd = false,
+      --   opts           = {
+      --     ruby = {
+      --       __default      = "# %s",
+      --       body_statement = "<%# %s"
+      --     },
+      --   },
+      -- },
       autotag               = { enable = false, },
       matchup               = { enable = true, },
       indent                = { enable = true, },

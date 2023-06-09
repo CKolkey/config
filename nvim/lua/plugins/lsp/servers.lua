@@ -18,30 +18,49 @@ local prettierd = {
 
 return {
   rust_analyzer = {},
+  bashls = {},
   solargraph = {
     -- cmd = { "nc", "127.0.0.1", "7658" },
     cmd = solargraph_cmd(),
-    -- capabilities = {
-    --   textDocument = {
-    --     publishDiagnostics = false,
-    --     formatting = false
-    --   }
-    -- }
   },
   efm = {
     init_options = { documentFormatting = true },
-    filetypes = { "javascript" },
+    filetypes = {
+      "lua",
+      "javascript",
+      "javascriptreact",
+      "javascript.jsx",
+      "typescript",
+      "typescriptreact",
+      "typescript.tsx",
+    },
     settings = {
       rootMarkers = { ".git/" },
       languages = {
-        javascript = { prettierd }
-      }
-    }
+        ["lua"] = {
+          {
+            formatCommand = "stylua --color Never -",
+            formatStdin = true,
+            rootMarkers = { "stylua.toml", ".stylua.toml" },
+          },
+        },
+        ["javascript"] = { prettierd },
+        ["javascriptreact"] = { prettierd },
+        ["javascript.jsx"] = { prettierd },
+        ["typescript"] = { prettierd },
+        ["typescriptreact"] = { prettierd },
+        ["typescript.tsx"] = { prettierd },
+      },
+    },
   },
   tsserver = {
-    disable_formatting = true
+    init_options = {
+      documentFormatting = false,
+      hostInfo = "neovim",
+    },
   },
   lua_ls = {
+    init_options = { documentFormatting = false },
     settings = {
       Lua = {
         runtime = {
@@ -54,12 +73,12 @@ return {
         format = {
           enable = false,
           defaultConfig = {
-            indent_style     = "space",
-            indent_size      = "2",
-            quote_style      = "AutoPreferDouble",
+            indent_style = "space",
+            indent_size = "2",
+            quote_style = "AutoPreferDouble",
             call_parentheses = "Always",
-            column_width     = "120",
-            line_endings     = "Unix",
+            column_width = "120",
+            line_endings = "Unix",
           },
         },
         diagnostics = {
@@ -78,5 +97,5 @@ return {
         },
       },
     },
-  }
+  },
 }

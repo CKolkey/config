@@ -2,7 +2,6 @@ return {
   "nvim-telescope/telescope.nvim",
   lazy = true,
   dependencies = {
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     "nvim-telescope/telescope-ui-select.nvim",
     "natecraddock/telescope-zf-native.nvim",
     "nvim-lua/plenary.nvim",
@@ -13,6 +12,9 @@ return {
     local actions = require("telescope.actions")
     require("telescope").setup({
       defaults = {
+        multi_icon        = Icons.git.staged,
+        entry_prefix      = "   ",
+        selection_caret   = Icons.misc.current .. " ",
         borderchars       = {
           prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
           results = { " ", " ", " ", " ", " ", " ", " ", " " },
@@ -28,11 +30,14 @@ return {
         prompt_title      = false,
         results_title     = false,
         preview_title     = false,
-        prompt_prefix     = " ",
+        prompt_prefix     = "  ",
         sorting_strategy  = "ascending",
         file_ignore_patterns = {
           '^.git/*',
-          '^app/assets/builds/*'
+          '^log/*',
+          '^public/*',
+          '^app/assets/builds/*',
+          '^spec/vcr_cassettes/*',
         },
         vimgrep_arguments = {
           "rg",
@@ -40,10 +45,10 @@ return {
           "--no-heading",
           "--with-filename",
           "--line-number",
-          "--hidden",
+          -- "--hidden",
           "--column",
           "--smart-case",
-          "--trim",
+          -- "--trim",
         },
         mappings          = {
           i = {
@@ -101,12 +106,16 @@ return {
           theme             = "ivy",
           hide_parent_dir   = true,
           layout_strategy   = "bottom_pane",
+          git_status        = false,
           previewer         = false,
           prompt_path       = true,
           hidden            = true,
           respect_gitignore = false,
           grouped           = true,
           border            = false,
+        },
+        live_grep_args = {
+          auto_quoting = false,
         },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown({
@@ -119,5 +128,11 @@ return {
         },
       },
     })
+
+    local original_edit = require("telescope.actions.set").edit
+    require("telescope.actions.set").edit = function(...)
+      original_edit(...)
+      vim.cmd.stopinsert()
+    end
   end
 }

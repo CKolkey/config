@@ -4,7 +4,7 @@ return {
     event = "BufReadPre",
     config = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "help", "neo-tree", "lazy", "NeogitStatus", "neotest-summary" },
+        pattern = { "help", "neo-tree", "lazy", "NeogitStatus" },
         callback = function()
           vim.b.miniindentscope_disable = true
         end,
@@ -106,13 +106,9 @@ return {
   {
     "echasnovski/mini.comment",
     event = "BufReadPre",
-    dependencies = {
-      "JoosepAlviste/nvim-ts-context-commentstring",
-    },
+    opts = {},
     config = function()
-      require("mini.comment").setup(
-        { hooks = { pre = require("ts_context_commentstring.internal").update_commentstring, }, }
-      )
+      require("mini.comment").setup({})
     end
   },
   {
@@ -132,6 +128,12 @@ return {
     "echasnovski/mini.bufremove",
     config = function()
       require("mini.bufremove").setup({})
+    end,
+  },
+  {
+    "echasnovski/mini.bracketed",
+    config = function()
+      require("mini.bracketed").setup({})
     end,
   }
 }

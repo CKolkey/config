@@ -24,14 +24,12 @@ return {
       item    = { Icons.misc.collapsed, Icons.misc.expanded },
     },
     commit_popup = {
-      kind = "vsplit"
+      kind = "auto"
     },
     mappings                    = {
       status = {
-        [" "] = "Toggle",
         ["l"] = "Toggle",
         ["h"] = "Toggle",
-        ["z"] = "StashPopup",
       },
     }
   }

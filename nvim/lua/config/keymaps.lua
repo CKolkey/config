@@ -13,6 +13,8 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
+    ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
+
     -- Buffer/Window Movements
     ["<C-h>"]            = Kitty.navigate.left,
     ["<C-j>"]            = Kitty.navigate.bottom,
@@ -134,7 +136,33 @@ local mappings = {
     ["<cr>"]             = "o<Esc>",
 
     -- rebinds semi-colon in normal mode.
-    [";"]                = { ":", { silent = false, nowait = true } },
+    -- Also does some silly stuff to auto-load the last command in the window until user
+    -- enters content. Might remove that bit.
+    -- [";"]                = {
+    --   function()
+    --     local count = 0
+    --     vim.api.nvim_create_autocmd("CmdlineChanged", {
+    --       callback = function()
+    --         if count == 0 then
+    --           count = 1
+    --         elseif count == 1 then
+    --           local command = vim.api.nvim_replace_termcodes("<c-b><c-u><c-e>", true, false, true)
+    --           vim.api.nvim_feedkeys(command, "c", false)
+    --           return true
+    --         end
+    --       end,
+    --     })
+    --
+    --     return ":<up>"
+    --   end,
+    --   { silent = false, nowait = true, expr = true }
+    -- },
+
+    [";"] = { ":", { silent = false, nowait = true} },
+
+    -- Goto next/previous hunks in buffer
+    ["[g"] = "<cmd>Gitsigns next_hunk<cr>",
+    ["]g"] = "<cmd>Gitsigns prev_hunk<cr>",
 
     -- Forward/backward on Changelist
     ["<m-i>"]            = "g,",
@@ -230,15 +258,15 @@ local mappings = {
     ["-"]                = "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>",
     ["_"]                = "<cmd>Neotree filesystem toggle<cr>",
 
-    ["z="]               = function()
-      require("telescope.builtin").spell_suggest(require('telescope.themes').get_cursor({
-        borderchars = {
-          prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
-          results = { " ", " ", " ", " ", " ", " ", " ", " " },
-          preview = { "", "", "", "▌", "▌", "", "", "▌" },
-        },
-      }))
-    end,
+    -- ["z="]               = function()
+    --   require("telescope.builtin").spell_suggest(require('telescope.themes').get_cursor({
+    --     borderchars = {
+    --       prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
+    --       results = { " ", " ", " ", " ", " ", " ", " ", " " },
+    --       preview = { "", "", "", "▌", "▌", "", "", "▌" },
+    --     },
+    --   }))
+    -- end,
 
     -- Live grep, starting with cursor word
     ["<c-space>"]        = function()

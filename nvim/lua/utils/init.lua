@@ -8,6 +8,22 @@ function P(...)
   vim.print(...)
 end
 
+-- Global inspection function that dumps output to buffer
+function S(...)
+  local objects = {}
+  for i = 1, select('#', ...) do
+    local v = select(i, ...)
+    table.insert(objects, vim.inspect(v))
+  end
+
+  local lines = vim.split(table.concat(objects, '\n'), '\n')
+  vim.cmd("new scratch")
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  vim.fn.append(lnum, lines)
+
+  return ...
+end
+
 function utils.delete_buf()
   require("notify").dismiss({})
   MiniBufremove.delete()
@@ -129,9 +145,9 @@ function utils.table_wrap(obj)
 end
 
 function utils.print_and_clear(text, delay)
-  print(text)
+  _G.old_print(text)
   vim.fn.timer_start(
     delay,
-    function() vim.cmd.echo([['']]) end
+    function() _G.old_print("") end
   )
 end
