@@ -38,3 +38,5 @@ if [[ ! -d "${HOME}/.config" ]]; then
   ln -s ~/.config/rdbg/rdbgrc.rb ~/.rdbgrc.rb
   ln -s ~/.config/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
 fi
+
+echo "Install: https://github.com/KoffeinFlummi/htop-vim"

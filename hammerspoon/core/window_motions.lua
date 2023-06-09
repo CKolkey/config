@@ -41,32 +41,35 @@ local function getDisplaySpaces()
   return query("displays --display").spaces
 end
 
-local function emptySpaceOnDisplay(spaceID)
+local function isEmptySpace(spaceID)
   local result = query("spaces --space " .. spaceID)
-  return result and result["first-window"] == 0 and result["last-window"] == 0
+  return result and (result["first-window"] == 0 and result["last-window"] == 0)
+end
+
+local function getEmptySpace()
+  for _, id in ipairs(getDisplaySpaces()) do
+    if isEmptySpace(id) then
+      return id
+    end
+  end
+
+  -- No empty space found - create a new one
+  local window = hs.window.focusedWindow()
+  hs.spaces.addSpaceToScreen(window:screen())
+  return "last"
 end
 
 local function sendFocusedWindowToNewSpace(opts)
   opts = opts or {}
   local window = hs.window.focusedWindow()
+  local spaceID = getEmptySpace()
 
-  local spaceID
-  for _, id in ipairs(getDisplaySpaces()) do
-    if emptySpaceOnDisplay(id) then
-      spaceID = id
-      break
-    end
-  end
-
-  if not spaceID then
-    hs.spaces.addSpaceToScreen(window:screen())
-  end
-
-  _yabai("window", "space " .. (spaceID or "last"))
-  _yabai("space", "focus " .. (spaceID or "last"))
+  _yabai("window", "space " .. spaceID)
 
   if opts.keepFocus then
     window:focus()
+  else
+    _yabai("space", "focus " .. spaceID)
   end
 end
 

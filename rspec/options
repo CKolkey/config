@@ -1,19 +1,35 @@
 --order random
 
 <% begin %>
-<% require('fuubar') %>
---format Fuubar
---color
+  <% require('fuubar') %>
+  --format Fuubar
+  --color
 <% rescue LoadError %>
---format progress
+  --format progress
 <% end %>
 
 <% if File.exist?("./spec_helper.rb") %>
---require spec_helper
+  --require spec_helper
 <% end %>
 
-# --require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
-# --format QuickfixFormatter
+<% begin %>
+  <% require('quickfix_formatter') %>
+  --format QuickfixFormatter
+<% rescue LoadError %>
+  <% if File.exist?("#{ENV['XDG_CONFIG_HOME'].strip}rspec/quickfix_formatter.rb") %>
+    --require=<%= ENV['XDG_CONFIG_HOME'].strip %>rspec/quickfix_formatter.rb
+  <% else %>
+    --format failures
+  <% end %>
+  --out tmp/quickfix.out
+<% end %>
 
---format failures
---out tmp/quickfix.out
+<%
+  begin
+    require "super_diff/rspec-rails"
+  rescue LoadError
+    puts "Cannot load SuperDiff"
+  end
+%>
+
+# vim: ft=eruby

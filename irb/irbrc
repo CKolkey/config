@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 # vim: ft=ruby
 
 IRB.conf[:USE_AUTOCOMPLETE] = false
 
-gems = %w[active_support awesome_print]
+gems = %w[irbtools active_support awesome_print]
 
 libs = %w[
   pathname base64 benchmark fileutils

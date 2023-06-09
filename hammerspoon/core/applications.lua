@@ -14,12 +14,12 @@ local log = hs.logger.new("hammerspoon", "debug")
 local apps = {
   ["Kitty"] = {
     bundleID = "net.kovidgoyal.kitty",
-    launch_key = "k",
+    launch_key = "i",
   },
-  ["Emacs"] = {
-    bundleID = "org.gnu.Emacs",
-    launch_key = "m",
-  },
+  -- ["Emacs"] = {
+  --   bundleID = "org.gnu.Emacs",
+  --   launch_key = "m",
+  -- },
   ["Slack"] = {
     bundleID = "com.tinyspeck.slackmacgap",
     launch_key = "s",
@@ -32,8 +32,8 @@ local apps = {
     bundleID = "com.google.Chrome",
     launch_key = "w",
   },
-  ["Microsoft Outlook"] = {
-    bundleID = "com.microsoft.Outlook",
+  ["Mail"] = {
+    bundleID = "com.apple.mail",
     launch_key = "o",
   },
 }

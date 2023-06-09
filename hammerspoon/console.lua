@@ -15,7 +15,9 @@ function obj:init(opts)
   R = hs.reload
   CC = hs.console.clearConsole
   A = hs.alert
-  P = print
+  P = function(...)
+    print(hs.inspect(...))
+  end
   H = hs.help
   D = hs.hsdocs
   S = hs.openPreferences
