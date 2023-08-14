@@ -6,6 +6,7 @@ then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+# eval brew to add to path
 brew install gh
 echo "Logging in with Github"
 gh auth login
@@ -31,12 +32,12 @@ git config --global core.excludesFile '~/.config/git/ignore'
 
 bash defaults.osx
 
-if [[ ! -d "${HOME}/.config" ]]; then
-  mkdir ~/.config
+# if [[ ! -d "${HOME}/.config" ]]; then
+  # mkdir ~/.config
   ln -s ~/.config/hammerspoon/ ~/.hammerspoon
   ln -s ~/.config/asdf/config ~/.asdfrc
   ln -s ~/.config/rdbg/rdbgrc.rb ~/.rdbgrc.rb
   ln -s ~/.config/DefaultKeyBinding.dict ~/Library/KeyBindings/DefaultKeyBinding.dict
-fi
+# fi
 
 echo "Install: https://github.com/KoffeinFlummi/htop-vim"

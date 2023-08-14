@@ -14,7 +14,8 @@
 [core]
   pager = delta
   editor = nvim
-	excludesFile = ~/.config/git/ignore
+;   fsmonitor = true
+  excludesfile = /Users/cameron/.config/git/ignore
   attributesfile = /users/cameron/.gitattributes
 
 [interactive]
@@ -109,6 +110,6 @@
 [delta]
   features = villsau
 
-# http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
+; http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
 [url "git@github.com:ckolkey/"]
   insteadOf = "git://github.com/ckolkey/"

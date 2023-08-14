@@ -9,14 +9,15 @@ $logger = Logger.new("#{Dir.home}/.config/yabai/display_added.log")
 class Rules
   def self.home
     [
-      { app: '^System Preferences*',               manage: 'off', border: 'off' },
-      { app: '^Finder$',  title: '(^Copy$)',       manage: 'off', border: 'off' },
+      { app: '^System Preferences*',                         manage: 'off', border: 'off' },
+      { app: '^Cisco Secure Client*',                        manage: 'off', border: 'off' },
+      { app: '^Finder$',            title: '(^Copy$)',       manage: 'off', border: 'off' },
       { app: '^Microsoft Outlook$', title: '(Reminder)',     manage: 'off', border: 'off' },
       { app: '^Microsoft Outlook$', title: '\d (Reminders)', manage: 'off', border: 'off' },
-      { app: '^Microsoft Outlook$', display: :macbook },
-      { app: "Slack", display: :macbook },
-      { app: '^VLC*',                              manage: 'off', border: 'off' },
-      { app: "^kitty$", display: :lenovo }
+      { app: '^Microsoft Outlook$',                                     display: :macbook },
+      { app: "Slack",                                                   display: :macbook },
+      { app: '^VLC*',                                        manage: 'off', border: 'off' },
+      { app: "^kitty$",                                                display: :phillips }
     ]
   end
 
@@ -28,8 +29,6 @@ class Rules
     [
       { app: '^System Preferences*',               manage: 'off', border: 'off' },
       { app: '^Finder$',  title: '(^Copy$)',       manage: 'off', border: 'off' },
-      { app: '^Outlook$', title: '(Reminder)',     manage: 'off', border: 'off' },
-      { app: '^Outlook$', title: '\d (Reminders)', manage: 'off', border: 'off' },
       { app: '^VLC*',                              manage: 'off', border: 'off' }
     ]
   end
@@ -37,18 +36,18 @@ end
 
 class Display
   DISPLAYS = {
-    macbook: 'F6C43BE9-0505-9F49-91F0-911B4FAD3323', # need solution for M1 too
-    samsung: '38302423-DFEB-83AD-2376-8D659CB33836',
-    lenovo: 'E23DEDEA-D97F-1A22-84EF-542CD08F4588',
-    dell: 'TBD' # office screens
+    macbook:  '37D8832A-2D66-02CA-B9F7-8F30A301B230',
+    phillips: '489075DF-6790-494E-9CE8-FB32EA6130F5',
+    lenovo:   '7D6ED414-BEDC-4B87-8019-B379F36BA5B7',
   }
 
-  attr_reader :name, :spaces, :id
+  attr_reader :name, :spaces, :id, :uuid
 
   def initialize(opts)
     @id     = opts['index']
     @name   = DISPLAYS.invert[opts['uuid']]
     @spaces = opts["spaces"]
+    @uuid   = opts['uuid']
   end
 end
 
@@ -60,7 +59,7 @@ class Yabai
   end
 
   def yabai(*args)
-    Open3.capture3('/usr/local/bin/yabai', *args)
+    Open3.capture3('/opt/homebrew/bin/yabai', *args)
   end
 
   def displays
@@ -107,8 +106,14 @@ class Yabai
     rules = []
     rules << "app='#{rule.delete(:app)}'"
     rules << "title='#{rule.delete(:title)}'" if rule[:title]
-    rules << "display=#{displays.find { |d| d.name == rule.delete(:display) }.id}" if rule[:display]
-    rules += rule.map { |k, v| "#{k}=#{v}" }
+    rules << "display=#{displays.find { _1.name == rule.fetch(:display) }.uuid }" if rule[:display]
+
+    rules += rule.filter_map do |k, v|
+      next if k == :display
+
+      "#{k}=#{v}"
+    end
+
     rules
   end
 end
