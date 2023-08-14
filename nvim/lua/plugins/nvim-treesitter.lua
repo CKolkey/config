@@ -14,7 +14,7 @@ return {
   end,
   opts = function()
     require("nvim-treesitter.configs").setup({
-      auto_install          = false,
+      auto_install          = true,
       ignore_install        = {},
       ensure_installed      = {
         -- "comment",
@@ -23,6 +23,7 @@ return {
         "gitcommit",
         "gitignore",
         "html",
+        "embedded_template",
         "json",
         "lua",
         "luap",
@@ -68,7 +69,11 @@ return {
         },
         highlight_definitions = {
           enable               = true,
-          disable              = { "help" },
+          disable = function(lang, buffer)
+            local skip = { "help" }
+
+            return vim.api.nvim_buf_line_count(buffer) > 20000 or vim.tbl_contains(skip, lang)
+          end,
           clear_on_cursor_move = true,
         },
         smart_rename = {
@@ -88,10 +93,20 @@ return {
       --     },
       --   },
       -- },
+      highlight             = {
+        enable = true,
+        disable = function(_lang, buffer)
+          return vim.api.nvim_buf_line_count(buffer) > 50000
+        end
+      },
       autotag               = { enable = false, },
-      matchup               = { enable = true, },
+      matchup               = {
+        enable = true,
+        disable = function(_lang, buffer)
+          return vim.api.nvim_buf_line_count(buffer) > 20000
+        end,
+      },
       indent                = { enable = true, },
-      highlight             = { enable = true, },
       endwise               = { enable = true, },
     })
 

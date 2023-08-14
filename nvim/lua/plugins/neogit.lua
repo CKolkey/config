@@ -1,36 +1,36 @@
 return {
-  "ckolkey/neogit",
+  "NeogitOrg/neogit",
   cmd = "Neogit",
   dev = true,
   opts = {
-    console_timeout             = 10000,
-    auto_show_console           = true,
-    disable_hint                = true,
+    console_timeout = 10000,
+    telescope_sorter = function()
+      return require("telescope").extensions.fzf.native_fzf_sorter()
+    end,
+    auto_show_console = true,
+    disable_hint = true,
     disable_commit_confirmation = true,
-    disable_insert_on_commit    = true,
-    kind                        = "tab",
-    use_per_project_settings    = true,
-    remember_settings           = true,
-    ignored_settings             = {
-      "NeogitPushPopup--force-with-lease",
-      "NeogitPushPopup--force",
-      "NeogitCommitPopup--allow-empty",
-    },
-    integrations                = {
-      diffview = true,
-    },
-    signs                       = {
+    disable_insert_on_commit = "auto",
+    kind = "tab",
+    use_per_project_settings = true,
+    remember_settings = true,
+    -- mappings = {
+    --   status = {
+    --     ["s"] = false,
+    --   },
+    -- },
+    signs = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },
-      item    = { Icons.misc.collapsed, Icons.misc.expanded },
+      item = { Icons.misc.collapsed, Icons.misc.expanded },
     },
-    commit_popup = {
-      kind = "auto"
+    commit_editor = {
+      kind = "auto",
     },
-    mappings                    = {
-      status = {
-        ["l"] = "Toggle",
-        ["h"] = "Toggle",
-      },
-    }
-  }
+    rebase_editor = {
+      kind = "auto",
+    },
+    merge_editor = {
+      kind = "auto",
+    },
+  },
 }

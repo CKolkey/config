@@ -12,7 +12,7 @@ local definitions = {
   },
   format_file = {
     desc = "Formatting File after write",
-    { event = "BufWritePost", callback = require("utils.functions").format },
+    -- { event = "BufWritePost", callback = require("utils.functions").format },
   },
   autoreload = {
     desc = "Automatically reloads buffer if it's changed externally",

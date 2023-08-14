@@ -1,6 +1,6 @@
 _G.utils = {}
 
-Icons  = require("config.ui.icons")
+Icons = require("config.ui.icons")
 Colors = require("config.ui.colors")
 
 -- Global deep-inspect function
@@ -11,12 +11,12 @@ end
 -- Global inspection function that dumps output to buffer
 function S(...)
   local objects = {}
-  for i = 1, select('#', ...) do
+  for i = 1, select("#", ...) do
     local v = select(i, ...)
     table.insert(objects, vim.inspect(v))
   end
 
-  local lines = vim.split(table.concat(objects, '\n'), '\n')
+  local lines = vim.split(table.concat(objects, "\n"), "\n")
   vim.cmd("new scratch")
   local lnum = vim.api.nvim_win_get_cursor(0)[1]
   vim.fn.append(lnum, lines)
@@ -40,7 +40,7 @@ end
 -- @param filename string
 -- @param mode string
 function utils.safe_read_file(filename, mode)
-  local file, err = io.open(filename, 'r')
+  local file, err = io.open(filename, "r")
   if not file then
     error(err)
   end
@@ -145,9 +145,10 @@ function utils.table_wrap(obj)
 end
 
 function utils.print_and_clear(text, delay)
-  _G.old_print(text)
-  vim.fn.timer_start(
-    delay,
-    function() _G.old_print("") end
-  )
+  local local_print = _G.old_print or print
+
+  local_print(text)
+  vim.fn.timer_start(delay, function()
+    local_print("")
+  end)
 end

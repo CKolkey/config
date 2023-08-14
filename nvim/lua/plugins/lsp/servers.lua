@@ -63,13 +63,6 @@ return {
     init_options = { documentFormatting = false },
     settings = {
       Lua = {
-        runtime = {
-          version = "Lua 5.1",
-          -- path = {
-          --   '?.lua',
-          --   '?/init.lua',
-          -- }
-        },
         format = {
           enable = false,
           defaultConfig = {
@@ -89,7 +82,6 @@ return {
           globals = { "vim", "hs" },
         },
         workspace = {
-          library = vim.api.nvim_get_runtime_file("", true),
           checkThirdParty = false,
         },
         telemetry = {

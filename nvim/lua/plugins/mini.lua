@@ -24,11 +24,11 @@ return {
     event = "BufReadPre",
     opts = {
       mappings = {
-        forward       = "f",
-        backward      = "F",
-        forward_till  = "t",
+        forward = "f",
+        backward = "F",
+        forward_till = "t",
         backward_till = "T",
-        repeat_jump   = "",
+        repeat_jump = "",
       },
     },
     config = function(_, opts)
@@ -53,11 +53,11 @@ return {
           }, {}),
           c = ai.gen_spec.treesitter({
             a = "@class.outer",
-            i = "@class.inner"
+            i = "@class.inner",
           }, {}),
         },
       })
-    end
+    end,
   },
   {
     "echasnovski/mini.align",
@@ -73,7 +73,7 @@ return {
           end,
         },
       })
-    end
+    end,
   },
   {
     "echasnovski/mini.surround",
@@ -82,12 +82,12 @@ return {
       search_method = "cover_or_next",
       highlight_duration = 2000,
       mappings = {
-        add            = "ys",
-        delete         = "ds",
-        replace        = "cs",
-        highlight      = "",
-        find           = "",
-        find_left      = "",
+        add = "ys",
+        delete = "ds",
+        replace = "cs",
+        highlight = "",
+        find = "",
+        find_left = "",
         update_n_lines = "",
       },
       custom_surroundings = {
@@ -109,18 +109,18 @@ return {
     opts = {},
     config = function()
       require("mini.comment").setup({})
-    end
+    end,
   },
   {
     "echasnovski/mini.move",
     config = function()
       require("mini.move").setup({
         mappings = {
-          right      = "", -- noop
-          left       = "", -- noop
-          line_left  = "", -- noop
+          right = "", -- noop
+          left = "", -- noop
+          line_left = "", -- noop
           line_right = "", -- noop
-        }
+        },
       })
     end,
   },
@@ -135,5 +135,5 @@ return {
     config = function()
       require("mini.bracketed").setup({})
     end,
-  }
+  },
 }

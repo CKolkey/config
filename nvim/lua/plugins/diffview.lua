@@ -1,9 +1,23 @@
 return {
-  'sindrets/diffview.nvim',
+  "sindrets/diffview.nvim",
   dependencies = {
-    'nvim-lua/plenary.nvim'
+    "nvim-lua/plenary.nvim",
   },
-  cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+  cmd = {
+    "DiffviewOpen",
+    "DiffviewFileHistory",
+  },
+  -- stylua: ignore
+  keys = {
+    { "<leader>dt", "<cmd>diffthis<CR>",                               mode = { "n" }, desc = "Diff this" },
+    { "<leader>do", "<cmd>diffoff<CR>",                                mode = { "n" }, desc = "Diff off" },
+    { "<leader>dd", "<cmd>DiffviewOpen<cr>",                           mode = { "n" }, desc = "Repo Diffview", nowait = true },
+    { "<leader>dh", "<cmd>DiffviewFileHistory<cr>",                    mode = { "n" }, desc = "Repo history" },
+    { "<leader>df", "<cmd>DiffviewFileHistory --follow %<cr>",         mode = { "n" }, desc = "File history" },
+    { "<leader>dm", "<cmd>DiffviewOpen master<cr>",                    mode = { "n" }, desc = "Diff with master" },
+    { "<leader>dl", "<cmd>.DiffviewFileHistory --follow<CR>",          mode = { "n" }, desc = "Line history" },
+    { "<leader>dd", "<esc><cmd>'<,'>DiffviewFileHistory --follow<CR>", mode = { "v" }, desc = "Range history" },
+  },
   config = function()
     local actions = require("diffview.actions")
 
@@ -29,7 +43,6 @@ return {
           { "n", "q", ":DiffviewClose<cr>", { desc = "Close Panel" } },
           { "n", "<down>", actions.select_next_entry, { desc = "Open the diff for the next file" } },
           { "n", "<up>", actions.select_prev_entry, { desc = "Open the diff for the previous file" } },
-
         },
         file_history_panel = {
           { "n", "q", ":DiffviewClose<cr>", { desc = "Close Panel" } },
@@ -55,7 +68,7 @@ return {
           { "n", "[x", actions.prev_conflict, { desc = "Go to the previous conflict" } },
           { "n", "]x", actions.next_conflict, { desc = "Go to the next conflict" } },
         },
-      }
+      },
     })
-  end
+  end,
 }

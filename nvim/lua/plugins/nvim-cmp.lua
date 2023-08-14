@@ -144,14 +144,14 @@ return {
       }),
 
       sources = {
-        { name = "path", priority_weight = 100, max_item_count = 3 },
+        { name = "path", priority_weight = 100, max_item_count = 40 },
         { name = "luasnip", priority_weight = 90, max_item_count = 2 },
-        { name = "nvim_lsp", priority_weight = 85, max_item_count = 10 },
+        { name = "nvim_lsp", priority_weight = 85, max_item_count = 50 },
         { name = "treesitter", priority_weight = 80, max_item_count = 5 },
         {
           name = "rg",
           priority_weight = 60,
-          max_item_count = 5,
+          max_item_count = 10,
           keyword_length = 5,
           option = {
             additional_arguments = "--smart-case",

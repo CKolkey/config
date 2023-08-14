@@ -2,9 +2,9 @@ local telescope = require("telescope.builtin")
 
 return function(options)
   return function(client, bufnr)
-    local keymaps  = { normal = {} }
+    local keymaps = { normal = {} }
     local autocmds = {}
-    local opts     = { noremap = true, buffer = bufnr }
+    local opts = { noremap = true, buffer = bufnr }
 
     if client.supports_method("textDocument/definition") then
       keymaps.normal["<c-]>"] = { telescope.lsp_definitions, opts }
@@ -22,16 +22,17 @@ return function(options)
       keymaps.normal["<c-s>"] = { telescope.lsp_workspace_symbols, opts }
     end
 
-    if client.supports_method("textDocument/publishDiagnostics")
-        or client.supports_method("textDocument/diagnostic")
+    if
+      client.supports_method("textDocument/publishDiagnostics")
+      or client.supports_method("textDocument/diagnostic")
     then
       autocmds.lsp_diagnostics_hover = {
         desc = "Show diagnostics when you hold cursor",
         {
-          event    = "CursorHold",
+          event = "CursorHold",
           callback = require("plugins.lsp.diagnostic").hover,
-          buffer   = bufnr
-        }
+          buffer = bufnr,
+        },
       }
     end
 
@@ -40,16 +41,24 @@ return function(options)
       autocmds.fetch_diagnostics = {
         desc = "Request diagnostics",
         {
-          event    = { 'BufEnter', 'BufWritePost', 'BufReadPost', 'InsertLeave', 'TextChanged' },
+          event = { "BufEnter", "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
           callback = require("plugins.lsp.diagnostic").request(client, bufnr),
-          buffer   = bufnr
-        }
+          buffer = bufnr,
+        },
       }
     end
 
-    -- if client.supports_method("textDocument/signatureHelp") then
-    --   require("lsp_signature").on_attach({ fixpos = true, padding = " " }, bufnr)
-    -- end
+    if client.supports_method("textDocument/signatureHelp") then
+      require("lsp_signature").on_attach({
+        -- hint_inline = function()
+        --   return true
+        -- end,
+        handler_opts = { border = "rounded" },
+        hint_prefix = "",
+        fixpos = true,
+        padding = " ",
+      }, bufnr)
+    end
 
     if client.supports_method("textDocument/codeAction") then
       keymaps.normal["<leader>ca"] = { vim.lsp.buf.code_action, opts }
@@ -67,16 +76,20 @@ return function(options)
       vim.api.nvim_buf_set_var(bufnr, "format_with_lsp", true)
 
       keymaps.normal["<leader><leader>"] = {
-        function() require("plugins.lsp.formatting").callback(client, bufnr) end,
-        opts
+        function()
+          require("plugins.lsp.formatting").callback(client, bufnr)
+        end,
+        opts,
       }
 
       autocmds.lsp_format_on_save = {
         desc = "Format buffer on save",
         {
-          event    = "BufWritePost",
-          callback = function() require("plugins.lsp.formatting").callback(client, bufnr) end,
-          buffer   = bufnr,
+          event = "BufWritePost",
+          callback = function()
+            require("plugins.lsp.formatting").callback(client, bufnr)
+          end,
+          buffer = bufnr,
         },
       }
     end

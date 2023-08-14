@@ -6,6 +6,7 @@ return {
     "natecraddock/telescope-zf-native.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope-live-grep-args.nvim",
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
     { "nvim-telescope/telescope-file-browser.nvim", dev = true }
   },
   config = function()
@@ -117,6 +118,12 @@ return {
         live_grep_args = {
           auto_quoting = false,
         },
+        fzf = {
+          fuzzy = true,
+          override_generic_sorter = false,
+          override_file_sorter = false,
+          case_mode = "smart_case",
+        },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown({
             borderchars = {
@@ -129,10 +136,10 @@ return {
       },
     })
 
-    local original_edit = require("telescope.actions.set").edit
-    require("telescope.actions.set").edit = function(...)
-      original_edit(...)
-      vim.cmd.stopinsert()
-    end
+    -- local original_edit = require("telescope.actions.set").edit
+    -- require("telescope.actions.set").edit = function(...)
+    --   original_edit(...)
+    --   vim.cmd.stopinsert()
+    -- end
   end
 }
