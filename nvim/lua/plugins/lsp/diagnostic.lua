@@ -43,7 +43,10 @@ function M.request(client, buffer)
       { textDocument = params },
       function(err, result)
         if err then return end
-        if not result then return end
+        if not result then
+          P("LSP: diagnostics returned no result")
+          return
+        end
 
         vim.lsp.diagnostic.on_publish_diagnostics(
           nil,

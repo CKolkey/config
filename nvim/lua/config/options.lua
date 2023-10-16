@@ -1,6 +1,7 @@
 vim.g.mapleader = "\\"
 
-local opts = {
+-- stylua: ignore
+local opts       = {
   breakindent    = true,
   clipboard      = "unnamedplus",
   colorcolumn    = "120",
@@ -9,10 +10,11 @@ local opts = {
   dictionary     = "/usr/share/dict/words",
   expandtab      = true,
   fillchars      = Icons.fillchars,
-  foldenable     = true,
+  -- foldexpr       = "v:lua.vim.treesitter.foldexpr()",
   foldlevel      = 99,
   foldlevelstart = 99,
   foldnestmax    = 10,
+  -- foldtext       = "v:lua.vim.treesitter.foldtext()",
   formatoptions  = "crqnj",
   grepprg        = "rg --vimgrep --no-heading --hidden",
   ignorecase     = true,
@@ -38,7 +40,7 @@ local opts = {
   smoothscroll   = true,
   softtabstop    = 2,
   spell          = true,
-  spelllang      = 'en_us',
+  spelllang      = "en_us",
   splitbelow     = true,
   splitkeep      = "screen",
   splitright     = true,
@@ -51,7 +53,7 @@ local opts = {
   undolevels     = 10000,
   updatetime     = 300,
   virtualedit    = "block,onemore",
-  wildmode       = "longest:full,full"
+  wildmode       = "longest:full,full",
 }
 
 for key, value in pairs(opts) do

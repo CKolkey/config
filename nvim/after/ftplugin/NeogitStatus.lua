@@ -9,7 +9,7 @@ vim.api.nvim_win_set_option(win_id, "spell", false)
 vim.api.nvim_win_set_option(win_id, "colorcolumn", "")
 vim.api.nvim_win_set_option(win_id, "list", false)
 
-vim.cmd([[au ExitPre <buffer> tabclose | quit]])
+-- vim.cmd([[au ExitPre <buffer> tabclose | quit]])
 
 vim.keymap.set("n", "V", "V", { buffer = true, noremap = true })
 

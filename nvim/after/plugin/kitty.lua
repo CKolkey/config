@@ -5,7 +5,6 @@ if _G.Kitty then
 end
 
 _G.Kitty = {
-  fn = {},
   navigate = {},
   opts = {
     window_directions = { h = "left", j = "bottom", k = "top", l = "right" }
@@ -13,7 +12,7 @@ _G.Kitty = {
 }
 
 -- Switches buffers if possible, otherwise attempts to switch KITTY window
-function Kitty.fn.navigate(direction)
+local function navigate(direction)
   local window = vim.fn.winnr()
 
   -- Attempt VIM command
@@ -28,10 +27,18 @@ function Kitty.fn.navigate(direction)
   os.execute("kitty @ kitten neighboring_window.py " .. Kitty.opts.window_directions[direction])
 end
 
-function Kitty.navigate.left() Kitty.fn.navigate("h") end
+function Kitty.navigate.left()
+  navigate("h")
+end
 
-function Kitty.navigate.bottom() Kitty.fn.navigate("j") end
+function Kitty.navigate.bottom()
+  navigate("j")
+end
 
-function Kitty.navigate.top() Kitty.fn.navigate("k") end
+function Kitty.navigate.top()
+  navigate("k")
+end
 
-function Kitty.navigate.right() Kitty.fn.navigate("l") end
+function Kitty.navigate.right()
+  navigate("l")
+end

@@ -1,6 +1,7 @@
 local M = {}
 
 local parse = require("lib.json").parse
+local log = hs.logger.new("hammerspoon", "debug")
 
 local function yabaiBinPath()
   if os.capture("/usr/bin/arch") == "arm64" then
@@ -43,7 +44,7 @@ end
 
 local function isEmptySpace(spaceID)
   local result = query("spaces --space " .. spaceID)
-  return result and (result["first-window"] == 0 and result["last-window"] == 0)
+  return result and (result["first-window"] == 0 and result["last-window"] == 0 and #result["windows"] == 0)
 end
 
 local function getEmptySpace()

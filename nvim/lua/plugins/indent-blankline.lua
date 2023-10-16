@@ -1,35 +1,39 @@
 return {
   "lukas-reineke/indent-blankline.nvim",
   event = "BufReadPre",
-  enabled = true,
-  init = function()
-    vim.g.indent_blankline_char = "▎"
-    vim.g.indent_blankline_char_blankline = "▎"
-  end,
+  main = "ibl",
+  -- init = function()
+  --   vim.g.indent_blankline_char = "▎"
+  --   vim.g.indent_blankline_char_blankline = "▎"
+  -- end,
   opts = {
-    filetype_exclude               = {
-      "lazy",
-      "man",
-      "gitmessengerpopup",
-      "diagnosticpopup",
-      "lspinfo",
-      "help",
-      "neo-tree",
-      "NeogitStatus",
-      "checkhealth",
-      "TelescopePrompt",
-      "TelescopeResults",
+    scope = {
+      enabled = false,
+      show_start = true,
+      show_end = true,
+      highlight = "IndentBlanklineContext",
     },
-    buftype_exclude                = { "terminal" },
-    show_trailing_blankline_indent = false,
-    use_treesitter_scope           = true,
-    space_char_blankline           = " ",
-    show_foldtext                  = false,
-    strict_tabs                    = true,
-    max_indent_increase            = 1,
-    show_current_context           = false,
-    show_current_context_start     = false,
-    context_highlight_list         = { "IndentBlanklineContext" },
-    viewport_buffer                = 100,
-  }
+    -- exlude = {
+    --   filetype = {
+    --     "lazy",
+    --     "man",
+    --     "gitmessengerpopup",
+    --     "diagnosticpopup",
+    --     "lspinfo",
+    --     "help",
+    --     "NeogitStatus",
+    --     "checkhealth",
+    --     "TelescopePrompt",
+    --     "TelescopeResults",
+    --     ""
+    --   },
+    -- },
+    -- show_trailing_blankline_indent = false,
+    -- space_char_blankline           = " ",
+    -- show_foldtext                  = false,
+    -- strict_tabs                    = true,
+    -- max_indent_increase            = 1,
+    -- context_highlight_list         = { "IndentBlanklineContext" },
+    -- viewport_buffer                = 100,
+  },
 }

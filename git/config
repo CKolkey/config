@@ -7,6 +7,9 @@
   status = auto
   ui = auto
 
+[status]
+  showUntrackedFiles = all
+
 [color "branch"]
   current = green
   remote = yellow

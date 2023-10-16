@@ -90,7 +90,7 @@ M.snippets = {
   fro = {
     description = "Ruby Magic String Literal Comment",
     "# frozen_string_literal: true",
-    newline()
+    newline(),
   },
   ar = {
     description = "attr_reader",
@@ -199,7 +199,7 @@ M.autosnippets = {
       if not node then
         return false
       end
-      return vim.treesitter.query.get_node_text(node, 0):find("^def initialize")
+      return vim.treesitter.get_node_text(node, 0):find("^def initialize")
     end,
     "@",
     i(1),

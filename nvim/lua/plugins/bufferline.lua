@@ -1,6 +1,10 @@
 return {
   "akinsho/bufferline.nvim",
-  enabled = true,
+  enabled = false,
+  keys = {
+    { "<m-l>", ":BufferLineCycleWindowlessNext<cr>", desc = "Swap next" },
+    { "<m-h>", ":BufferLineCycleWindowlessPrev<cr>", desc = "Swap previous" },
+  },
   dependencies = {
     "runiq/neovim-throttle-debounce",
     { "roobert/bufferline-cycle-windowless.nvim", opts = { default_enabled = true } },
@@ -16,7 +20,7 @@ return {
   end,
   opts = {
     options = {
-      numbers               = function(opts)
+      numbers = function(opts)
         local success, index = pcall(require("harpoon.mark").get_index_of, vim.api.nvim_buf_get_name(opts.id))
         if success and index and index > 0 then
           return opts.raise(index)
@@ -24,27 +28,28 @@ return {
           return ""
         end
       end,
-      separator_style       = "thick",
-      themable              = false,
-      diagnostics           = false,
-      custom_filter         = function(buf, _buf_nums)
-        if vim.bo[buf].buflisted
-            and not vim.bo[buf].mod
-            and vim.api.nvim_buf_get_name(buf) == ""
-            and vim.fn.bufwinnr(buf) < 0
+      separator_style = "thick",
+      themable = false,
+      diagnostics = false,
+      custom_filter = function(buf, _buf_nums)
+        if
+          vim.bo[buf].buflisted
+          and not vim.bo[buf].mod
+          and vim.api.nvim_buf_get_name(buf) == ""
+          and vim.fn.bufwinnr(buf) < 0
         then
           return false
         else
           return true
         end
       end,
-      close_command         = function()
+      close_command = function()
         require("mini.bufremove").delete()
       end,
       diagnostics_indicator = function(_, level)
         return " " .. Icons.diagnostics[string.upper(level)]
       end,
-      name_formatter        = function(buffer)
+      name_formatter = function(buffer)
         return " " .. buffer.name
       end,
     },
@@ -98,5 +103,5 @@ return {
       -- Unfocused buffer number
       numbers = { fg = Colors.fg, bg = Colors.bg0 },
     },
-  }
+  },
 }

@@ -15,29 +15,27 @@ return {
   },
 
   config = function()
-    local cmp     = require("cmp")
+    local cmp = require("cmp")
     local luasnip = require("luasnip")
     local compare = require("cmp.config.compare")
 
     -- Add parens to functions returned from cmp
     cmp.event:on(
-      'confirm_done',
-      require('nvim-autopairs.completion.cmp').on_confirm_done(
-        {
-          filetypes = {
-            ruby = false,
-            ["*"] = {
-              ["("] = {
-                kind = {
-                  cmp.lsp.CompletionItemKind.Function,
-                  cmp.lsp.CompletionItemKind.Method,
-                },
-                handler = require('nvim-autopairs.completion.handlers')["*"]
-              }
+      "confirm_done",
+      require("nvim-autopairs.completion.cmp").on_confirm_done({
+        filetypes = {
+          ruby = false,
+          ["*"] = {
+            ["("] = {
+              kind = {
+                cmp.lsp.CompletionItemKind.Function,
+                cmp.lsp.CompletionItemKind.Method,
+              },
+              handler = require("nvim-autopairs.completion.handlers")["*"],
             },
-          }
-        }
-      )
+          },
+        },
+      })
     )
 
     cmp.setup({
@@ -49,7 +47,7 @@ return {
           side_padding = 0,
         },
       },
-      
+
       formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
@@ -145,7 +143,19 @@ return {
 
       sources = {
         { name = "path", priority_weight = 100, max_item_count = 40 },
-        { name = "luasnip", priority_weight = 90, max_item_count = 2 },
+        {
+          name = "luasnip",
+          priority_weight = 90,
+          max_item_count = 2,
+          option = { use_show_condition = true },
+          entry_filter = function()
+            local context = require("cmp.config.context")
+            return not context.in_treesitter_capture("string")
+              and not context.in_syntax_group("String")
+              and not context.in_treesitter_capture("comment")
+              and not context.in_syntax_group("Comment")
+          end,
+        },
         { name = "nvim_lsp", priority_weight = 85, max_item_count = 50 },
         { name = "treesitter", priority_weight = 80, max_item_count = 5 },
         {
@@ -162,10 +172,7 @@ return {
 
     cmp.setup.cmdline("/", {
       mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources(
-        { { name = 'nvim_lsp_document_symbol' } },
-        { { name = 'buffer' } }
-      )
+      sources = cmp.config.sources({ { name = "nvim_lsp_document_symbol" } }, { { name = "buffer" } }),
     })
 
     cmp.setup.cmdline(":", {

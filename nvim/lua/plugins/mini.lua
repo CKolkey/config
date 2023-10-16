@@ -15,7 +15,7 @@ return {
         draw = {
           animation = indentscope.gen_animation.exponentialOut,
         },
-        symbol = vim.g.indent_blankline_char,
+        symbol = "▎",
       })
     end,
   },

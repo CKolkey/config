@@ -36,7 +36,6 @@ return function(options)
       }
     end
 
-    -- neovim doesn't support this method yet
     if client.supports_method("textDocument/diagnostic") then
       autocmds.fetch_diagnostics = {
         desc = "Request diagnostics",
@@ -50,9 +49,6 @@ return function(options)
 
     if client.supports_method("textDocument/signatureHelp") then
       require("lsp_signature").on_attach({
-        -- hint_inline = function()
-        --   return true
-        -- end,
         handler_opts = { border = "rounded" },
         hint_prefix = "",
         fixpos = true,

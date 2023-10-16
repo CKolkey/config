@@ -6,10 +6,14 @@ local function at_tip_of_undo_tree()
 end
 
 function M.format()
-  if vim.b.format_with_lsp then return end
-  if not at_tip_of_undo_tree() then return end
+  if vim.b.format_with_lsp then
+    return
+  end
+  if not at_tip_of_undo_tree() then
+    return
+  end
 
-  if vim.bo.modifiable and vim.bo.modified then
+  if vim.bo.modifiable then
     local view = vim.fn.winsaveview()
     vim.cmd([[silent! keeppatterns keepjumps %s/\s\+$//e]]) -- Strip Trailing Whitespace
     vim.cmd([[silent! keeppatterns keepjumps %s#\($\n\s*\)\+\%$##]]) -- Strip Empty lines at EOF
@@ -30,8 +34,8 @@ end
 function M.debugger()
   local breakpoint = {
     javascript = "debugger",
-    ruby       = 'debugger(pre: "info")',
-    lua        = "P()"
+    ruby = 'debugger(pre: "info")',
+    lua = "P()",
   }
 
   if breakpoint[vim.o.filetype] then
@@ -53,15 +57,11 @@ function M.update_buffer(event)
   end
 
   local writable_buffer = vim.bo[event.buf].modifiable and vim.bo[event.buf].buftype == ""
-  local file_exists     = vim.fn.expand("%") ~= ""
-  local saved_recently  = (vim.b.timestamp or 0) == vim.fn.localtime()
+  local file_exists = vim.fn.expand("%") ~= ""
+  local saved_recently = (vim.b.timestamp or 0) == vim.fn.localtime()
   local being_formatted = (vim.b.saving_format or false)
 
-  if writable_buffer
-      and file_exists
-      and not saved_recently
-      and not being_formatted
-  then
+  if writable_buffer and file_exists and not saved_recently and not being_formatted then
     vim.cmd("silent update")
     callback()
   end
@@ -89,6 +89,57 @@ function M.unlink_snippets()
   end
 end
 
+function M.smart_delete()
+  if vim.api.nvim_get_current_line():match("^%s*$") then
+    return '"_dd'
+  else
+    return "dd"
+  end
+end
+
+function M.load_quickfix()
+  if M.file_in_cwd("tmp/quickfix.out") then
+    vim.cmd("silent cf tmp/quickfix.out")
+    vim.cmd("QFToggle!")
+    vim.notify("Loaded Quickfix", vim.log.levels.INFO)
+  else
+    vim.notify("No quickfix file", vim.log.levels.WARN)
+  end
+end
+
+function M.smart_join()
+  vim.cmd("normal! mzJ")
+
+  local col = vim.fn.col(".")
+  local context = string.sub(vim.fn.getline("."), col - 1, col + 1)
+  if
+    context == ") ."
+    or context == "} ."
+    or context == "] ."
+    or context == ") :"
+    or context:match("%( .")
+    or context:match(". ,")
+    or context:match("%w %.")
+  then
+    vim.cmd("undojoin | normal! x")
+  elseif context == ",)" then
+    vim.cmd("undojoin | normal! hx")
+  end
+
+  vim.cmd("normal! `z")
+end
+
+function M.smart_insert()
+  if #vim.fn.getline(".") == 0 then
+    return [["_cc]]
+  else
+    return "i"
+  end
+end
+
+function M.feed_current_dir()
+  vim.api.nvim_feedkeys(vim.fn.expand("%:p:h") .. "/", "c", false)
+end
 -- quick.command("Profile", function()
 --   vim.cmd.profile("start /tmp/profile.log")
 --   vim.cmd.profile("file *")

@@ -10,13 +10,13 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
   build = function()
-    require('nvim-treesitter.install').update({ with_sync = true })()
+    require("nvim-treesitter.install").update({ with_sync = true })()
   end,
   opts = function()
     require("nvim-treesitter.configs").setup({
-      auto_install          = true,
-      ignore_install        = {},
-      ensure_installed      = {
+      auto_install = true,
+      ignore_install = {},
+      ensure_installed = {
         -- "comment",
         "bash",
         "fish",
@@ -35,40 +35,40 @@ return {
         "vimdoc",
         "yaml",
       },
-      playground            = {
-        enable          = true,
-        disable         = {},
-        updatetime      = 25, -- Debounced time for highlighting nodes in the playground from source code
+      playground = {
+        enable = true,
+        disable = {},
+        updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
         persist_queries = false, -- Whether the query persists across vim sessions
-        keybindings     = {
-          toggle_query_editor       = "o",
-          toggle_hl_groups          = "i",
+        keybindings = {
+          toggle_query_editor = "o",
+          toggle_hl_groups = "i",
           toggle_injected_languages = "t",
-          toggle_anonymous_nodes    = "a",
-          toggle_language_display   = "I",
-          focus_language            = "f",
-          unfocus_language          = "F",
-          update                    = "R",
-          goto_node                 = "<cr>",
-          show_help                 = "?",
+          toggle_anonymous_nodes = "a",
+          toggle_language_display = "I",
+          focus_language = "f",
+          unfocus_language = "F",
+          update = "R",
+          goto_node = "<cr>",
+          show_help = "?",
         },
       },
-      query_linter          = {
-        enable           = true,
+      query_linter = {
+        enable = true,
         use_virtual_text = true,
-        lint_events      = { "BufWrite", "CursorHold" },
+        lint_events = { "BufWrite", "CursorHold" },
       },
-      refactor              = {
+      refactor = {
         navigation = {
-          enable  = true,
+          enable = true,
           keymaps = {
-            goto_definition     = "<c-]>",
-            goto_next_usage     = "]]",
+            goto_definition = "<c-]>",
+            goto_next_usage = "]]",
             goto_previous_usage = "[[",
           },
         },
         highlight_definitions = {
-          enable               = true,
+          enable = true,
           disable = function(lang, buffer)
             local skip = { "help" }
 
@@ -77,7 +77,7 @@ return {
           clear_on_cursor_move = true,
         },
         smart_rename = {
-          enable  = true,
+          enable = true,
           keymaps = {
             smart_rename = "R",
           },
@@ -93,29 +93,29 @@ return {
       --     },
       --   },
       -- },
-      highlight             = {
+      highlight = {
         enable = true,
         disable = function(_lang, buffer)
           return vim.api.nvim_buf_line_count(buffer) > 50000
-        end
+        end,
       },
-      autotag               = { enable = false, },
-      matchup               = {
+      autotag = { enable = false },
+      matchup = {
         enable = true,
         disable = function(_lang, buffer)
           return vim.api.nvim_buf_line_count(buffer) > 20000
         end,
       },
-      indent                = { enable = true, },
-      endwise               = { enable = true, },
+      indent = { enable = true },
+      endwise = { enable = true },
     })
 
     local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
     parser_config.luap = {
       install_info = {
-        url         = "https://github.com/vhyrro/tree-sitter-luap",
-        files       = { "src/parser.c" },
-        branch      = "main",
+        url = "https://github.com/vhyrro/tree-sitter-luap",
+        files = { "src/parser.c" },
+        branch = "main",
         readme_name = "lua patterns",
       },
     }

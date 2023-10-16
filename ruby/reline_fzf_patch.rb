@@ -51,7 +51,3 @@ end
 
 require "reline"
 Reline::LineEditor.prepend(RelineFzfPatch)
-
-
-
-

@@ -1,15 +1,3 @@
-local solargraph_cmd = function()
-  if utils.file_in_cwd(".solargraph.yml") then
-    if utils.file_in_cwd("bin/bundle") then
-      return { vim.loop.cwd() .. "/bin/bundle", "exec", "solargraph", "stdio" }
-    else
-      return { "bundle", "exec", "solargraph", "stdio" }
-    end
-  else
-    return { "solargraph", "stdio" }
-  end
-end
-
 local prettierd = {
   formatCommand = "prettierd ${INPUT}",
   formatStdin = true,
@@ -19,13 +7,13 @@ local prettierd = {
 return {
   rust_analyzer = {},
   bashls = {},
-  solargraph = {
-    -- cmd = { "nc", "127.0.0.1", "7658" },
-    cmd = solargraph_cmd(),
-  },
+  ruby_ls = {},
+  -- pylsp = {},
   efm = {
     init_options = { documentFormatting = true },
     filetypes = {
+      "python",
+      "yaml",
       "lua",
       "javascript",
       "javascriptreact",
@@ -37,6 +25,24 @@ return {
     settings = {
       rootMarkers = { ".git/" },
       languages = {
+        ["python"] = {
+          {
+            formatCommand = "poetry run black --quiet -",
+            formatStdin = true,
+            rootMarkers = { "poetry.lock" },
+          },
+        },
+        ["yaml"] = {
+          -- {
+          --   formatCommand = "yamlfmt -in ${INPUT}",
+          --   formatStdin = true,
+          -- },
+          {
+            lintCommand = "yamllint -f parsable -",
+            lintStdin = true,
+            -- lintIgnoreExitCode = true
+          },
+        },
         ["lua"] = {
           {
             formatCommand = "stylua --color Never -",

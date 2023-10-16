@@ -21,16 +21,6 @@ local function fold_opened(line)
   return vim.fn.foldclosed(line or vim.v.lnum) == -1
 end
 
--- local function git_sign()
---   return vim.fn.sign_getplaced(
---         vim.api.nvim_get_current_buf(),
---         {
---           group = "gitsigns_vimfn_signs_",
---           lnum = vim.v.lnum
---         }
---       )[1].signs[1]
--- end
-
 local Number = {
   { provider = "%=" },
   {
@@ -43,9 +33,9 @@ local Number = {
       else
         return (#lnum == 1 and "  " or " ") .. lnum
       end
-    end
+    end,
   },
-  { provider = " " }
+  { provider = " " },
 }
 
 local Fold = {
@@ -61,9 +51,9 @@ local Fold = {
     end
   end,
   hl = {
-    fg   = Colors.grey_light,
-    bg   = Colors.bg0,
-    bold = true
+    fg = Colors.grey_light,
+    bg = Colors.bg0,
+    bold = true,
   },
   on_click = {
     name = "heirline_fold_click_handler",
@@ -75,23 +65,34 @@ local Fold = {
       end
 
       vim.cmd.execute("'" .. line .. "fold" .. (fold_opened(line) and "close" or "open") .. "'")
-    end
-  }
+    end,
+  },
 }
 
 local Border = {
-  init     = function(self)
-    local sign = vim.fn.sign_getplaced(
-      vim.api.nvim_get_current_buf(),
-      { group = "gitsigns_vimfn_signs_", lnum = vim.v.lnum }
-    )[1].signs[1]
+  init = function(self)
+    local ns_id = vim.api.nvim_get_namespaces()["gitsigns_extmark_signs_"]
+    if ns_id then
+      local marks = vim.api.nvim_buf_get_extmarks(
+        0,
+        ns_id,
+        { vim.v.lnum - 1, 0 },
+        { vim.v.lnum, 0 },
+        { limit = 1, details = true }
+      )
 
-    self.highlight = sign and sign.name
+      if #marks > 0 then
+        local hl_group = marks[1][4]["sign_hl_group"]
+        self.highlight = hl_group
+      else
+        self.highlight = nil
+      end
+    end
   end,
   provider = Icons.misc.v_border,
-  hl       = function(self)
+  hl = function(self)
     return self.highlight or "StatusColumnBorder"
-  end
+  end,
 }
 
 local Padding = {
@@ -104,7 +105,7 @@ local Padding = {
     else
       return { bg = Colors.bg1 }
     end
-  end
+  end,
 }
 
 return { Number, Fold, Border, Padding }
