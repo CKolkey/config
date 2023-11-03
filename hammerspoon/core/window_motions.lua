@@ -1,22 +1,16 @@
 local M = {}
 
 local parse = require("lib.json").parse
-local log = hs.logger.new("hammerspoon", "debug")
-
-local function yabaiBinPath()
-  if os.capture("/usr/bin/arch") == "arm64" then
-    return "/opt/homebrew/bin/yabai"
-  else
-    return "/usr/local/bin/yabai"
-  end
-end
+local coro = require("lib.coro")
+local frame = require("core.frame")
 
 local function _yabai(group, command)
-  return os.execute(yabaiBinPath() .. " -m " .. group .. " --" .. command)
+  return coro.exec("/opt/homebrew/bin/yabai -m " .. group .. " " .. table.concat(command, " "))
 end
 
 local function query(command)
-  return parse(os.capture(yabaiBinPath() .. " -m query --" .. command, true))
+  local out, _ = coro.exec("/opt/homebrew/bin/yabai -m query --" .. command)
+  return parse(out)
 end
 
 local function yabai(commands, options)
@@ -25,15 +19,18 @@ local function yabai(commands, options)
   return function()
     local window = hs.window.focusedWindow()
 
-    local success
     for _, command in ipairs(commands) do
-      if not success then
-        success = _yabai(command.group, command.command)
+      local _, code = _yabai(command.group, command.command)
+      if code == 0 then
+        break
       end
     end
 
     if opts.keepFocus then
       window:focus()
+      frame.draw(window, "wm")
+    else
+      -- frame.redrawTimer:start()
     end
   end
 end
@@ -65,64 +62,116 @@ local function sendFocusedWindowToNewSpace(opts)
   local window = hs.window.focusedWindow()
   local spaceID = getEmptySpace()
 
-  _yabai("window", "space " .. spaceID)
+  _yabai("window", { "--space", spaceID })
 
   if opts.keepFocus then
     window:focus()
+    frame.draw(window, "wm")
   else
-    _yabai("space", "focus " .. spaceID)
+    _yabai("space", { "--focus", spaceID })
   end
 end
 
 function M.load()
-  hs.hotkey.bind({ "cmd" }, "h", yabai({
-    { group = "window", command = "focus west" },
-    { group = "display", command = "focus west" },
-  }))
-
-  hs.hotkey.bind({ "cmd" }, "j", yabai({
-    { group = "window", command = "focus south" },
-    { group = "display", command = "focus south" },
-  }))
-
-  hs.hotkey.bind({ "cmd" }, "k", yabai({
-    { group = "window", command = "focus north" },
-    { group = "display", command = "focus north" },
-  }))
-
-  hs.hotkey.bind({ "cmd" }, "l", yabai({
-    { group = "window", command = "focus east" },
-    { group = "display", command = "focus east" },
-  }))
-
-  hs.hotkey.bind({ "option", "ctrl" }, "h", yabai({
-      { group = "window", command = "swap west" },
-      { group = "window", command = "display west" },
-      { group = "window", command = "space prev" },
-    }, { keepFocus = true })
+  hs.hotkey.bind(
+    { "cmd" },
+    "h",
+    coro.wrap(yabai({
+      { group = "window", command = { "--focus", "west" } },
+      { group = "display", command = { "--focus", "west" } },
+    }))
   )
 
-  hs.hotkey.bind({ "option", "ctrl" }, "l", yabai({
-      { group = "window", command = "swap east" },
-      { group = "window", command = "display east" },
-      { group = "window", command = "space next" },
-    }, { keepFocus = true })
+  hs.hotkey.bind(
+    { "cmd" },
+    "j",
+    coro.wrap(yabai({
+      { group = "window", command = { "--focus", "south" } },
+      { group = "display", command = { "--focus", "south" } },
+    }))
   )
 
-  hs.hotkey.bind({ "option", "ctrl" }, "j", yabai({
-    { group = "window", command = "swap south" },
-    { group = "window", command = "display south" },
-  }, { keepFocus = true }))
+  hs.hotkey.bind(
+    { "cmd" },
+    "k",
+    coro.wrap(yabai({
+      { group = "window", command = { "--focus", "north" } },
+      { group = "display", command = { "--focus", "north" } },
+    }))
+  )
 
-  hs.hotkey.bind({ "option", "ctrl" }, "k", yabai({
-    { group = "window", command = "swap north" },
-    { group = "window", command = "display north" },
-  }, { keepFocus = true }))
+  hs.hotkey.bind(
+    { "cmd" },
+    "l",
+    coro.wrap(yabai({
+      { group = "window", command = { "--focus", "east" } },
+      { group = "display", command = { "--focus", "east" } },
+    }))
+  )
 
-  hs.hotkey.bind({ "option", "ctrl" }, "r", yabai({ { group = "space", command = "rotate 90" } }))
-  hs.hotkey.bind({ "option", "ctrl" }, "f", yabai({ { group = "window", command = "toggle float" } }))
-  hs.hotkey.bind({ "option", "ctrl" }, "n", function() sendFocusedWindowToNewSpace({keepFocus = true}) end)
-  hs.hotkey.bind({ "option", "ctrl" }, "m", sendFocusedWindowToNewSpace)
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "h",
+    coro.wrap(yabai({
+      { group = "window", command = { "--swap", "west" } },
+      { group = "window", command = { "--display", "west" } },
+      { group = "window", command = { "--space", "prev" } },
+    }, { keepFocus = true }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "l",
+    coro.wrap(yabai({
+      { group = "window", command = { "--swap", "east" } },
+      { group = "window", command = { "--display", "east" } },
+      { group = "window", command = { "--space", "next" } },
+    }, { keepFocus = true }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "j",
+    coro.wrap(yabai({
+      { group = "window", command = { "--swap", "south" } },
+      { group = "window", command = { "--display", "south" } },
+    }, { keepFocus = true }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "k",
+    coro.wrap(yabai({
+      { group = "window", command = { "--swap", "north" } },
+      { group = "window", command = { "--display", "north" } },
+    }, { keepFocus = true }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "r",
+    coro.wrap(yabai({ { group = "space", command = { "--rotate", "90" } } }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "f",
+    coro.wrap(yabai({ { group = "window", command = { "--toggle", "float" } } }))
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "n",
+    coro.wrap(function()
+      sendFocusedWindowToNewSpace({ keepFocus = true })
+    end)
+  )
+
+  hs.hotkey.bind(
+    { "option", "ctrl" },
+    "m",
+    coro.wrap(sendFocusedWindowToNewSpace)
+  )
 
   return M
 end
