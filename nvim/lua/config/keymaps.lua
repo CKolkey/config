@@ -13,7 +13,7 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
-    ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
+    -- ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
 
     -- Buffer/Window Movements
     ["<C-h>"] = Kitty.navigate.left,

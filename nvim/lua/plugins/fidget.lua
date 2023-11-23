@@ -1,9 +1,16 @@
 return {
   "j-hui/fidget.nvim",
-  tag = "legacy",
+  init = function()
+      vim.notify = require("fidget.notification").notify
+  end,
   opts = {
-    text = { spinner = "dots_scrolling" },
-    align = { bottom = false },
-    fmt = { stack_upwards = false },
+    notification = {
+      view = {
+        stack_upwards = false,
+      },
+      window = {
+        align_bottom = false
+      }
+    }
   },
 }

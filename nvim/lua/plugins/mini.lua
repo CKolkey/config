@@ -4,7 +4,7 @@ return {
     event = "BufReadPre",
     config = function()
       vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "help", "neo-tree", "lazy", "NeogitStatus" },
+        pattern = { "help", "lazy", "NeogitStatus" },
         callback = function()
           vim.b.miniindentscope_disable = true
         end,
@@ -15,7 +15,13 @@ return {
         draw = {
           animation = indentscope.gen_animation.exponentialOut,
         },
-        symbol = "▎",
+        symbol = Icons.misc.v_pipe,
+        mappings = {
+          object_scope = "ii",
+          object_scope_with_border = "ai",
+          goto_top = "[i",
+          goto_bottom = "]i",
+        }
       })
     end,
   },

@@ -136,3 +136,11 @@ bindable
 Deduplicate
 FindEach
 RedundantActiveRecordAllMethod
+BlockLength
+MethodLength
+cancelled
+NumberedParametersLimit
+SubjectStub
+ResourceMonitor
+Entrypoint
+MethodObjectAsBlock

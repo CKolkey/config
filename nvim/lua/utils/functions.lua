@@ -36,6 +36,7 @@ function M.debugger()
     javascript = "debugger",
     ruby = 'debugger(pre: "info")',
     lua = "P()",
+    python = "breakpoint()",
   }
 
   if breakpoint[vim.o.filetype] then
@@ -47,11 +48,6 @@ end
 
 -- Simple auto-save function that can be called via Autocmd
 function M.update_buffer(event)
-  -- and not vim.tbl_contains(excluded_filetypes, buffer.filetype)
-  -- local excluded_filetypes = {
-  --   "NeogitCommitView",
-  -- }
-
   local callback = function()
     utils.print_and_clear("Saved " .. vim.fn.strftime("%H:%M:%S"), 1300)
   end
@@ -98,7 +94,7 @@ function M.smart_delete()
 end
 
 function M.load_quickfix()
-  if M.file_in_cwd("tmp/quickfix.out") then
+  if utils.file_in_cwd("tmp/quickfix.out") then
     vim.cmd("silent cf tmp/quickfix.out")
     vim.cmd("QFToggle!")
     vim.notify("Loaded Quickfix", vim.log.levels.INFO)
@@ -140,6 +136,17 @@ end
 function M.feed_current_dir()
   vim.api.nvim_feedkeys(vim.fn.expand("%:p:h") .. "/", "c", false)
 end
+
+print = function(...)
+  local print_safe_args = {}
+  local _ = { ... }
+  for i = 1, #_ do
+    table.insert(print_safe_args, tostring(_[i]))
+  end
+
+  vim.notify(table.concat(print_safe_args, " "), 2)
+end
+
 -- quick.command("Profile", function()
 --   vim.cmd.profile("start /tmp/profile.log")
 --   vim.cmd.profile("file *")

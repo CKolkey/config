@@ -76,7 +76,7 @@ local definitions = {
     desc = "Reads work secrets as binary files to prevent \n at EOL",
     {
       event = { "BufEnter" },
-      pattern = "*/pro-secrets/**",
+      pattern = { "*/pro-secrets/**", "*/kaila-secrets/**" },
       command = "setl binary noeol",
     },
   },

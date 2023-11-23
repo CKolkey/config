@@ -117,6 +117,7 @@ return {
   CmpItemKindConstant          = { fg = c.lt_yellow, bg = c.bg_yellow },
   CmpItemKindConstructor       = { fg = c.lt_yellow, bg = c.bg_yellow },
   CmpItemKindReference         = { fg = c.lt_yellow, bg = c.bg_yellow },
+  CmpItemKindCopilot           = { fg = c.lt_yellow, bg = c.bg_yellow },
   CmpItemKindFunction          = { fg = c.lt_purple, bg = c.bg_purple },
   CmpItemKindStruct            = { fg = c.lt_purple, bg = c.bg_purple },
   CmpItemKindClass             = { fg = c.lt_purple, bg = c.bg_purple },

@@ -13,6 +13,7 @@ return {
     Field                = " ",
     Variable             = " ",
     Class                = " ",
+    Copilot              = " ",
     Interface            = " ",
     Module               = " ",
     Property             = " ",
@@ -92,5 +93,6 @@ return {
     folder_open          = "",
     file                 = "",
     v_border             = "▐",
+    v_pipe               = "▎",
   },
 }

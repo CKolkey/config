@@ -3,6 +3,22 @@ _G.utils = {}
 Icons = require("config.ui.icons")
 Colors = require("config.ui.colors")
 
+-- Global write-to-file function
+function W(...)
+  local path = require("plenary.path")
+  local filename = os.time(os.date("!*t"))
+  local file = path:new("/tmp/" .. filename .. ".log")
+
+  local objects = {}
+  for i = 1, select("#", ...) do
+    local v = select(i, ...)
+    table.insert(objects, vim.inspect(v))
+  end
+
+  file:write(table.concat(objects, "\n"), "w")
+
+  return ...
+end
 -- Global deep-inspect function
 function P(...)
   vim.print(...)

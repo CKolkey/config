@@ -12,6 +12,7 @@ return {
     "hrsh7th/cmp-nvim-lsp-document-symbol",
     "onsails/lspkind-nvim",
     "dmitmel/cmp-cmdline-history",
+    { "zbirenbaum/copilot-cmp", opts = {} },
   },
 
   config = function()
@@ -61,6 +62,7 @@ return {
       sorting = {
         priority_weight = 2,
         comparators = {
+          require("copilot_cmp.comparators").prioritize,
           compare.score,
           compare.exact,
           compare.recently_used,
@@ -142,6 +144,7 @@ return {
       }),
 
       sources = {
+        { name = "copilot", group_index = 2 },
         { name = "path", priority_weight = 100, max_item_count = 40 },
         {
           name = "luasnip",
