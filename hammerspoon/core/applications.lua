@@ -34,6 +34,10 @@ local apps = {
   },
   ["Mail"] = {
     bundleID = "com.apple.mail",
+    launch_key = "m",
+  },
+  ["Obsidian"] = {
+    bundleID = "md.obsidian",
     launch_key = "o",
   },
 }
@@ -49,7 +53,7 @@ function M.load()
 end
 
 function M.open(name)
-  log.i("> Launching App: " .. name)
+  -- log.i("> Launching App: " .. name)
   hs.application.launchOrFocus(name)
 end
 
