@@ -23,6 +23,11 @@ return {
 
     require("diffview").setup({
       enhanced_diff_hl = true,
+      view = {
+        merge_tool = {
+          layout = "diff3_mixed"
+        }
+      },
       icons = {
         folder_closed = Icons.misc.folder_closed,
         folder_open = Icons.misc.folder_open,

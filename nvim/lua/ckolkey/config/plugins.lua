@@ -7,7 +7,7 @@ end
 
 vim.opt.rtp:prepend(install_path)
 
-require("lazy").setup("plugins", {
+require("lazy").setup("ckolkey.plugins", {
   dev = {
     path     = "~/code/",
     patterns = { "ckolkey" },

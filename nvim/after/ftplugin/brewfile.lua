@@ -19,7 +19,7 @@ end
 
 vim.api.nvim_buf_create_user_command(0, 'Sort', brew_sort, {})
 
-require("utils.autocmds").load({
+require("ckolkey.utils.autocmds").load({
   sort_brewfile = {
     desc = "Shows DB columns as virtual text",
     {

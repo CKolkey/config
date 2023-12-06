@@ -1,8 +1,8 @@
 return {
   "j-hui/fidget.nvim",
-  init = function()
-      vim.notify = require("fidget.notification").notify
-  end,
+  -- init = function()
+  -- vim.notify = require("fidget.notification").notify
+  -- end,
   opts = {
     notification = {
       view = {

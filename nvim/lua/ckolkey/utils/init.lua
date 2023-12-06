@@ -1,7 +1,7 @@
 _G.utils = {}
 
-Icons = require("config.ui.icons")
-Colors = require("config.ui.colors")
+Icons = require("ckolkey.config.ui.icons")
+Colors = require("ckolkey.config.ui.colors")
 
 -- Global write-to-file function
 function W(...)

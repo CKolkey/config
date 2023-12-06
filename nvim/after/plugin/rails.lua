@@ -252,7 +252,7 @@ function Rails.fn.model_inflection(model)
   return Rails.db_schema.inflections[model]
 end
 
-require("utils.autocmds").load({
+require("ckolkey.utils.autocmds").load({
   show_schema = {
     desc = "Shows DB columns as virtual text",
     {

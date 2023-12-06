@@ -39,7 +39,7 @@ local definitions = {
     desc = "Updates the buffer, with conditions",
     {
       event = { "InsertLeave" },
-      callback = require("utils.functions").update_buffer,
+      callback = require("ckolkey.utils.functions").update_buffer,
       nested = true,
     },
   },
@@ -82,4 +82,4 @@ local definitions = {
   },
 }
 
-require("utils.autocmds").load(definitions)
+require("ckolkey.utils.autocmds").load(definitions)

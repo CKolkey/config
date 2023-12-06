@@ -20,10 +20,10 @@ return {
       lineFoldingOnly = true,
     }
 
-    for server, opts in pairs(require("plugins.lsp.servers")) do
+    for server, opts in pairs(require("ckolkey.plugins.lsp.servers")) do
       local options = {
         capabilities = capabilities,
-        on_attach = require("plugins.lsp.on_attach")(opts),
+        on_attach = require("ckolkey.plugins.lsp.on_attach")(opts),
         flags = {
           debounce_text_changes = 150,
         },

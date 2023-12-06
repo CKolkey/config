@@ -6,6 +6,12 @@ return {
     { "<leader>gg", ":Neogit<cr>", desc = "Neogit" },
   },
   opts = {
+    mappings = {
+      popup = {
+        ["F"] = "PullPopup",
+        ["p"] = false,
+      },
+    },
     auto_fetch_on_refresh = true,
     console_timeout = 10000,
     telescope_sorter = function()
@@ -16,7 +22,6 @@ return {
     },
     auto_show_console = true,
     disable_hint = true,
-    -- disable_commit_confirmation = true,
     notification_icon = " ",
     disable_insert_on_commit = "auto",
     use_per_project_settings = true,
@@ -29,11 +34,6 @@ return {
         folded = false,
       },
     },
-    -- mappings = {
-    --   status = {
-    --     ["s"] = false,
-    --   },
-    -- },
     signs = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },
       item = { Icons.misc.collapsed, Icons.misc.expanded },

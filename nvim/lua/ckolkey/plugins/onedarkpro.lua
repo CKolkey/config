@@ -4,7 +4,7 @@ return {
   priority = 1000,
   opts = {
     colors     = Colors,
-    highlights = require("config.ui.highlights"),
+    highlights = require("ckolkey.config.ui.highlights"),
     filetypes  = {
       ruby = false,
     },

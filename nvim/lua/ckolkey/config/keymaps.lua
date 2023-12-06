@@ -13,7 +13,7 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
-    -- ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
+    ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
 
     -- Buffer/Window Movements
     ["<C-h>"] = Kitty.navigate.left,
@@ -24,7 +24,7 @@ local mappings = {
     -- Toggle Folds
     ["<tab>"] = "za",
 
-    ["<leader>bb"] = { require("utils.functions").debugger, { expr = true } },
+    ["<leader>bb"] = { require("ckolkey.utils.functions").debugger, { expr = true } },
 
     -- http://www.kevinli.co/posts/2017-01-19-multiple-cursors-in-500-bytes-of-vimscript/
     -- Change current word (dot repeatable)
@@ -35,13 +35,13 @@ local mappings = {
     ["p"] = "p=`]",
 
     -- Don't yank empty lines into the main register
-    ["dd"] = { require("utils.functions").smart_delete, { expr = true } },
+    ["dd"] = { require("ckolkey.utils.functions").smart_delete, { expr = true } },
 
     -- Quickfix Navigation
-    ["<left>"] = require("utils.functions").load_quickfix,
+    ["<left>"] = require("ckolkey.utils.functions").load_quickfix,
 
     -- Retain cursor position when joining lines, and remove spaces from method chains
-    ["J"] = require("utils.functions").smart_join,
+    ["J"] = require("ckolkey.utils.functions").smart_join,
 
     -- Close split using c-q, close pane keeping split with c-w
     ["<C-q>"] = ":cclose<cr>:bd<cr>",
@@ -64,7 +64,7 @@ local mappings = {
     ["<m-o>"] = "g;",
 
     -- rebind 'i' to do a smart-indent if its a blank line
-    ["i"] = { require("utils.functions").smart_insert, { expr = true } },
+    ["i"] = { require("ckolkey.utils.functions").smart_insert, { expr = true } },
 
     -- vv selects the whole line
     ["vv"] = "V",
@@ -77,7 +77,7 @@ local mappings = {
     ["j"] = "gj",
 
     -- Format File
-    ["<leader><leader>"] = require("utils.functions").format,
+    ["<leader><leader>"] = require("ckolkey.utils.functions").format,
 
     -- Fast Find and Replace, fallback since LSP might override 'R'
     ["<leader>r"] = {
@@ -139,7 +139,7 @@ local mappings = {
   },
   command = {
     -- Feeds absolute filepath of current buffer into cmd
-    ["%%"] = { require("utils.functions").feed_current_dir, { expr = true } },
+    ["%%"] = { require("ckolkey.utils.functions").feed_current_dir, { expr = true } },
 
     -- -- Basic autocomplete
     -- ["("] = { "()<left>", { silent = false } },
@@ -156,4 +156,4 @@ local mappings = {
   replace = {},
 }
 
-require("utils.keymaps").load(mappings)
+require("ckolkey.utils.keymaps").load(mappings)

@@ -1,10 +1,24 @@
 local ok, wk = pcall(require, "which-key")
 if ok then
   local n_mappings = {
+    cr = {
+      name = "+coercion",
+      s = { desc = "snake_case" },
+      p = { desc = "PascalCase" },
+      c = { desc = "camelCase" },
+      u = { desc = "SCREAMING_SNAKE_CASE" },
+      k = { desc = "kebab-case" },
+      t = { desc = "Title Case (not reversible)" },
+      ["-"] = { desc = "Kebab Case (not reversible)" },
+      ["."] = { desc = "Dot Case   (not reversible)" },
+      ["<space>"] = { desc = "Space Case (not reversible)" },
+    },
     ["]"] = { name = "+next" },
     ["["] = { name = "+prev" },
     ["[g"] = "Git hunk",
     ["]g"] = "Git hunk",
+    ["]d"] = { vim.diagnostic.goto_next, "Next Diagnostic" },
+    ["[d"] = { vim.diagnostic.goto_prev, "Prev Diagnostic" },
     ["<leader>s"] = {
       name = "+Split",
       h = { ":vsplit<cr>", "Split Left" },
@@ -40,7 +54,7 @@ if ok then
       name = "+git",
     },
     ["<leader>d"] = { name = "+diff" },
-    c = {
+    ["<leader>c"] = {
       name = "+git-conflict",
       ["0"] = "Resolve with _None",
       t = "Resolve with _Theirs",

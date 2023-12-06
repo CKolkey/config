@@ -13,7 +13,6 @@ local function not_in_fold_range()
 end
 
 local function not_fold_start(line)
-  line = line or vim.v.lnum
   return vim.fn.foldlevel(line) <= vim.fn.foldlevel(line - 1)
 end
 
@@ -42,7 +41,7 @@ local Fold = {
   provider = function()
     if is_wrapped_line() or is_virtual_line() then
       return ""
-    elseif not_in_fold_range() or not_fold_start() then
+    elseif not_in_fold_range() or not_fold_start(vim.v.lnum) then
       return "  "
     elseif fold_opened() then
       return Icons.misc.expanded

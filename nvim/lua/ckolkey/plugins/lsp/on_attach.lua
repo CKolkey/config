@@ -30,7 +30,7 @@ return function(options)
         desc = "Show diagnostics when you hold cursor",
         {
           event = "CursorHold",
-          callback = require("plugins.lsp.diagnostic").hover,
+          callback = require("ckolkey.plugins.lsp.diagnostic").hover,
           buffer = bufnr,
         },
       }
@@ -41,7 +41,7 @@ return function(options)
         desc = "Request diagnostics",
         {
           event = { "BufEnter", "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
-          callback = require("plugins.lsp.diagnostic").request(client, bufnr),
+          callback = require("ckolkey.plugins.lsp.diagnostic").request(client, bufnr),
           buffer = bufnr,
         },
       }
@@ -65,7 +65,7 @@ return function(options)
     end
 
     if client.supports_method("textDocument/definition") then
-      require("plugins.lsp.definition").setup()
+      require("ckolkey.plugins.lsp.definition").setup()
     end
 
     if client.supports_method("textDocument/formatting") and not options.disable_formatting then
@@ -73,7 +73,7 @@ return function(options)
 
       keymaps.normal["<leader><leader>"] = {
         function()
-          require("plugins.lsp.formatting").callback(client, bufnr)
+          require("ckolkey.plugins.lsp.formatting").callback(client, bufnr)
         end,
         opts,
       }
@@ -83,14 +83,14 @@ return function(options)
         {
           event = "BufWritePost",
           callback = function()
-            require("plugins.lsp.formatting").callback(client, bufnr)
+            require("ckolkey.plugins.lsp.formatting").callback(client, bufnr)
           end,
           buffer = bufnr,
         },
       }
     end
 
-    require("utils.keymaps").load(keymaps)
-    require("utils.autocmds").load(autocmds)
+    require("ckolkey.utils.keymaps").load(keymaps)
+    require("ckolkey.utils.autocmds").load(autocmds)
   end
 end

@@ -1,4 +1,4 @@
-local c = require("config.ui.colors")
+local c = require("ckolkey.config.ui.colors")
 
 -- stylua: ignore
 return {

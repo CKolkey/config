@@ -1,8 +1,8 @@
 -- https://github.com/megalithic/dotfiles/blob/main/config/nvim/lua/mega/globals.lua
 -- global lua extensions
 if os.getenv("NVIM_DEBUG") then
-  require('extensions.debug')
+  require('ckolkey.extensions.debug')
 end
 
-require('extensions.table')
-require('extensions.string')
+require('ckolkey.extensions.table')
+require('ckolkey.extensions.string')
