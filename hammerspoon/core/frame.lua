@@ -1,27 +1,21 @@
 local focusedWindow = hs.window.focusedWindow
 local windowfilter = hs.window.filter
 local rectangle = hs.drawing.rectangle
-local log = hs.logger.new("frame")
-log.i = P
 
 local M = {}
 
-local frame, windows, running, watcher
+local frame, windows, running, watcher, paused
 
 local config = {
-  redrawEvents = {
+  events = {
     "windowCreated",
     "windowFocused",
-    -- "windowUnfocused",
     "windowMoved",
     "windowOnScreen",
     "windowVisible",
-  },
-  hideEvents = {
     "windowDestroyed",
     "windowMinimized",
     "windowHidden",
-    -- "windowNotInCurrentSpace",
     "windowNotOnScreen",
     "windowNotVisible",
   },
@@ -38,25 +32,19 @@ local config = {
   padding = 3,
 }
 
-local function hideFrame()
-  log.i("[Frame] Hiding frame")
-  frame:hide()
-  M.redrawTimer:start()
-end
-
 local function redrawFrame(event)
+  frame:hide()
+
   local win = focusedWindow()
   if win then
     M.draw(win, event)
-  else
-    hideFrame()
   end
 end
 
 -- Exposed so window motions can call this directly instead of waiting for event
 function M.draw(win, caller)
   caller = caller or "event"
-  log.i("[Frame] (" .. caller .. ") Redrawing frame for window: " .. win:title())
+  -- log.i("[Frame] (" .. caller .. ") Redrawing frame for window: " .. win:title())
 
   local f = win:frame()
   frame:setFrame({
@@ -70,7 +58,6 @@ end
 M.redrawTimer = hs.timer.delayed.new(
   0.01,
   function()
-    redrawFrame("timer")
     redrawFrame("timer")
   end
 )
@@ -93,8 +80,31 @@ local function setupFrame()
       :setRoundedRectRadii(config.radius, config.radius)
 end
 
+local event_handler = function(_event)
+  return function()
+    if paused then
+      return
+    end
+
+    -- log.i("[Frame] " .. event .. " event")
+    if M.redrawTimer:running() then
+      M.redrawTimer:stop()
+    end
+
+    M.redrawTimer:start()
+  end
+end
+
+-- Prevent redrawing frame while function is called
+function M.suspend(fn)
+  paused = true
+  fn()
+  paused = false
+end
+
 function M.load()
   M.stop()
+  paused = false
   running = true
 
   setupFrame()
@@ -103,7 +113,6 @@ function M.load()
   windows = windowfilter
       .copy(windowfilter.default, "wf-frame")
       :setOverrideFilter({
-        -- focused = true,
         allowRoles = {
           ["AXStandardWindow"] = true,
           ["AXDialog"] = true,
@@ -111,22 +120,9 @@ function M.load()
       })
       :rejectApp("Tuple")
 
-  for _, event in ipairs(config.redrawEvents) do
-    windows:subscribe(event, function()
-      log.i("[Frame] " .. event .. " event")
-      -- redrawFrame()
-      M.redrawTimer:start()
-    end)
+  for _, event in ipairs(config.events) do
+    windows:subscribe(event, event_handler(event))
   end
-
-  for _, event in ipairs(config.hideEvents) do
-    windows:subscribe(event, function()
-      log.i("[Frame] " .. event .. " event")
-      hideFrame()
-    end)
-  end
-  -- windows:subscribe(config.redrawEvents, redrawFrame, true)
-  -- windows:subscribe(config.hideEvents, hideFrame, true)
 end
 
 function M.stop()
@@ -143,11 +139,6 @@ function M.stop()
   windows = nil
 
   watcher:stop()
-end
-
-local fastRedrawTimer = hs.timer.delayed.new(0.01, redrawFrame)
-function M.redrawFrame()
-  fastRedrawTimer:start()
 end
 
 return setmetatable(M, { __gc = M.stop })

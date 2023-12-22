@@ -29,8 +29,6 @@ local function yabai(commands, options)
     if opts.keepFocus then
       window:focus()
       frame.draw(window, "wm")
-    else
-      -- frame.redrawTimer:start()
     end
   end
 end
@@ -62,11 +60,15 @@ local function sendFocusedWindowToNewSpace(opts)
   local window = hs.window.focusedWindow()
   local spaceID = getEmptySpace()
 
-  _yabai("window", { "--space", spaceID })
-
   if opts.keepFocus then
+    frame.suspend(function()
+      for _, win in ipairs(window:otherWindowsSameScreen()) do
+        win:focus()
+        _yabai("window", { "--space", spaceID })
+      end
+    end)
+
     window:focus()
-    frame.draw(window, "wm")
   else
     _yabai("space", { "--focus", spaceID })
   end
@@ -162,9 +164,7 @@ function M.load()
   hs.hotkey.bind(
     { "option", "ctrl" },
     "n",
-    coro.wrap(function()
-      sendFocusedWindowToNewSpace({ keepFocus = true })
-    end)
+    coro.wrap(sendFocusedWindowToNewSpace, { keepFocus = true })
   )
 
   hs.hotkey.bind(

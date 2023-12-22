@@ -7,9 +7,10 @@ local function append(source, ...)
     return source
 end
 
-function coro.wrap(func)
+function coro.wrap(func, ...)
+  local args = { ... }
   return function()
-    coroutine.wrap(func)()
+    coroutine.wrap(func)(table.unpack(args))
   end
 end
 
