@@ -3,7 +3,7 @@ return {
   keys = {
     {
       "s",
-      [[<cmd>lua require("substitute").operator()<cr>]],
+      [[<cmd>lua require("substitute").operator({ modifiers = { 'reindent' } })<cr>]],
       desc = "Substitute pending",
     },
     {
@@ -13,13 +13,14 @@ return {
     },
     {
       "ss",
-      [[<cmd>lua require("substitute").line()<cr>]],
+      [[<cmd>lua require("substitute").line({ modifiers = { 'reindent' } })<cr>]],
       desc = "Substitute line",
     },
   },
   opts = {
-    on_substitute = function(_)
-      vim.cmd("normal ==")
-    end,
-  },
+    highlight_substituted_text = {
+      enabled = true,
+      timer = 500,
+    },
+  }
 }
