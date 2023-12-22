@@ -24,12 +24,19 @@ if status is-interactive
 
   auto_ls
   direnv-hook
-  # asdf-install-hook
   rtx activate fish | source
   starship init fish | source
-  # source "$HOMEBREW_PREFIX/share/google-cloud-sdk/path.fish.inc"
+  source $HOME/.config/fish/abbreviations.fish
 end
 
 # bun
 # set --export BUN_INSTALL "$HOME/.bun"
 # set --export PATH $BUN_INSTALL/bin $PATH
+
+# pnpm
+set -gx PNPM_HOME "/Users/cameron/Library/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
+
