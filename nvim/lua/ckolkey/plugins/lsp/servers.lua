@@ -7,7 +7,15 @@ local prettierd = {
 return {
   rust_analyzer = {},
   bashls = {},
-  ruby_ls = {},
+  ruby_ls = {
+    init_options = {
+      featuresConfiguration = {
+        inlayHint = {
+          enableAll = true
+        }
+      }
+    }
+  },
   -- pylsp = {},
   efm = {
     init_options = { documentFormatting = true },

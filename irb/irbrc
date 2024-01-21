@@ -2,7 +2,11 @@
 
 # vim: ft=ruby
 
-IRB.conf[:USE_AUTOCOMPLETE] = false
+
+begin # Only available in ruby 3.3+
+  Warning[:performance] = true
+rescue
+end
 
 gems = %w[active_support awesome_print]
 
@@ -23,13 +27,26 @@ patches = %w[
 (gems + libs).each do |pkg|
   require pkg
 rescue StandardError
-  puts "(couldn't require lib: #{pkg})"
+  puts "(irbrc: couldn't require lib: #{pkg})"
 end
 
 patches.each do |patch|
   require_relative "../ruby/#{patch}"
 rescue StandardError
-  puts "(couldn't require patch: '#{patch}')"
+  puts "(irbrc: couldn't require patch: '#{patch}')"
 end
 
 AwesomePrint.irb! if defined?(AwesomePrint)
+
+if File.exist? File.join(Dir.pwd, ".irbrc")
+  puts "Loading .irbrc from #{Dir.pwd}"
+  load ".irbrc"
+end
+
+# IRB.conf[:USE_AUTOCOMPLETE] = false
+# Reline::Face.config(:completion_dialog) do |conf|
+#   conf.define :default, foreground: :white, background: :black
+#   conf.define :enhanced, foreground: :black, background: :white
+#   conf.define :scrollbar, foreground: :white, background: :black
+# end
+#

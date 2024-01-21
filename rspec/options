@@ -1,4 +1,4 @@
---order random
+# --order random
 
 <% begin %>
   <% require('fuubar') %>

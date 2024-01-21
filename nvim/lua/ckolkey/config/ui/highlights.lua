@@ -187,4 +187,7 @@ return {
   NeogitDiffContextHighlight   = { bg = c.bg2 },
   NeogitHunkHeader             = { bg = c.grey, fg = c.bg0, style = "bold" },
   NeogitHunkHeaderHighlight    = { bg = c.md_purple, fg = c.bg0, style = "bold" },
+  HighlightCommentFixme        = { bg = c.red, fg = c.white, style = "bold" },
+  HighlightCommentTodo         = { bg = c.blue, fg = c.black, style = "bold" },
+  HighlightCommentNote         = { bg = c.green, fg = c.black, style = "bold" },
 }

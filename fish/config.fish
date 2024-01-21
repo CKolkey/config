@@ -24,7 +24,7 @@ if status is-interactive
 
   auto_ls
   direnv-hook
-  rtx activate fish | source
+  mise activate fish | source
   starship init fish | source
   source $HOME/.config/fish/abbreviations.fish
 end

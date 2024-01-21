@@ -6,8 +6,8 @@ for _, level in ipairs({ "Error", "Warn", "Info", "Hint" }) do
 end
 
 vim.diagnostic.config({
-  virtual_text  = false,
-  signs         = true,
-  underline     = false,
+  virtual_text = true,
+  signs = true,
+  underline = true,
   severity_sort = true,
 })

@@ -79,8 +79,8 @@ return {
         prompt_prefix = "  ",
         sorting_strategy = "ascending",
         file_ignore_patterns = {
-          "^.git/*",
-          "^log/*",
+          "^.git\\/.*",
+          "^log\\/.*",
           "^public/*",
           "^app/assets/builds/*",
           "^spec/vcr_cassettes/*",

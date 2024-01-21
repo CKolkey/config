@@ -2,16 +2,17 @@ return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
   dependencies = {
+    "hrsh7th/cmp-buffer",
+    "dmitmel/cmp-cmdline-history",
+    "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-nvim-lsp-document-symbol",
+    "hrsh7th/cmp-nvim-lsp-signature-help",
+    "hrsh7th/cmp-path",
+    "lukas-reineke/cmp-rg",
+    "onsails/lspkind-nvim",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
     { "hrsh7th/cmp-nvim-lsp", opts = {} },
-    "hrsh7th/cmp-cmdline",
-    "lukas-reineke/cmp-rg",
-    "hrsh7th/cmp-nvim-lsp-document-symbol",
-    "onsails/lspkind-nvim",
-    "dmitmel/cmp-cmdline-history",
     { "zbirenbaum/copilot-cmp", opts = {} },
   },
 
@@ -144,6 +145,8 @@ return {
       }),
 
       sources = {
+        { name = "nvim_lsp_signature_help" },
+        { name = "nvim_lsp_document_symbol" },
         { name = "copilot", group_index = 2 },
         { name = "path", priority_weight = 100, max_item_count = 40 },
         {

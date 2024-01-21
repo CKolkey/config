@@ -142,4 +142,15 @@ return {
       require("mini.bracketed").setup({})
     end,
   },
+  {
+    "echasnovski/mini.hipatterns",
+    version = false,
+    opts = {
+      highlighters = {
+        fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'HighlightCommentFixme' },
+        todo  = { pattern = '%f[%w]()TODO()%f[%W]', group = 'HighlightCommentTodo' },
+        note  = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'HighlightCommentNote' },
+      },
+    }
+  }
 }

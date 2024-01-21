@@ -15,7 +15,7 @@ function M.hover()
         on_open = function(win_id)
           vim.api.nvim_create_autocmd({ "ExitPre", "BufHidden", "BufLeave", "CursorMoved", "CursorMovedI" }, {
             buffer = 0,
-            once = true,
+            -- once = true,
             callback = function()
               pcall(vim.api.nvim_win_close, win_id, true)
               return true
@@ -28,7 +28,7 @@ function M.hover()
 end
 
 function M.request(client, buffer)
-  local callback = function()
+  return function()
     local params = vim.lsp.util.make_text_document_params(buffer)
 
     client.request("textDocument/diagnostic", { textDocument = params }, function(err, result)
@@ -47,8 +47,6 @@ function M.request(client, buffer)
       )
     end)
   end
-
-  return callback
 end
 
 return M

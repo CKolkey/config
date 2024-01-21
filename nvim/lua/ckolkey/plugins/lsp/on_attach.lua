@@ -7,7 +7,7 @@ return function(options)
     local opts = { noremap = true, buffer = bufnr }
 
     if client.supports_method("textDocument/definition") then
-      keymaps.normal["<c-]>"] = { telescope.lsp_definitions, opts }
+      keymaps.normal["gd"] = { telescope.lsp_definitions, opts }
     end
 
     if client.supports_method("textDocument/references") then
@@ -22,38 +22,25 @@ return function(options)
       keymaps.normal["<c-s>"] = { telescope.lsp_workspace_symbols, opts }
     end
 
-    if
-      client.supports_method("textDocument/publishDiagnostics")
-      or client.supports_method("textDocument/diagnostic")
+    if client.supports_method("textDocument/publishDiagnostics")
+        or client.supports_method("textDocument/diagnostic")
     then
       autocmds.lsp_diagnostics_hover = {
         desc = "Show diagnostics when you hold cursor",
         {
           event = "CursorHold",
-          callback = require("ckolkey.plugins.lsp.diagnostic").hover,
+          callback = function()
+            local position = vim.api.nvim_win_get_cursor(0)
+            vim.defer_fn(function()
+              if vim.deep_equal(vim.api.nvim_win_get_cursor(0), position) then
+                vim.diagnostic.open_float({ focusable = false })
+              end
+            end, 2000)
+          end,
+          -- callback = require("ckolkey.plugins.lsp.diagnostic").hover,
           buffer = bufnr,
         },
       }
-    end
-
-    if client.supports_method("textDocument/diagnostic") then
-      autocmds.fetch_diagnostics = {
-        desc = "Request diagnostics",
-        {
-          event = { "BufEnter", "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" },
-          callback = require("ckolkey.plugins.lsp.diagnostic").request(client, bufnr),
-          buffer = bufnr,
-        },
-      }
-    end
-
-    if client.supports_method("textDocument/signatureHelp") then
-      require("lsp_signature").on_attach({
-        handler_opts = { border = "rounded" },
-        hint_prefix = "",
-        fixpos = true,
-        padding = " ",
-      }, bufnr)
     end
 
     if client.supports_method("textDocument/codeAction") then
@@ -62,10 +49,6 @@ return function(options)
 
     if client.supports_method("textDocument/rename") then
       keymaps.normal["R"] = { vim.lsp.buf.rename, opts }
-    end
-
-    if client.supports_method("textDocument/definition") then
-      require("ckolkey.plugins.lsp.definition").setup()
     end
 
     if client.supports_method("textDocument/formatting") and not options.disable_formatting then
