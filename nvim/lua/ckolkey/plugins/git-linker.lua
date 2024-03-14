@@ -6,7 +6,6 @@ return {
   opts = {
     opts = {
       action_callback = function(link)
-        -- vim.fn.system("open " .. link)
         print("Copied Link to Clipboard")
         require("gitlinker.actions").copy_to_clipboard(link)
       end,

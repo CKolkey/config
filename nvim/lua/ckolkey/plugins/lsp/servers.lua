@@ -88,6 +88,10 @@ return {
             line_endings = "Unix",
           },
         },
+        hint = {
+          enable = true,
+          setType = true,
+        },
         diagnostics = {
           enable = true,
           neededFileStatus = {

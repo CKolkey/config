@@ -161,3 +161,16 @@ RendererFlags
 ComponentOptions
 ComponentPosition
 RendererIndex
+string
+SkipsModelValidations
+NeogitConfig
+NeogitRepo
+StatusBuffer
+Ui
+ui
+InfiniteLoop
+string
+ParameterLists
+LineLength
+CursorContexts
+CursorLocation

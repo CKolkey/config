@@ -66,12 +66,6 @@ return {
           results = { " ", " ", " ", " ", " ", " ", " ", " " },
           preview = { "", "", "", "▌", "▌", "", "", "▌" },
         },
-        layout_config = {
-          prompt_position = "top",
-          preview_cutoff = 120,
-          height = 0.99,
-          width = 0.99,
-        },
         show_line = false,
         prompt_title = false,
         results_title = false,
@@ -108,10 +102,7 @@ return {
               local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
               if #picker:get_multi_selection() > 1 then
                 actions.send_selected_to_qflist(prompt_bufnr)
-                vim.schedule(function()
-                  vim.cmd("cc 1")
-                  require("qf_helper").open("c")
-                end)
+                actions.open_qflist(prompt_bufnr)
               else
                 actions.select_default(prompt_bufnr)
               end
@@ -140,6 +131,16 @@ return {
           },
         },
         find_files = {
+          layout_config = {
+            width = 0.99,
+            height = 0.99,
+            flip_columns = 150,
+            prompt_position = "top",
+            vertical = {
+              mirror = true,
+            }
+          },
+          layout_strategy = "flex",
           find_command = {
             "fd",
             "--type",
@@ -183,6 +184,13 @@ return {
           border = false,
         },
         live_grep_args = {
+          layout_config = {
+            width = 0.99,
+            height = 0.99,
+            prompt_position = "top",
+            flip_columns = 150,
+          },
+          layout_strategy = "flex",
           auto_quoting = false,
         },
         fzf = {
@@ -202,11 +210,5 @@ return {
         },
       },
     })
-
-    -- local original_edit = require("telescope.actions.set").edit
-    -- require("telescope.actions.set").edit = function(...)
-    --   original_edit(...)
-    --   vim.cmd.stopinsert()
-    -- end
   end,
 }

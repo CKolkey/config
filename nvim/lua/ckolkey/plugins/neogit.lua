@@ -4,6 +4,34 @@ return {
   dev = true,
   keys = {
     { "<leader>gg", ":Neogit<cr>", desc = "Neogit" },
+    {
+      "<leader>gf",
+      function()
+        require("neogit").action(
+          "log",
+          "log_current",
+          { "--", vim.fn.expand("%") }
+        )()
+      end,
+      desc = "Git log for file"
+    },
+    {
+      "<leader>gf",
+      function()
+        local file = vim.fn.expand("%")
+        vim.cmd([[execute "normal! \<ESC>"]])
+        local line_start = vim.fn.getpos("'<")[2]
+        local line_end = vim.fn.getpos("'>")[2]
+
+        require("neogit").action(
+          "log",
+          "log_current",
+          { "-L" .. line_start .. "," .. line_end .. ":" .. file }
+        )()
+      end,
+      desc = "Git log for this range",
+      mode = "v",
+    },
   },
   opts = {
     mappings = {

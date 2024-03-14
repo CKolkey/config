@@ -25,22 +25,22 @@ return {
       })
     end,
   },
-  {
-    "echasnovski/mini.jump",
-    event = "BufReadPre",
-    opts = {
-      mappings = {
-        forward = "f",
-        backward = "F",
-        forward_till = "t",
-        backward_till = "T",
-        repeat_jump = "",
-      },
-    },
-    config = function(_, opts)
-      require("mini.jump").setup(opts)
-    end,
-  },
+  -- {
+  --   "echasnovski/mini.jump",
+  --   event = "BufReadPre",
+  --   opts = {
+  --     mappings = {
+  --       forward = "f",
+  --       backward = "F",
+  --       forward_till = "t",
+  --       backward_till = "T",
+  --       repeat_jump = "",
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require("mini.jump").setup(opts)
+  --   end,
+  -- },
   {
     "echasnovski/mini.ai",
     event = "BufReadPre",

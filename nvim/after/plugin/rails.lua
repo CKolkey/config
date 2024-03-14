@@ -285,16 +285,13 @@ require("ckolkey.utils.autocmds").load({
         end
 
         vim.api.nvim_buf_clear_namespace(event.buf, ns, 0, -1)
-        vim.api.nvim_buf_set_extmark(event.buf, ns, extmark_line, 0, { virt_lines = lines, virt_lines_above = true })
-
-        -- TODO: Still kinda weird
-        -- If virt lines are above line 0, the window won't show them until you scroll up, so this does that for you.
-        -- Might be some bugs here.
-        -- if extmark_line == 0 then
-        --   vim.defer_fn(function()
-        --     vim.fn.winrestview({ topfill = #lines })
-        --   end, 10)
-        -- end
+        vim.api.nvim_buf_set_extmark(
+          event.buf,
+          ns,
+          extmark_line,
+          0,
+          { virt_lines = lines, virt_lines_above = true }
+        )
       end
     }
   }

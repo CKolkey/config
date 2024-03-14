@@ -8,6 +8,9 @@ local mappings = {
     ["<C-e>"] = "<end>",
     ["<C-a>"] = "<home>",
 
+    -- Correct last Typo
+    ["<F13>"] = "<c-g>u<Esc>ms[s1z=`sa<c-g>u",
+
     -- Remove Arrow Keys
     ["<Up>"] = "<Nop>",
     ["<Down>"] = "<Nop>",

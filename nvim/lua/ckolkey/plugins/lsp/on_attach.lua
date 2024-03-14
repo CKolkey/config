@@ -22,6 +22,10 @@ return function(options)
       keymaps.normal["<c-s>"] = { telescope.lsp_workspace_symbols, opts }
     end
 
+    if client.supports_method("inlayHint/resolve") then
+      vim.lsp.inlay_hint.enable(bufnr, true)
+    end
+
     if client.supports_method("textDocument/publishDiagnostics")
         or client.supports_method("textDocument/diagnostic")
     then
@@ -33,11 +37,15 @@ return function(options)
             local position = vim.api.nvim_win_get_cursor(0)
             vim.defer_fn(function()
               if vim.deep_equal(vim.api.nvim_win_get_cursor(0), position) then
-                vim.diagnostic.open_float({ focusable = false })
+                vim.diagnostic.open_float(
+                  {
+                    focusable = false,
+                    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+                  }
+                )
               end
-            end, 2000)
+            end, 1000)
           end,
-          -- callback = require("ckolkey.plugins.lsp.diagnostic").hover,
           buffer = bufnr,
         },
       }
