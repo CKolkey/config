@@ -70,6 +70,7 @@ local function sendFocusedWindowToNewSpace(opts)
 
     window:focus()
   else
+    _yabai("window", { "--space", spaceID })
     _yabai("space", { "--focus", spaceID })
   end
 end
