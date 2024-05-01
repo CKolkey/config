@@ -8,7 +8,7 @@ begin # Only available in ruby 3.3+
 rescue
 end
 
-gems = %w[active_support awesome_print]
+gems = %w[active_support amazing_print]
 
 libs = %w[
   pathname base64 benchmark fileutils
@@ -22,21 +22,20 @@ patches = %w[
   reline_fzf_patch
   object_helpers
   irb_helpers
+  refinements
 ]
+
+patches.each do |patch|
+  require_relative "../ruby/#{patch}"
+rescue StandardError => e
+  puts "(irbrc: couldn't require patch: '#{patch}' - #{e})"
+end
 
 (gems + libs).each do |pkg|
   require pkg
 rescue StandardError
   puts "(irbrc: couldn't require lib: #{pkg})"
 end
-
-patches.each do |patch|
-  require_relative "../ruby/#{patch}"
-rescue StandardError
-  puts "(irbrc: couldn't require patch: '#{patch}')"
-end
-
-AwesomePrint.irb! if defined?(AwesomePrint)
 
 if File.exist? File.join(Dir.pwd, ".irbrc")
   puts "Loading .irbrc from #{Dir.pwd}"
@@ -49,4 +48,3 @@ end
 #   conf.define :enhanced, foreground: :black, background: :white
 #   conf.define :scrollbar, foreground: :white, background: :black
 # end
-#

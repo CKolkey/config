@@ -1,16 +1,29 @@
 local M = {}
 
+local log = hs.logger.new("hammerspoon", "debug")
+local function log_debug(message)
+  local caller = debug.getinfo(2).name or "unknown"
+  log.d("[Window Motions][" .. caller .. "]: " .. hs.inspect(message))
+end
+
 local parse = require("lib.json").parse
 local coro = require("lib.coro")
 local frame = require("core.frame")
 
 local function _yabai(group, command)
-  return coro.exec("/opt/homebrew/bin/yabai -m " .. group .. " " .. table.concat(command, " "))
+  local cmd = "/opt/homebrew/bin/yabai -m " .. group .. " " .. table.concat(command, " ")
+  log_debug(cmd)
+
+  return coro.exec(cmd)
 end
 
 local function query(command)
   local out, _ = coro.exec("/opt/homebrew/bin/yabai -m query --" .. command)
-  return parse(out)
+  -- local out = os.capture("/opt/homebrew/bin/yabai -m query --" .. command)
+  local parsed = parse(out)
+  log_debug({ command, parsed })
+
+  return parsed
 end
 
 local function yabai(commands, options)
@@ -37,28 +50,99 @@ local function getDisplaySpaces()
   return query("displays --display").spaces
 end
 
+local function getScreenSpaces(screen)
+  return hs.spaces.spacesForScreen(screen or hs.window.focusedWindow():screen())
+end
+
 local function isEmptySpace(spaceID)
   local result = query("spaces --space " .. spaceID)
-  return result and (result["first-window"] == 0 and result["last-window"] == 0 and #result["windows"] == 0)
+
+  return (
+    result
+    and (result["first-window"] == 0
+    and result["last-window"] == 0)
+    -- and #result["windows"] == 0)
+  )
 end
 
 local function getEmptySpace()
-  for _, id in ipairs(getDisplaySpaces()) do
-    if isEmptySpace(id) then
-      return id
+  local spaceID
+  local spaces = getDisplaySpaces()
+  local window = hs.window.focusedWindow()
+
+  if hs.spaces.addSpaceToScreen(window:screen()) then
+    spaceID = spaces[#spaces] + 1
+  else
+    for _, id in ipairs(spaces) do
+      if isEmptySpace(id) then
+        spaceID = id
+        break
+      end
     end
   end
 
-  -- No empty space found - create a new one
-  local window = hs.window.focusedWindow()
-  hs.spaces.addSpaceToScreen(window:screen())
-  return "last"
+  return spaceID
 end
+
+local function pruneEmptySpaces()
+  local empty = {}
+  local spaces = getDisplaySpaces()
+  for _, id in ipairs(spaces) do
+    if isEmptySpace(id) then
+      table.insert(empty, 1, id)
+    end
+  end
+
+  for _, id in ipairs(empty) do
+    _yabai("space", { "--destroy", id })
+  end
+end
+-- local function pruneEmptySpaces()
+--   local emptySpaces = {}
+--
+--   log_debug("getting screen spaces")
+--   for _, id in ipairs(getScreenSpaces()) do
+--     log_debug(id)
+--
+--     local count = 0
+--     local windows = hs.spaces.windowsForSpace(id)
+--     for _, wid in ipairs(windows) do
+--       local w = hs.window(wid)
+--       if w and w:title() ~= "MenuBarCover" and w:title() ~= "" then
+--         log_debug(w)
+--         count = count + 1
+--       end
+--     end
+--
+--     if count == 0 then
+--       table.insert(emptySpaces, id)
+--     end
+--   end
+--
+--   log_debug(emptySpaces)
+--
+--   for _, id in ipairs(emptySpaces) do
+--     hs.spaces.removeSpace(id, false)
+--   end
+--   hs.spaces.closeMissionControl()
+-- end
 
 local function sendFocusedWindowToNewSpace(opts)
   opts = opts or {}
   local window = hs.window.focusedWindow()
   local spaceID = getEmptySpace()
+
+  if not spaceID then
+    log_debug("No space found - attempting to prune")
+    pruneEmptySpaces()
+    return
+  end
+
+  spaceID = getEmptySpace()
+  if not spaceID then
+    log_debug("Couldn't find an empty space")
+    return
+  end
 
   if opts.keepFocus then
     frame.suspend(function()

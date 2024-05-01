@@ -3,30 +3,40 @@
 return unless defined?(Rails)
 
 module RailsPrompt
-  BOLD  = ->(text) { "\033[1m#{text}\033[0m" }
-  RED   = ->(text) { "\e[31m#{text}\e[0m" }
-  GREEN = ->(text) { "\e[32m#{text}\e[0m" }
-  BLUE  = ->(text) { "\e[34m#{text}\e[0m" }
+  def self.red(text)   = "\e[31m#{text}\e[0m"
+  def self.green(text) = "\e[32m#{text}\e[0m"
+  def self.gold(text)  = "\e[33m#{text}\e[0m"
+  def self.blue(text)  = "\e[34m#{text}\e[0m"
 
-  def self.formatted_env
+  def self.env_color(text)
     if Rails.env.production?
-      BOLD.call(RED.call(Rails.env.upcase))
+      self.red(text)
     elsif Rails.env.development?
-      GREEN.call(Rails.env.upcase[0, 3])
+      self.green(text)
+    elsif Rails.env.integration?
+      self.gold(text)
     else
-      BLUE.call(Rails.env.upcase)
+      self.blue(text)
     end
   end
 
+  # def country     = env_color(Site.current.country.upcase)
+  def self.environment = env_color(Rails.env.upcase)
+
   IRB.conf[:PROMPT][:RAILS_PROMPT] = {
-    PROMPT_I: "[#{formatted_env}] (%m)> ",
-    PROMPT_N: "[#{formatted_env}] (%m)> ",
-    PROMPT_S: "[#{formatted_env}] (%m)%l ",
-    PROMPT_C: "[#{formatted_env}] (%m)* ",
-    RETURN: "=> %s\n"
+    :PROMPT_I => "[#{environment}] (%m)> ",
+    :PROMPT_N => "[#{environment}] (%m)> ",
+    :PROMPT_S => "[#{environment}] (%m)%l ",
+    :PROMPT_C => "[#{environment}] (%m)* ",
+    :RETURN   => "=> %s\n"
   }
 
   IRB.conf[:PROMPT_MODE] = :RAILS_PROMPT
+
+  IRB.conf[:IRB_RC] = Proc.new do
+    logger = Logger.new(STDOUT)
+    ActiveRecord::Base.logger = logger
+  end
 end
 
 include RailsPrompt

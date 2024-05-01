@@ -5,7 +5,6 @@ if test -e "$HOME/code/karnov/jin"
   # eval "$($HOME/code/karnov/jin/bin/jin init -)"
   fish_add_path -g $HOME/code/karnov/jin/bin
   eval "$($HOME/code/karnov/db_tonic/bin/init)"
-  # fish_add_path -g $HOME/.asdf/installs/rust/1.71.1/bin
 end
 
 fish_add_path -g $HOME/.local/bin
@@ -20,18 +19,16 @@ fish_add_path -g $HOME/.config/emacs/bin
 source_homebrew
 
 if status is-interactive
-  set -U FZF_COMPLETE 0
-
   auto_ls
   direnv-hook
   mise activate fish | source
   starship init fish | source
+  fzf --fish | source
+
   source $HOME/.config/fish/abbreviations.fish
 end
 
-# bun
-# set --export BUN_INSTALL "$HOME/.bun"
-# set --export PATH $BUN_INSTALL/bin $PATH
+set -gx GPG_TTY (tty)
 
 # pnpm
 set -gx PNPM_HOME "/Users/cameron/Library/pnpm"

@@ -28,9 +28,6 @@ function M.format()
   end
 end
 
--- Insert debugger breakpoint for filetype
--- TODO: For ruby, we should be aware if we're in the middle of a method chain
---       and use `.tap { |o| debugger(pre: "info"); o }`
 function M.debugger()
   local breakpoint = {
     javascript = "debugger",
@@ -38,6 +35,10 @@ function M.debugger()
     lua = "P()",
     python = "breakpoint()",
   }
+
+  if vim.o.filetype == "ruby" and vim.api.nvim_get_current_line():match("^%s*%.") then
+    return "O.tap { |it| debugger(pre: \"info\") }<esc>==:w<cr>^"
+  end
 
   if breakpoint[vim.o.filetype] then
     return "o" .. breakpoint[vim.o.filetype] .. "<esc>:w<cr>^"

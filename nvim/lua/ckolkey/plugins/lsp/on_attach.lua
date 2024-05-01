@@ -1,4 +1,6 @@
-local telescope = require("telescope.builtin")
+local function telescope(action)
+  return require("telescope.builtin")[action]
+end
 
 return function(options)
   return function(client, bufnr)
@@ -7,27 +9,28 @@ return function(options)
     local opts = { noremap = true, buffer = bufnr }
 
     if client.supports_method("textDocument/definition") then
-      keymaps.normal["gd"] = { telescope.lsp_definitions, opts }
+      keymaps.normal["gd"] = { telescope("lsp_definitions"), opts }
     end
 
     if client.supports_method("textDocument/references") then
-      keymaps.normal["gr"] = { telescope.lsp_references, opts }
+      keymaps.normal["gr"] = { telescope("lsp_references"), opts }
     end
 
     if client.supports_method("textDocument/implementation") then
-      keymaps.normal["gi"] = { telescope.lsp_implementations, opts }
+      keymaps.normal["gi"] = { telescope("lsp_implementations"), opts }
     end
 
     if client.supports_method("workspace/symbol") then
-      keymaps.normal["<c-s>"] = { telescope.lsp_workspace_symbols, opts }
+      keymaps.normal["<c-s>"] = { telescope("lsp_workspace_symbols"), opts }
     end
 
     if client.supports_method("inlayHint/resolve") then
-      vim.lsp.inlay_hint.enable(bufnr, true)
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
-    if client.supports_method("textDocument/publishDiagnostics")
-        or client.supports_method("textDocument/diagnostic")
+    if
+      client.supports_method("textDocument/publishDiagnostics")
+      or client.supports_method("textDocument/diagnostic")
     then
       autocmds.lsp_diagnostics_hover = {
         desc = "Show diagnostics when you hold cursor",
@@ -37,12 +40,10 @@ return function(options)
             local position = vim.api.nvim_win_get_cursor(0)
             vim.defer_fn(function()
               if vim.deep_equal(vim.api.nvim_win_get_cursor(0), position) then
-                vim.diagnostic.open_float(
-                  {
-                    focusable = false,
-                    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-                  }
-                )
+                vim.diagnostic.open_float({
+                  focusable = false,
+                  border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+                })
               end
             end, 1000)
           end,

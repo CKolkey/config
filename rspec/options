@@ -1,7 +1,18 @@
-# --order random
+<%
+  def require_without_bundler(gem, file)
+    return require(file) unless defined?(::Bundler)
+
+    if gem_path = Dir.glob("{#{Gem.path.join(',')}}/gems/#{gem}*").first
+      $LOAD_PATH.push("#{gem_path}/lib")
+      require file
+    else
+      raise LoadError, "Gem #{gem} not found via require_without_bundler"
+    end
+  end
+%>
 
 <% begin %>
-  <% require('fuubar') %>
+  <% require_without_bundler('fuubar', 'fuubar') %>
   --format Fuubar
   --color
 <% rescue LoadError %>
@@ -26,7 +37,7 @@
 
 <%
   begin
-    require "super_diff/rspec-rails"
+    require_without_bundler "super_diff", "super_diff/rspec-rails"
   rescue LoadError
     puts "Cannot load SuperDiff"
   end

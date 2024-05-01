@@ -29,7 +29,7 @@ local config = {
   },
   width = 8,
   radius = 14,
-  padding = 3,
+  padding = 4,
 }
 
 local function redrawFrame(event)

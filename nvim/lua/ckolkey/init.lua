@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd("User", {
   callback = function()
     safe_require("ckolkey.config.keymaps")
     safe_require("ckolkey.config.autocmds")
+    safe_require("ckolkey.config.commands")
     safe_require("ckolkey.config.diagnostics")
 
     if os.getenv("PROFILE") then
@@ -26,10 +27,3 @@ vim.api.nvim_create_autocmd("User", {
     end
   end,
 })
-
-vim.api.nvim_create_user_command("ProfileStart", function()
-  require("plenary.profile").start("profile.log", { flame = true })
-  -- vim.api.nvim_create_autocmd("VimLeavePre", { callback = require("plenary.profile").stop })
-end, {})
-
-vim.api.nvim_create_user_command("ProfileStop", require("plenary.profile").stop, {})

@@ -7,7 +7,7 @@ local prettierd = {
 return {
   rust_analyzer = {},
   bashls = {},
-  ruby_ls = {
+  ruby_lsp = {
     init_options = {
       featuresConfiguration = {
         inlayHint = {

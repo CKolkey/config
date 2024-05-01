@@ -35,7 +35,7 @@ local mappings = {
     ["cN"] = "*``cgN",
 
     -- Paste should match indentation
-    ["p"] = "p=`]",
+    -- ["p"] = "\"_dP=`]",
 
     -- Don't yank empty lines into the main register
     ["dd"] = { require("ckolkey.utils.functions").smart_delete, { expr = true } },

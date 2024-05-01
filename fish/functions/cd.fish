@@ -1,9 +1,17 @@
 # Interactive CD if not argument is passed. Normal CD if arg is passed.
 function cd
+  set origin "$(pwd)"
+
   if count $argv > /dev/null
-    builtin cd "$argv"
+    if [ "$argv" = "-" ]
+      # When passing "-" as the arg, go to previous CWD
+      builtin cd "$PREV_CWD"
+    else
+      # Standard cd behaviour
+      builtin cd "$argv"
+    end
   else
-    set origin "$(pwd)"
+    # Interactive, fzf backed, cd
     set path
 
     while true
@@ -17,6 +25,10 @@ function cd
     end
 
     builtin cd "$origin/$path"
+
     commandline -t "" # Remove last token from commandline.
+    commandline -f repaint
   end
+
+  set -g -x PREV_CWD "$origin"
 end

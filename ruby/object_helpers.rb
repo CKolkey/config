@@ -1,7 +1,11 @@
 module ObjectHelpers
   # list methods which aren't in superclass
   def local_methods(obj = self)
-    (obj.methods - obj.class.superclass.instance_methods).sort
+    (methods - Object.instance_methods).sort
+    # methods = [
+    #   (obj.methods - obj.class.superclass.instance_methods),
+    #   (obj.methods - Object.methods)
+    # ].flatten.uniq.sort
   end
 
   def local_caller
@@ -29,3 +33,24 @@ module ObjectHelpers
 end
 
 Object.prepend(ObjectHelpers)
+
+class Class
+  public :include
+
+  # Show only this class class methods
+  def class_methods
+    (methods - Class.instance_methods - Object.methods).sort
+  end
+
+  # Show instance and class methods
+  def defined_methods
+    methods = {}
+
+    methods[:instance] = new.local_methods
+    methods[:class] = class_methods
+
+    methods
+  end
+end
+
+# Class.include(ClassHelpers)

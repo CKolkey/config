@@ -1,4 +1,7 @@
 local conditions = require("heirline.conditions")
+local foldlevel = vim.fn.foldlevel
+local foldclosed = vim.fn.foldclosed
+local getcurpos = vim.fn.getcurpos
 
 local function is_virtual_line()
   return vim.v.virtnum < 0
@@ -9,15 +12,15 @@ local function is_wrapped_line()
 end
 
 local function not_in_fold_range()
-  return vim.fn.foldlevel(vim.v.lnum) <= 0
+  return foldlevel(vim.v.lnum) <= 0
 end
 
 local function not_fold_start(line)
-  return vim.fn.foldlevel(line) <= vim.fn.foldlevel(line - 1)
+  return foldlevel(line) <= foldlevel(line - 1)
 end
 
 local function fold_opened(line)
-  return vim.fn.foldclosed(line or vim.v.lnum) == -1
+  return foldclosed(line or vim.v.lnum) == -1
 end
 
 local Number = {
@@ -99,7 +102,7 @@ local Padding = {
   hl = function()
     if not conditions.is_active() then
       return { bg = Colors.bg15 }
-    elseif vim.v.lnum == vim.fn.getcurpos()[2] then
+    elseif vim.v.lnum == getcurpos()[2] then
       return { bg = Colors.line_purple }
     else
       return { bg = Colors.bg1 }

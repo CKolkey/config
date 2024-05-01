@@ -7,13 +7,9 @@ return {
     {
       "<leader>gf",
       function()
-        require("neogit").action(
-          "log",
-          "log_current",
-          { "--", vim.fn.expand("%") }
-        )()
+        require("neogit").action("log", "log_current", { "--", vim.fn.expand("%") })()
       end,
-      desc = "Git log for file"
+      desc = "Git log for file",
     },
     {
       "<leader>gf",
@@ -23,11 +19,7 @@ return {
         local line_start = vim.fn.getpos("'<")[2]
         local line_end = vim.fn.getpos("'>")[2]
 
-        require("neogit").action(
-          "log",
-          "log_current",
-          { "-L" .. line_start .. "," .. line_end .. ":" .. file }
-        )()
+        require("neogit").action("log", "log_current", { "-L" .. line_start .. "," .. line_end .. ":" .. file })()
       end,
       desc = "Git log for this range",
       mode = "v",
@@ -52,16 +44,13 @@ return {
     telescope_sorter = function()
       return require("telescope").extensions.fzf.native_fzf_sorter()
     end,
-    filewatcher = {
-      enabled = true,
-    },
     fetch_after_checkout = true,
     auto_show_console = true,
     disable_hint = true,
     notification_icon = " ",
-    disable_insert_on_commit = "auto",
-    use_per_project_settings = true,
-    remember_settings = true,
+    status = {
+      show_head_commit_hash = false,
+    },
     sections = {
       rebase = {
         folded = false,

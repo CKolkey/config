@@ -178,6 +178,8 @@ return {
   DiffChange                   = { fg = c.blue, bg = c.line_blue },
   DiffDelete                   = { fg = c.red, bg = c.line_red },
   NeogitNormal                 = { bg = c.bg0, },
+  NeogitSubtleText             = { fg = c.grey_dim },
+  NeogitObjectId               = { fg = c.grey_dim, style = "italic" },
   NeogitWinSeparator           = { bg = c.bg0, fg = c.bg_blue },
   NeogitNotification           = { bg = c.bg0, },
   NeogitCursorLine             = { bg = c.bg15, },

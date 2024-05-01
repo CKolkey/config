@@ -4,6 +4,7 @@
 ;; sync' after modifying this file!
 
   (after! magit (setq magit-git-debug t))
+  (setq shell-file-name (executable-find "bash"))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
