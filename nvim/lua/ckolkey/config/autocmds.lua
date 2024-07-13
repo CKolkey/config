@@ -10,10 +10,10 @@ local definitions = {
     desc = "Load snippets for filetype",
     { event = "BufEnter", command = "LuasnipAutoloadFilteypeSnippets" },
   },
-  format_file = {
-    desc = "Formatting File after write",
-    -- { event = "BufWritePost", callback = require("utils.functions").format },
-  },
+  -- format_file = {
+  --   desc = "Formatting File after write",
+  --   { event = "BufWritePost", callback = require("utils.functions").format },
+  -- },
   autoreload = {
     desc = "Automatically reloads buffer if it's changed externally",
     { event = { "FocusGained", "BufEnter", "CursorHold" }, command = "silent! checktime %" },

@@ -12,49 +12,38 @@ local log = hs.logger.new("hammerspoon", "debug")
 -- osascript -e 'id of app "<app name>"'
 
 local apps = {
-  ["Kitty"] = {
-    bundleID = "net.kovidgoyal.kitty",
-    launch_key = "i",
-  },
-  -- ["Emacs"] = {
-  --   bundleID = "org.gnu.Emacs",
-  --   launch_key = "m",
-  -- },
-  ["Slack"] = {
-    bundleID = "com.tinyspeck.slackmacgap",
-    launch_key = "s",
-  },
-  ["Finder"] = {
-    bundleID = "com.apple.finder",
-    launch_key = "f",
-  },
-  ["Google Chrome"] = {
-    bundleID = "com.google.Chrome",
-    launch_key = "w",
-  },
-  ["Mail"] = {
-    bundleID = "com.apple.mail",
-    launch_key = "m",
-  },
-  ["Obsidian"] = {
-    bundleID = "md.obsidian",
-    launch_key = "o",
-  },
+	["Kitty"] = {
+		bundleID = "net.kovidgoyal.kitty",
+		launch_key = "i",
+	},
+	["Slack"] = {
+		bundleID = "com.tinyspeck.slackmacgap",
+		launch_key = "s",
+	},
+	["Finder"] = {
+		bundleID = "com.apple.finder",
+		launch_key = "f",
+	},
+	["Firefox"] = {
+		-- bundleID = "com.google.Chrome",
+		bundleID = "org.mozilla.firefoxdeveloperedition",
+		launch_key = "w",
+	},
 }
 
 function M.load()
-  for name, config in pairs(apps) do
-    hs.hotkey.bind(hyper, config.launch_key, function()
-      M.open(name)
-    end)
-  end
+	for name, config in pairs(apps) do
+		hs.hotkey.bind(hyper, config.launch_key, function()
+			M.open(name)
+		end)
+	end
 
-  return M
+	return M
 end
 
 function M.open(name)
-  -- log.i("> Launching App: " .. name)
-  hs.application.launchOrFocus(name)
+	-- log.i("> Launching App: " .. name)
+	hs.application.launchOrFocus(name)
 end
 
 return M

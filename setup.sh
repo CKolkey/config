@@ -15,8 +15,8 @@ echo "Installing Brew Bundle"
 brew bundle --file="./Brewfile"
 
 echo "Using fish shell"
-echo $(which fish) | sudo tee -a /etc/shells
-chsh -s $(which fish)
+which fish | sudo tee -a /etc/shells
+chsh -s "$(which fish)"
 
 echo "Setting up asdf"
 asdf plugin list all
@@ -28,7 +28,7 @@ yarn global add vscode-langservers-extracted typescript-language-server typescri
 
 
 echo "Applying config settings"
-git config --global core.excludesFile '~/.config/git/ignore'
+git config --global core.excludesFile "$HOME/.config/git/ignore"
 
 bash defaults.osx
 

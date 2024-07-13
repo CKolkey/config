@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
 class Integer
-  # def underscore(s=3)
-  #   self.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1_")
-  # end
-  #
-  # Via Awesome Print gem. Reformats numbers to include underscores as delimiters.
-  def ai(...)
-    _, pre, number, post = super(...).match(%r{(\e\[1;34m)(\d+)(\e\[0m)}).to_a
+  def inspect
+    self.to_s.then { self >= 10_000 ? _1.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1_") : _1 }
+  end
+end
 
-    [
-      pre,
-      number.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1_"),
-      post
-    ].join
+class Float
+  def inspect
+    whole, fractional = self.to_s.split(".")
+    whole.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1_")                        if whole.size > 4
+    fractional.reverse!.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1_").reverse! if fractional.size > 4
+
+    "#{whole}.#{fractional}"
   end
 end

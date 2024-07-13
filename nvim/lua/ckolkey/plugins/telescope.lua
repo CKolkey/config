@@ -160,8 +160,8 @@ return {
           match_filename = true,
         },
         generic = {
-          enable = true,
-          highlight_results = true,
+          enable = false,
+          highlight_results = false,
           match_filename = false,
         },
       },
@@ -196,7 +196,7 @@ return {
       },
       fzf = {
         fuzzy = true,
-        override_generic_sorter = false,
+        override_generic_sorter = true,
         override_file_sorter = false,
         case_mode = "smart_case",
       },

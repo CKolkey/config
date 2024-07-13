@@ -19,9 +19,13 @@ function W(...)
 
   return ...
 end
+
 -- Global deep-inspect function
 function P(...)
-  vim.print(...)
+  local args = { ... }
+  vim.schedule(function()
+    vim.print(unpack(args))
+  end)
 end
 
 -- Global inspection function that dumps output to buffer

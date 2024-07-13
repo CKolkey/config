@@ -50,6 +50,11 @@ local function getDisplaySpaces()
   return query("displays --display").spaces
 end
 
+local function getSpaceWindows()
+  return query("windows")
+end
+
+
 local function getScreenSpaces(screen)
   return hs.spaces.spacesForScreen(screen or hs.window.focusedWindow():screen())
 end
@@ -133,26 +138,20 @@ local function sendFocusedWindowToNewSpace(opts)
   local spaceID = getEmptySpace()
 
   if not spaceID then
-    log_debug("No space found - attempting to prune")
-    pruneEmptySpaces()
+    -- log_debug("No space found - attempting to prune")
+    -- pruneEmptySpaces()
     return
   end
 
-  spaceID = getEmptySpace()
-  if not spaceID then
-    log_debug("Couldn't find an empty space")
-    return
-  end
 
   if opts.keepFocus then
     frame.suspend(function()
-      for _, win in ipairs(window:otherWindowsSameScreen()) do
-        win:focus()
-        _yabai("window", { "--space", spaceID })
+      for _, win in ipairs(getSpaceWindows()) do
+        if not win["has-focus"] and win.subrole == "AXStandardWindow" then
+          _yabai("window " .. win.id, { "--space", spaceID })
+        end
       end
     end)
-
-    window:focus()
   else
     _yabai("window", { "--space", spaceID })
     _yabai("space", { "--focus", spaceID })

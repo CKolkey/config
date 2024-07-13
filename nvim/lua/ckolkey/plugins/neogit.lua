@@ -40,7 +40,7 @@ return {
         ["<c-c><c-k>"] = false,
       },
     },
-    console_timeout = 10000,
+    console_timeout = 3000,
     telescope_sorter = function()
       return require("telescope").extensions.fzf.native_fzf_sorter()
     end,

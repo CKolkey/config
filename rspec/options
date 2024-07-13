@@ -1,12 +1,17 @@
 <%
-  def require_without_bundler(gem, file)
-    return require(file) unless defined?(::Bundler)
+  begin
+    # Fixes issue where running rspec inline will print "already defined"
+    method(:require_without_bundler)
+  rescue NameError
+    def require_without_bundler(gem, file)
+      return require(file) unless defined?(::Bundler)
 
-    if gem_path = Dir.glob("{#{Gem.path.join(',')}}/gems/#{gem}*").first
-      $LOAD_PATH.push("#{gem_path}/lib")
-      require file
-    else
-      raise LoadError, "Gem #{gem} not found via require_without_bundler"
+      if gem_path = Dir.glob("{#{Gem.path.join(',')}}/gems/#{gem}*").first
+        $LOAD_PATH.push("#{gem_path}/lib")
+        require file
+      else
+        raise LoadError, "Gem #{gem} not found via require_without_bundler"
+      end
     end
   end
 %>

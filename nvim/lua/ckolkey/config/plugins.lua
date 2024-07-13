@@ -8,15 +8,27 @@ end
 vim.opt.rtp:prepend(install_path)
 
 require("lazy").setup("ckolkey.plugins", {
+  rocks = {
+    enabled = false,
+  },
+  performance = {
+    cache = {
+      enabled = true,
+    },
+  },
   dev = {
-    path     = "~/code/",
+    path = "~/code/",
     patterns = { "ckolkey" },
     fallback = true,
   },
   checker = {
-    enabled = true
+    enabled = true,
   },
   install = {
-    colorscheme = { "onedark", "habamax" }
-  }
+    colorscheme = { "onedark", "habamax" },
+  },
+  profiling = {
+    loader = true,
+    require = true,
+  },
 })

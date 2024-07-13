@@ -44,4 +44,4 @@ SETUVAR fish_pager_color_description:B3A06D
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2d\x2dbackground\x3dbrblack
-SETUVAR fish_user_paths:/Users/cameron/\x2econfig/emacs/bin\x1e/Users/cameron/\x2econfig/git/bin\x1e/Users/cameron/code/karnov/db_tonic/bin\x1e/Users/cameron/code/karnov/jin/bin\x1e/usr/local/opt/curl/bin\x1e/Users/cameron/\x2eyarn/bin\x1e/Users/cameron/\x2ecargo/bin\x1e/Users/cameron/\x2ecomposer/vendor/bin\x1e/Users/cameron/\x2elocal/bin\x1e/usr/local/opt/fzf/bin\x1e/opt/homebrew/opt/fzf/bin
+SETUVAR fish_user_paths:/opt/homebrew/opt/postgresql\x4016/bin\x1e/Users/cameron/\x2econfig/emacs/bin\x1e/Users/cameron/\x2econfig/git/bin\x1e/Users/cameron/code/karnov/db_tonic/bin\x1e/Users/cameron/code/karnov/jin/bin\x1e/usr/local/opt/curl/bin\x1e/Users/cameron/\x2eyarn/bin\x1e/Users/cameron/\x2ecargo/bin\x1e/Users/cameron/\x2ecomposer/vendor/bin\x1e/Users/cameron/\x2elocal/bin\x1e/usr/local/opt/fzf/bin\x1e/opt/homebrew/opt/fzf/bin

@@ -20,7 +20,7 @@ return {
         -- "comment",
         "bash",
         "fish",
-        "gitcommit",
+        -- "gitcommit",
         "gitignore",
         "html",
         "embedded_template",
@@ -110,14 +110,14 @@ return {
       endwise = { enable = true },
     })
 
-    local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-    parser_config.luap = {
-      install_info = {
-        url = "https://github.com/vhyrro/tree-sitter-luap",
-        files = { "src/parser.c" },
-        branch = "main",
-        readme_name = "lua patterns",
-      },
-    }
+    -- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+    -- parser_config.luap = {
+    --   install_info = {
+    --     url = "https://github.com/vhyrro/tree-sitter-luap",
+    --     files = { "src/parser.c" },
+    --     branch = "main",
+    --     readme_name = "lua patterns",
+    --   },
+    -- }
   end,
 }

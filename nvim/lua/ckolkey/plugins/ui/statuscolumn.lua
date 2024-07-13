@@ -73,7 +73,7 @@ local Fold = {
 
 local Border = {
   init = function(self)
-    local ns_id = vim.api.nvim_get_namespaces()["gitsigns_extmark_signs_"]
+    local ns_id = vim.api.nvim_get_namespaces()["gitsigns_signs_"]
     if ns_id then
       local marks = vim.api.nvim_buf_get_extmarks(
         0,

@@ -16,23 +16,16 @@ local sort = function(a, b)
   end
 end
 
-vim.api.nvim_create_user_command(
-  "QFSort",
-  function() vim.fn.setqflist(vim.fn.sort(vim.fn.getqflist(), sort)) end,
-  {}
-)
+vim.api.nvim_create_user_command("QFSort", function()
+  vim.fn.setqflist(vim.fn.sort(vim.fn.getqflist(), sort))
+end, {})
 
-vim.api.nvim_create_user_command(
-  "QFResize",
-  function() vim.cmd([[execute('resize ' . min([10, len(getqflist())])) ]]) end,
-  {}
-)
+vim.api.nvim_create_user_command("QFResize", function()
+  vim.cmd([[execute('resize ' . min([10, len(getqflist())])) ]])
+end, {})
 
-vim.api.nvim_create_user_command(
-  "MergeConflicts",
-  function()
-    vim.cmd([[silent grep "<<<<<<< HEAD"]])
-    vim.cmd.QFToggle()
-  end,
-  {}
-)
+vim.api.nvim_create_user_command("MergeConflicts", function()
+  vim.cmd([[silent grep "<<<<<<< HEAD"]])
+  vim.cmd.copen()
+end, {})
+

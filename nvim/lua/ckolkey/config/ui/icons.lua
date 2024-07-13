@@ -1,3 +1,4 @@
+-- stylua: ignore
 return {
   fillchars              = {
     diff                 = "╱",
@@ -34,6 +35,12 @@ return {
     Event                = " ",
     Operator             = " ",
     TypeParameter        = " ",
+    KeywordOperator      = " ",
+    KeywordConditional   = " ",
+    StringSpecialSymbol  = " ",
+    VariableMember       = " ",
+    Nospell              = " ",
+    None                 = " ",
   },
   listchars              = {
     space                = " ",

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 # vim: ft=ruby
-
-
 begin # Only available in ruby 3.3+
   Warning[:performance] = true
 rescue
@@ -41,6 +39,11 @@ if File.exist? File.join(Dir.pwd, ".irbrc")
   puts "Loading .irbrc from #{Dir.pwd}"
   load ".irbrc"
 end
+
+IRB.conf[:SAVE_HISTORY] = 10000000
+IRB.conf[:HISTORY_FILE] = File.join(Dir.pwd, ".irb_history")
+IRB.conf[:PROMPT_MODE]  = :SIMPLE
+IRB.conf[:AUTO_INDENT]  = true
 
 # IRB.conf[:USE_AUTOCOMPLETE] = false
 # Reline::Face.config(:completion_dialog) do |conf|
