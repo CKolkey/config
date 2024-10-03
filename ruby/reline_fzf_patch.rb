@@ -2,6 +2,7 @@ module RelineFzfPatch
   private
 
   RELINE_PATCH_LINE_TERMINATOR = "\\".freeze
+  RELINE_PATCH_NULL_TERMINATOR = "\0".freeze
 
   # When ending a session, Reline writes history separated by newlines.
   # This parses them back into a single-string containing newline-literals
@@ -27,7 +28,7 @@ module RelineFzfPatch
       .reverse
       .uniq
       .map { IRB::Color.colorize_code(_1, ignore_error: true) }
-      .join("\0")
+      .join(RELINE_PATCH_NULL_TERMINATOR)
   end
 
   def incremental_search_history(_)
@@ -49,5 +50,5 @@ module RelineFzfPatch
   end
 end
 
-require "reline"
+require "reline" unless defined?(Reline)
 Reline::LineEditor.prepend(RelineFzfPatch)

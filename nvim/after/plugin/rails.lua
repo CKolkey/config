@@ -11,31 +11,31 @@ if _G.Rails or not rails_app() then
 end
 
 _G.Rails = {
-  root        = vim.loop.cwd() .. "/",
-  fn          = {},
-  icon        = " ",
-  name        = "Rails",
-  db_schema   = {
-    tables      = {},
+  root = vim.loop.cwd() .. "/",
+  fn = {},
+  icon = " ",
+  name = "Rails",
+  db_schema = {
+    tables = {},
     inflections = {},
-    timestamp   = 0
+    timestamp = 0,
   },
   projections = {
     {
-      pattern  = "app/controllers([%w_/]*)/([%w_]+)%.rb$",
-      template = "spec/requests%s/%s_spec.rb"
+      pattern = "app/controllers([%w_/]*)/([%w_]+)%.rb$",
+      template = "spec/requests%s/%s_spec.rb",
     },
     {
-      pattern  = "spec/requests([%w_/]*)/([%w_]+)_spec%.rb$",
-      template = "app/controllers%s/%s.rb"
+      pattern = "spec/requests([%w_/]*)/([%w_]+)_spec%.rb$",
+      template = "app/controllers%s/%s.rb",
     },
     {
-      pattern  = "app/([%w_/]+)/([%w_]+)%.rb$",
-      template = "spec/%s/%s_spec.rb"
+      pattern = "app/([%w_/]+)/([%w_]+)%.rb$",
+      template = "spec/%s/%s_spec.rb",
     },
     {
-      pattern  = "spec/([%w_/]+)/([%w_]+)_spec%.rb$",
-      template = "app/%s/%s.rb"
+      pattern = "spec/([%w_/]+)/([%w_]+)_spec%.rb$",
+      template = "app/%s/%s.rb",
     },
   },
 }
@@ -112,6 +112,8 @@ function Rails.fn.edit_alternate_file(cmd)
     print("Rails: Couldn't find alternate file")
   end
 
+  assert(alternate)
+
   if vim.loop.fs_stat(alternate) then
     vim.cmd[cmd](alternate)
   else
@@ -132,44 +134,58 @@ end
 
 Rails.commands = {
   ["A"] = {
-    fn = function() Rails.fn.edit_alternate_file("edit") end,
+    fn = function()
+      Rails.fn.edit_alternate_file("edit")
+    end,
   },
   ["AS"] = {
-    fn = function() Rails.fn.edit_alternate_file("split") end,
+    fn = function()
+      Rails.fn.edit_alternate_file("split")
+    end,
   },
   ["AV"] = {
-    fn = function() Rails.fn.edit_alternate_file("vsplit") end,
+    fn = function()
+      Rails.fn.edit_alternate_file("vsplit")
+    end,
   },
   ["Emigration"] = {
-    fn = function() vim.cmd.edit(Rails.fn.get_last_migration()) end
+    fn = function()
+      vim.cmd.edit(Rails.fn.get_last_migration())
+    end,
   },
   ["Gmigration"] = {
     fn = function(args)
-      vim.loop.spawn(
-        "bundle",
-        { args = { "exec", "rails", "g", "migration", args.args } },
-        function(code)
-          if code == 0 then
-            vim.schedule(function() vim.cmd.Emigration() end)
-          else
-            print("rails exited with status " .. tostring(code))
-          end
+      vim.loop.spawn("bundle", { args = { "exec", "rails", "g", "migration", args.args } }, function(code)
+        if code == 0 then
+          vim.schedule(function()
+            vim.cmd.Emigration()
+          end)
+        else
+          print("rails exited with status " .. tostring(code))
         end
-      )
+      end)
     end,
-    opts = { nargs = 1 }
+    opts = { nargs = 1 },
   },
   ["Eschema"] = {
-    fn = function() vim.cmd.edit("db/schema.rb") end
+    fn = function()
+      vim.cmd.edit("db/schema.rb")
+    end,
   },
   ["Egemfile"] = {
-    fn = function() vim.cmd.edit("Gemfile") end
+    fn = function()
+      vim.cmd.edit("Gemfile")
+    end,
   },
   ["Eroutes"] = {
-    fn = function() vim.cmd.edit("config/routes.rb") end
+    fn = function()
+      vim.cmd.edit("config/routes.rb")
+    end,
   },
   ["Eenvrc"] = {
-    fn = function() vim.cmd.edit(".envrc") end
+    fn = function()
+      vim.cmd.edit(".envrc")
+    end,
   },
   -- ["RspecFailures"] = {
   --   fn = function()
@@ -203,17 +219,20 @@ for cmd, def in pairs(Rails.commands) do
 end
 
 function Rails.fn.parse_schema()
-  local schema    = utils.safe_read_file("db/schema.rb")
+  local schema = utils.safe_read_file("db/schema.rb")
   local tree_root = vim.treesitter.get_string_parser(schema, "ruby", {}):parse()[1]:root()
-  local query     = vim.treesitter.query.parse("ruby", [[
+  local query = vim.treesitter.query.parse(
+    "ruby",
+    [[
           (call
             method: (identifier) @method (#eq? @method "create_table")
             arguments: (argument_list (string (string_content) @table))
             (do_block (body_statement) @columns)
           )
-        ]])
+        ]]
+  )
 
-  local tables    = {}
+  local tables = {}
   local table
   for id, node in query:iter_captures(tree_root, schema, 0, -1) do
     local text = vim.treesitter.get_node_text(node, schema)
@@ -231,7 +250,7 @@ function Rails.fn.schema_tables()
   local timestamp = utils.safe_read_proc("stat -f %m db/schema.rb")
 
   if Rails.db_schema.timestamp ~= timestamp then
-    Rails.db_schema.tables    = Rails.fn.parse_schema()
+    Rails.db_schema.tables = Rails.fn.parse_schema()
     Rails.db_schema.timestamp = timestamp
   end
 
@@ -256,21 +275,20 @@ require("ckolkey.utils.autocmds").load({
   show_schema = {
     desc = "Shows DB columns as virtual text",
     {
-      event    = "BufEnter",
-      pattern  = "app/models/*.rb",
+      event = "BufEnter",
+      pattern = "app/models/*.rb",
       callback = function(event)
-        local tables     = Rails.fn.schema_tables()
-        local model      = event.file:match("^.+/(.+)%..+")
+        local tables = Rails.fn.schema_tables()
+        local model = event.file:match("^.+/(.+)%..+")
         local table_name = Rails.fn.model_inflection(model)
 
-        if not tables[table_name] then return end
+        if not tables[table_name] then
+          return
+        end
 
-        local lines = vim.tbl_map(
-          function(row)
-            return { { "# " .. utils.strip(row, { "^%s*t%." }), "Comment" } }
-          end,
-          vim.split(tables[table_name], "\n")
-        )
+        local lines = vim.tbl_map(function(row)
+          return { { "# " .. utils.strip(row, { "^%s*t%." }), "Comment" } }
+        end, vim.split(tables[table_name], "\n"))
 
         table.insert(lines, { { "", "Comment" } })
 
@@ -285,16 +303,12 @@ require("ckolkey.utils.autocmds").load({
         end
 
         vim.api.nvim_buf_clear_namespace(event.buf, ns, 0, -1)
-        vim.api.nvim_buf_set_extmark(
-          event.buf,
-          ns,
-          extmark_line,
-          0,
-          { virt_lines = lines, virt_lines_above = true }
-        )
-      end
-    }
-  }
+        vim.api.nvim_buf_set_extmark(event.buf, ns, extmark_line, 0, { virt_lines = lines, virt_lines_above = true })
+      end,
+    },
+  },
 })
 
-vim.defer_fn(function() Rails.fn.notice("Loaded " .. Rails.name) end, 1000)
+vim.defer_fn(function()
+  Rails.fn.notice("Loaded " .. Rails.name)
+end, 1000)

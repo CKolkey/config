@@ -11,10 +11,10 @@ return {
     init_options = {
       featuresConfiguration = {
         inlayHint = {
-          enableAll = true
-        }
-      }
-    }
+          enableAll = true,
+        },
+      },
+    },
   },
   -- pylsp = {},
   efm = {
@@ -51,13 +51,13 @@ return {
             -- lintIgnoreExitCode = true
           },
         },
-        ["lua"] = {
-          {
-            formatCommand = "stylua --color Never -",
-            formatStdin = true,
-            rootMarkers = { "stylua.toml", ".stylua.toml" },
-          },
-        },
+        -- ["lua"] = {
+        --   {
+        --     formatCommand = "stylua --color Never -",
+        --     formatStdin = true,
+        --     rootMarkers = { "stylua.toml", ".stylua.toml" },
+        --   },
+        -- },
         ["javascript"] = { prettierd },
         ["javascriptreact"] = { prettierd },
         ["javascript.jsx"] = { prettierd },
@@ -67,18 +67,18 @@ return {
       },
     },
   },
-  tsserver = {
+  ts_ls = {
     init_options = {
       documentFormatting = false,
       hostInfo = "neovim",
     },
   },
   lua_ls = {
-    init_options = { documentFormatting = false },
+    -- init_options = { documentFormatting = false },
     settings = {
       Lua = {
         format = {
-          enable = false,
+          enable = true,
           defaultConfig = {
             indent_style = "space",
             indent_size = "2",

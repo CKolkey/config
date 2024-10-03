@@ -64,9 +64,7 @@ return function(options)
       vim.api.nvim_buf_set_var(bufnr, "format_with_lsp", true)
 
       keymaps.normal["<leader><leader>"] = {
-        function()
-          require("ckolkey.plugins.lsp.formatting").callback(client, bufnr)
-        end,
+        require("ckolkey.plugins.lsp.formatting").callback(client, bufnr),
         opts,
       }
 
@@ -74,9 +72,7 @@ return function(options)
         desc = "Format buffer on save",
         {
           event = "BufWritePost",
-          callback = function()
-            require("ckolkey.plugins.lsp.formatting").callback(client, bufnr)
-          end,
+          callback = require("ckolkey.plugins.lsp.formatting").callback(client, bufnr),
           buffer = bufnr,
         },
       }

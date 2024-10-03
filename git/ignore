@@ -205,3 +205,4 @@ Sessionx.vim
 # End of https://www.toptal.com/developers/gitignore/api/macos,ruby,vim
 .ignore
 .irb_history
+*.tags

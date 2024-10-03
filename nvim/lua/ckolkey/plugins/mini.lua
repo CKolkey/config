@@ -17,30 +17,15 @@ return {
         },
         symbol = Icons.misc.v_pipe,
         mappings = {
-          object_scope = "ii",
-          object_scope_with_border = "ai",
+          -- object_scope = "ii",
+          -- object_scope_with_border = "ai",
           goto_top = "[i",
           goto_bottom = "]i",
-        }
+        },
       })
     end,
   },
-  -- {
-  --   "echasnovski/mini.jump",
-  --   event = "BufReadPre",
-  --   opts = {
-  --     mappings = {
-  --       forward = "f",
-  --       backward = "F",
-  --       forward_till = "t",
-  --       backward_till = "T",
-  --       repeat_jump = "",
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("mini.jump").setup(opts)
-  --   end,
-  -- },
+  { "echasnovski/mini.extra" },
   {
     "echasnovski/mini.ai",
     event = "BufReadPre",
@@ -50,13 +35,26 @@ return {
       require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
     end,
     config = function()
+      local extra = require("mini.extra")
       local ai = require("mini.ai")
       ai.setup({
+        n_lines = 500,
         custom_textobjects = {
-          b = ai.gen_spec.treesitter({
-            a = { "@block.outer", "@conditional.outer", "@loop.outer", "@function.outer" },
-            i = { "@block.inner", "@conditional.inner", "@loop.inner", "@function.inner" },
-          }, {}),
+          b = ai.gen_spec.treesitter({ -- code block
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }), -- function
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^/]->$" },           -- tags
+          d = { "%f[%d]%d+" },                                                          -- digits
+          e = {                                                                         -- Word with case
+            { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
+            "^().*()$",
+          },
+          i = extra.gen_ai_spec.indent(),
+          g = extra.gen_ai_spec.buffer(),
+          u = ai.gen_spec.function_call(),                           -- u for "Usage"
+          U = ai.gen_spec.function_call({ name_pattern = "[%w_]" }), -- without dot in function name
           c = ai.gen_spec.treesitter({
             a = "@class.outer",
             i = "@class.inner",
@@ -97,60 +95,48 @@ return {
         update_n_lines = "",
       },
       custom_surroundings = {
-        ["("] = { output = { left = "( ", right = " )" } },
-        ["["] = { output = { left = "[ ", right = " ]" } },
+        ["("] = { output = { left = "(", right = ")" } },
+        ["["] = { output = { left = "[", right = "]" } },
         ["{"] = { output = { left = "{ ", right = " }" } },
         ["<"] = { output = { left = "<", right = ">" } },
+        [">"] = { output = { left = "<", right = ">" } },
         ["|"] = { output = { left = "|", right = "|" } },
         ["%"] = { output = { left = "<% ", right = " %>" } },
       },
     },
-    config = function(_, opts)
-      require("mini.surround").setup(opts)
-    end,
   },
   {
     "echasnovski/mini.comment",
     event = "BufReadPre",
     opts = {},
-    config = function()
-      require("mini.comment").setup({})
-    end,
   },
-  {
-    "echasnovski/mini.move",
-    config = function()
-      require("mini.move").setup({
-        mappings = {
-          right = "", -- noop
-          left = "", -- noop
-          line_left = "", -- noop
-          line_right = "", -- noop
-        },
-      })
-    end,
-  },
+  -- {
+  --   "echasnovski/mini.move",
+  --   opts = {
+  --     mappings = {
+  --       right = "", -- noop
+  --       left = "", -- noop
+  --       line_left = "", -- noop
+  --       line_right = "", -- noop
+  --     },
+  --   },
+  -- },
   {
     "echasnovski/mini.bufremove",
-    config = function()
-      require("mini.bufremove").setup({})
-    end,
+    opts = {},
   },
   {
     "echasnovski/mini.bracketed",
-    config = function()
-      require("mini.bracketed").setup({})
-    end,
+    opts = {},
   },
   {
     "echasnovski/mini.hipatterns",
-    version = false,
     opts = {
       highlighters = {
-        fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'HighlightCommentFixme' },
-        todo  = { pattern = '%f[%w]()TODO()%f[%W]', group = 'HighlightCommentTodo' },
-        note  = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'HighlightCommentNote' },
+        fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "HighlightCommentFixme" },
+        todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "HighlightCommentTodo" },
+        note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "HighlightCommentNote" },
       },
     }
-  }
+  },
 }

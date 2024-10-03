@@ -111,13 +111,26 @@ M.snippets = {
   rd = {
     description = "rubocop:disable comment with prefilled violation codes",
     f(function(_)
-      local row = vim.api.nvim_win_get_cursor(0)[1] - 1
-      local messages = vim.diagnostic.get(0, { lnum = row })
-      local codes = vim.tbl_map(function(tbl)
-        return tbl.code
-      end, messages)
+      local ignored_codes = {
+        "Style/TrailingBodyOnMethodDefinition",
+        "Lint/UnusedMethodArgument",
+        "Style/MethodDefParentheses",
+        "Naming/MethodParameterName",
+        "Layout/MultilineBlockLayout",
+      }
 
-      return "# rubocop:disable " .. table.concat(utils.table_unique(codes), ", ")
+      local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+      local messages = vim
+        .iter(vim.diagnostic.get(0, { lnum = row }))
+        :map(function(tbl)
+          return tbl.code
+        end)
+        :filter(function(code)
+          return not vim.tbl_contains(ignored_codes, code)
+        end)
+        :totable()
+
+      return "# rubocop:disable " .. table.concat(utils.table_unique(messages), ", ")
     end),
   },
   pri = {

@@ -6,6 +6,7 @@ local live_grep = function()
 
   require("telescope").extensions.live_grep_args.live_grep_args({ debounce = 100 })
 
+  -- local exclusions = [[-g!"log/**" -g!".git/**" -g!".pnpm-store/**" -g!"node_modules/**" -g!"*.log""]]
   local keys = vim.api.nvim_replace_termcodes([["" -g "*.]] .. filetype .. [["<c-a><right>]], true, false, true)
 
   vim.api.nvim_feedkeys(keys, "c", false)
@@ -62,9 +63,9 @@ return {
   },
   opts = {
     defaults = {
-      multi_icon = Icons.git.staged,
-      entry_prefix = "   ",
-      selection_caret = Icons.misc.current .. " ",
+      multi_icon = Icons.misc.v_pipe,
+      entry_prefix = " ",
+      selection_caret = Icons.misc.v_pipe,
       borderchars = {
         prompt = { " ", " ", " ", " ", " ", " ", " ", " " },
         results = { " ", " ", " ", " ", " ", " ", " ", " " },
@@ -81,7 +82,7 @@ return {
         "^log\\/.*",
         "^public/*",
         "^app/assets/builds/*",
-        "^spec/vcr_cassettes/*",
+        -- "^spec/vcr_cassettes/*",
       },
       vimgrep_arguments = {
         "rg",

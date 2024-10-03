@@ -143,12 +143,6 @@ local mappings = {
   command = {
     -- Feeds absolute filepath of current buffer into cmd
     ["%%"] = { require("ckolkey.utils.functions").feed_current_dir, { expr = true } },
-
-    -- -- Basic autocomplete
-    -- ["("] = { "()<left>", { silent = false } },
-    -- ["["] = { "[]<left>", { silent = false } },
-    -- ['"'] = { [[""<left>]], { silent = false } },
-    -- ["'"] = { [[''<left>]], { silent = false } },
   },
   operator_pending = {
     -- Fast movement to start/end of line
@@ -158,5 +152,12 @@ local mappings = {
   select = {},
   replace = {},
 }
+
+vim.cmd([[
+nnoremap @ <cmd>set lazyredraw <bar> execute "noautocmd norm! " . v:count1 . "@" . getcharstr() <bar> set nolazyredraw<cr>
+xnoremap @ :<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>
+nnoremap Q <cmd>set lazyredraw <bar> execute "noautocmd norm! Q" <bar> set nolazyredraw<cr>
+xnoremap Q :<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! Q" <bar> set nolazyredraw<cr>
+]])
 
 require("ckolkey.utils.keymaps").load(mappings)

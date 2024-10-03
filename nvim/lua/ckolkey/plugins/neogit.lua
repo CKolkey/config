@@ -45,7 +45,6 @@ return {
       return require("telescope").extensions.fzf.native_fzf_sorter()
     end,
     fetch_after_checkout = true,
-    auto_show_console = true,
     disable_hint = true,
     notification_icon = " ",
     status = {
@@ -58,6 +57,12 @@ return {
       recent = {
         folded = false,
       },
+      -- todo = {
+      --   keywords = {
+      --     ["TODO"] = "NeogitGraphBoldBlue",
+      --     ["NOTE"] = "NeogitGraphBoldGreen",
+      --   },
+      -- },
     },
     signs = {
       section = { Icons.misc.collapsed, Icons.misc.expanded },

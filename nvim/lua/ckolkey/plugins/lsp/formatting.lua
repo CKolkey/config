@@ -29,12 +29,33 @@ local function in_snippet()
 end
 
 local function abort_formatting(result, bufnr)
-  local no_res       = no_result(result)
-  local wrong_mode   = not_in_normal_mode()
-  local undo_tree    = not_at_tip_of_undo_tree()
-  local cursor_moved = cursor_has_moved(bufnr)
-  local new_tick     = new_changedtick_value(bufnr)
-  local snippet      = in_snippet()
+  if no_result(result) then
+    P("Aborted: No result")
+    return true
+  elseif not_in_normal_mode() then
+    P("Aborted: Not in normal mode")
+    return true
+  elseif not_at_tip_of_undo_tree() then
+    P("Aborted: Not at tip of undo tree")
+    return true
+  elseif cursor_has_moved(bufnr) then
+    P("Aborted: Cursor has moved")
+    return true
+  elseif new_changedtick_value(bufnr) then
+    P("Aborted: New changedtick value")
+    return true
+  -- elseif in_snippet() then
+  --   P("Aborted: Snippet active")
+  --   return true
+  else
+    return false
+  end
+  -- local no_res = no_result(result)
+  -- local wrong_mode = not_in_normal_mode()
+  -- local undo_tree = not_at_tip_of_undo_tree()
+  -- local cursor_moved = cursor_has_moved(bufnr)
+  -- local new_tick = new_changedtick_value(bufnr)
+  -- local snippet = in_snippet()
 
   -- P({
   --   no_result               = no_res,
@@ -45,7 +66,7 @@ local function abort_formatting(result, bufnr)
   --   in_snippet              = snippet
   -- })
 
-  return no_res or wrong_mode or undo_tree or cursor_moved or new_tick or snippet
+  -- return no_res or wrong_mode or undo_tree or cursor_moved or new_tick or snippet
 end
 
 local function write_error(err, ctx)
@@ -138,16 +159,23 @@ local function handler(err, result, ctx)
     require("luasnip").unlink_current()
   end
 
+  P("Applying format results")
   local view = vim.fn.winsaveview()
   apply_result(result, ctx)
   vim.fn.winrestview(view)
 end
 
 function M.callback(client, bufnr)
-  if not vim.b.saving_format then
-    vim.b.format_changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
-    vim.b.format_curpos      = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    client.request("textDocument/formatting", vim.lsp.util.make_formatting_params({}), handler, bufnr)
+  return function()
+    P("attempting format")
+
+    if not vim.b.saving_format then
+      vim.b.format_changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
+      vim.b.format_curpos = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+      client.request("textDocument/formatting", vim.lsp.util.make_formatting_params({}), handler, bufnr)
+    else
+      P("Buffer locked")
+    end
   end
 end
 

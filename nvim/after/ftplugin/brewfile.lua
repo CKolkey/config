@@ -1,7 +1,7 @@
 -- https://github.com/kassio/dotfiles/blob/main/config/xdg/nvim/after/ftplugin/brewfile.lua
 local cmd = function(str)
   local cmd_str = vim.api.nvim_replace_termcodes(str, true, true, true)
-  vim.cmd(cmd_str)
+  pcall(vim.cmd, cmd_str)
 end
 
 local brew_sort = function()

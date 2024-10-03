@@ -39,8 +39,8 @@ return {
       },
       file_panel = {
         listing_style = "list",
-        position = "top",
         win_config = {
+          position = "top",
           height = 10,
         },
       },

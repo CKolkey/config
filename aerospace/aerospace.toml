@@ -1,14 +1,3 @@
-# Run Sketchybar together with AeroSpace
-# sketchbar has a built-in detection of already running process,
-# so it won't be run twice on AeroSpace restart
-after-startup-command = ['exec-and-forget sketchybar']
-
-# Notify Sketchybar about workspace change
-exec-on-workspace-change = ['/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
-]
-
-
 start-at-login = true
 after-login-command = []
 after-startup-command = [
@@ -68,8 +57,8 @@ alt-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
 cmd-h = 'focus left --boundaries all-monitors-outer-frame'
-cmd-j = 'focus down'
-cmd-k = 'focus up'
+cmd-j = 'focus down --boundaries all-monitors-outer-frame'
+cmd-k = 'focus up --boundaries all-monitors-outer-frame'
 cmd-l = 'focus right --boundaries all-monitors-outer-frame'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
@@ -77,6 +66,9 @@ alt-shift-h = 'move left'
 alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
+
+# alt-shift-ctrl-cmd-left = 'move-node-to-monitor left'
+# alt-shift-ctrl-cmd-right = 'move-node-to-monitor right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#resize
 alt-shift-minus = 'resize smart -50'
@@ -92,39 +84,35 @@ alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
+alt-0 = 'workspace 0'
 
-cmd-shift-i = 'workspace i'
-cmd-shift-s = 'workspace s'
-cmd-shift-w = 'workspace w'
-cmd-shift-d = 'workspace d'
-cmd-shift-a = 'workspace a'
-
-alt-cmd-1 = 'move-node-to-workspace 1'
-alt-cmd-2 = 'move-node-to-workspace 2'
-alt-cmd-3 = 'move-node-to-workspace 3'
-alt-cmd-4 = 'move-node-to-workspace 4'
-alt-cmd-5 = 'move-node-to-workspace 5'
-alt-cmd-6 = 'move-node-to-workspace 6'
-alt-cmd-7 = 'move-node-to-workspace 7'
-alt-cmd-8 = 'move-node-to-workspace 8'
-alt-cmd-9 = 'move-node-to-workspace 9'
-# alt-cmd-i = 'move-node-to-workspace i'
-# alt-cmd-s = 'move-node-to-workspace s'
-# alt-cmd-w = 'move-node-to-workspace w'
-# alt-cmd-d = 'move-node-to-workspace d'
-# alt-cmd-a = 'move-node-to-workspace a'
+cmd-alt-1 = 'move-node-to-workspace 1'
+cmd-alt-2 = 'move-node-to-workspace 2'
+cmd-alt-3 = 'move-node-to-workspace 3'
+cmd-alt-4 = 'move-node-to-workspace 4'
+cmd-alt-5 = 'move-node-to-workspace 5'
+cmd-alt-6 = 'move-node-to-workspace 6'
+cmd-alt-7 = 'move-node-to-workspace 7'
+cmd-alt-8 = 'move-node-to-workspace 8'
+cmd-alt-9 = 'move-node-to-workspace 9'
+cmd-alt-0 = 'move-node-to-workspace 0'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
 alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 
-alt-cmd-h = 'split horizontal'
-alt-cmd-v = 'split vertical'
+# alt-cmd-h = 'split horizontal'
+# alt-cmd-v = 'split vertical'
 alt-e = 'layout tiles horizontal vertical'
 
-alt-shift-space = 'layout floating tiling'
+# alt-shift-space = 'layout floating tiling'
 
-alt-r = 'mode resize'
-alt-shift-semicolon = 'mode service'
+alt-cmd-h = 'join-with left'
+alt-cmd-j = 'join-with down'
+alt-cmd-k = 'join-with up'
+alt-cmd-l = 'join-with right'
+
+# alt-cmd-r = 'mode resize'
+# alt-cmd-s = 'mode service'
 
 [mode.resize.binding]
 h = 'resize width -50'
@@ -140,35 +128,29 @@ r = ['flatten-workspace-tree', 'mode main'] # reset layout
 f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
-alt-shift-h = ['join-with left', 'mode main']
-alt-shift-j = ['join-with down', 'mode main']
-alt-shift-k = ['join-with up', 'mode main']
-alt-shift-l = ['join-with right', 'mode main']
-
 [[on-window-detected]]
 if.app-id = 'net.kovidgoyal.kitty'
-run = 'move-node-to-workspace i'
+run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
 if.app-id = 'org.mozilla.firefoxdeveloperedition'
-run = 'move-node-to-workspace w'
+run = 'move-node-to-workspace 2'
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = 'move-node-to-workspace s'
+run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
 if.app-id = 'com.kapeli.dashdoc'
-run = 'move-node-to-workspace d'
+run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.teams2'
-run = 'move-node-to-workspace a'
+run = 'move-node-to-workspace 5'
 
 [workspace-to-monitor-force-assignment]
-w = 1
-d = 1
-i = 2
-s = 3
-t = 3
-a = 3
+2 = 1
+4 = 1
+1 = 2
+3 = 3
+5 = 3

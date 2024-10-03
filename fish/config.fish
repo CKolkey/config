@@ -16,25 +16,18 @@ fish_add_path -g $HOME/.config/git/bin
 fish_add_path -g $HOME/.config/emacs/bin
 fish_add_path /opt/homebrew/opt/postgresql@16/bin
 
-# asdf_add_path
 source_homebrew
 
 if status is-interactive
   auto_ls
-  direnv-hook
+  # direnv-hook
+  direnv hook fish | source
   mise activate fish | source
   starship init fish | source
   fzf --fish | source
+  gh completion -s fish | source
 
   source $HOME/.config/fish/abbreviations.fish
 end
 
 set -gx GPG_TTY (tty)
-
-# pnpm
-# set -gx PNPM_HOME "/Users/cameron/Library/pnpm"
-# if not string match -q -- $PNPM_HOME $PATH
-#   set -gx PATH "$PNPM_HOME" $PATH
-# end
-# pnpm end
-

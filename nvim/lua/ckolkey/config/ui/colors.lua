@@ -39,6 +39,7 @@ return {
   md_purple   = "#c3a7e5",
   lt_purple   = "#eadff0",
   line_purple = "#383746",
+  cursor_line = "#403d64",
   active      = "#98c379",
   inactive    = "#90AB7B",
   -- error_fg    = "#fc6e79",
