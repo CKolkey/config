@@ -4,7 +4,8 @@ return {
   dependencies = {
     "ray-x/lsp_signature.nvim",
     "stevearc/dressing.nvim",
-    "hrsh7th/cmp-nvim-lsp",
+    -- "hrsh7th/cmp-nvim-lsp",
+    "netmute/ctags-lsp.nvim",
   },
   config = function()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -19,6 +20,7 @@ return {
 
     for server, opts in pairs(require("ckolkey.plugins.lsp.servers")) do
       local options = {
+        -- capabilities = require('blink.cmp').get_lsp_capabilities(capabilities),
         capabilities = capabilities,
         on_attach = require("ckolkey.plugins.lsp.on_attach")(opts),
         flags = {

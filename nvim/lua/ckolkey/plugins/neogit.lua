@@ -1,5 +1,22 @@
 return {
   "NeogitOrg/neogit",
+  dependencies = {
+    {
+      "m00qek/baleia.nvim",
+      version = "*",
+      config = function()
+        vim.g.baleia = require("baleia").setup({})
+
+        -- Command to colorize the current buffer
+        vim.api.nvim_create_user_command("BaleiaColorize", function()
+          vim.g.baleia.once(vim.api.nvim_get_current_buf())
+        end, { bang = true })
+
+        -- Command to show logs
+        vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
+      end,
+    }
+  },
   cmd = "Neogit",
   dev = true,
   keys = {
@@ -26,6 +43,7 @@ return {
     },
   },
   opts = {
+    -- log_pager = { 'delta', '--width', '117', '--line-numbers', '--no-gitconfig', '--color-only' },
     mappings = {
       popup = {
         ["F"] = "PullPopup",
@@ -40,10 +58,10 @@ return {
         ["<c-c><c-k>"] = false,
       },
     },
-    console_timeout = 3000,
-    telescope_sorter = function()
-      return require("telescope").extensions.fzf.native_fzf_sorter()
-    end,
+    commit_view = {
+      verify_commit = false,
+    },
+    graph_style = "kitty",
     fetch_after_checkout = true,
     disable_hint = true,
     notification_icon = " ",

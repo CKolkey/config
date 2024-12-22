@@ -2,6 +2,26 @@ local conditions = require("heirline.conditions")
 local foldlevel = vim.fn.foldlevel
 local foldclosed = vim.fn.foldclosed
 local getcurpos = vim.fn.getcurpos
+local getpos = vim.fn.getpos
+local nvim_win_get_cursor = vim.api.nvim_win_get_cursor
+
+local CURSOR_LINE_NR = "CursorLineNr"
+local LINE_TEMPLATE = "%s%s"
+
+local function lnum_places()
+  local lnum = vim.v.lnum
+  if lnum < 10 then
+    return 1
+  elseif lnum < 100 then
+    return 2
+  elseif lnum < 1000 then
+    return 3
+  elseif lnum < 10000 then
+    return 4
+  else
+    return 5
+  end
+end
 
 local function is_virtual_line()
   return vim.v.virtnum < 0
@@ -23,6 +43,13 @@ local function fold_opened(line)
   return foldclosed(line or vim.v.lnum) == -1
 end
 
+local padding = { " ", "  ", "   ", "    ", "     " }
+local wrapped = { "  ", "   ", "    ", "     ", "      " }
+local lines = {}
+for i = 1, 10000 do
+  table.insert(lines, (LINE_TEMPLATE):format(i < 10 and "  " or " ", i))
+end
+
 local Number = {
   { provider = "%=" },
   {
@@ -30,33 +57,29 @@ local Number = {
       self.visual_range = nil
       self.lnum = vim.v.lnum
 
-      if vim.fn.mode():lower():find("v") then
-        local visual_lnum = vim.fn.getpos("v")[2]
-        local cursor_lnum = vim.api.nvim_win_get_cursor(0)[1]
+      local mode = vim.fn.mode()
+      if mode:match("V") or mode:match("v") or mode:match("") then
+        local visual_lnum = getpos("v")[2]
+        local cursor_lnum = nvim_win_get_cursor(0)[1]
 
-        -- force visual_lnum < cursor_lnum
-        if visual_lnum > cursor_lnum then
-          self.visual_range = { cursor_lnum, visual_lnum }
-        else
-          self.visual_range = { visual_lnum, cursor_lnum }
-        end
+        self.visual_range = { cursor_lnum, visual_lnum }
+        table.sort(self.visual_range)
       end
     end,
     hl = function(self)
       if self.visual_range then
         if self.lnum >= self.visual_range[1] and self.lnum <= self.visual_range[2] then
-          return "CursorLineNr"
+          return CURSOR_LINE_NR
         end
       end
     end,
-    provider = function()
-      local lnum = tostring(vim.v.lnum)
+    provider = function(self)
       if is_virtual_line() then
-        return string.rep(" ", #lnum)
+        return padding[lnum_places()]
       elseif is_wrapped_line() then
-        return " " .. string.rep(" ", #lnum)
+        return wrapped[lnum_places()]
       else
-        return (#lnum == 1 and "  " or " ") .. lnum
+        return lines[self.lnum] or (" %s"):format(self.lnum)
       end
     end,
   },
@@ -133,4 +156,9 @@ local Padding = {
   end,
 }
 
-return { Number, Fold, Border, Padding }
+return {
+  Number,
+  Fold,
+  Border,
+  Padding
+}

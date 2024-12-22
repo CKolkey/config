@@ -209,7 +209,7 @@ local LSP         = {
     provider = function()
       local names = vim.tbl_map(
         function(client) return client.name end,
-        vim.lsp.get_active_clients({ bufnr = 0 })
+        vim.lsp.get_clients({ bufnr = 0 })
       )
 
       return table.concat(names, " ")
@@ -269,8 +269,20 @@ local Git         = {
 }
 
 local left        = {
-  Mode("  "), Padding(2), FileSize, Padding(2), FileIcon, FilePath, FileFlags, Padding(2), FileLines,
-  Padding(2), Ruler, Padding(3), ScrollBar
+  Padding(1),
+  Mode("  "),
+  Padding(2),
+  FileSize,
+  Padding(2),
+  FileIcon,
+  FilePath,
+  FileFlags,
+  Padding(2),
+  FileLines,
+  Padding(2),
+  Ruler,
+  Padding(3),
+  -- ScrollBar
 }
 
 local center      = {
@@ -278,17 +290,22 @@ local center      = {
 }
 
 local right       = {
-  LSP, Padding(1), Git
+  LSP,
+  Padding(1),
+  Git,
+  Padding(2),
+  ScrollBar,
+  Padding(1),
 }
 
 return {
-  Mode("▉ "),
+  -- Mode("▉ "),
   left,
   separator,
   center,
   separator,
   right,
-  Mode(" ▉"),
+  -- Mode(" ▉"),
   hl = {
     bg = Colors.bg0,
     fg = Colors.fg

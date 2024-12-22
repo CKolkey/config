@@ -1,7 +1,8 @@
-vim.g.mapleader = "\\"
+vim.g.mapleader      = "\\"
+vim.g.maplocalleader = " "
 
 -- stylua: ignore
-local opts       = {
+local opts           = {
   breakindent    = true,
   clipboard      = "unnamedplus",
   colorcolumn    = "120",
@@ -10,11 +11,9 @@ local opts       = {
   dictionary     = "/usr/share/dict/words",
   expandtab      = true,
   fillchars      = Icons.fillchars,
-  -- foldexpr       = "v:lua.vim.treesitter.foldexpr()",
   foldlevel      = 99,
   foldlevelstart = 99,
   foldnestmax    = 10,
-  -- foldtext       = "v:lua.vim.treesitter.foldtext()",
   formatoptions  = "crqnj",
   grepprg        = "rg --vimgrep --no-heading --hidden",
   ignorecase     = true,
@@ -28,7 +27,7 @@ local opts       = {
   pumblend       = 0,
   ruler          = false,
   scrolloff      = 6,
-  sessionoptions = "buffers,tabpages,winsize",
+  sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
   shiftwidth     = 2,
   shortmess      = "atIAcW",
   showmode       = false,
@@ -37,7 +36,7 @@ local opts       = {
   signcolumn     = "yes:1",
   smartcase      = true,
   smartindent    = true,
-  -- smoothscroll   = true,
+  smoothscroll   = true,
   softtabstop    = 2,
   spell          = true,
   spelllang      = "en_us",
@@ -59,31 +58,3 @@ local opts       = {
 for key, value in pairs(opts) do
   vim.opt[key] = value
 end
--- Disable Builtins
-local builtins = {
-  "gzip",
-  "2html_plugin",
-  "getscript",
-  "getscriptPlugin",
-  "logiPat",
-  "matchit",
-  "matchparen",
-  "netrw",
-  "netrwFileHandlers",
-  "netrwPlugin",
-  "netrwSettings",
-  "rrhelper",
-  "tar",
-  "tarPlugin",
-  "vimball",
-  "vimballPlugin",
-  "zip",
-  "zipPlugin",
-}
-
-for _, plugin in ipairs(builtins) do
-  vim.g["loaded_" .. plugin] = 1
-end
-
--- Filetype Specific
-vim.g.no_ruby_maps = true

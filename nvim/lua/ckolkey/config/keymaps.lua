@@ -18,6 +18,14 @@ local mappings = {
   normal = {
     ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
 
+    -- Duplicate and comment out a copy of the current line
+    ["ycc"] = "yy<cmd>normal gcc<cr>p",
+
+    ["<c-c>"] = "ciw",
+
+    -- 'e' Takes you to the last character in the word, not the first character after
+    ["e"] = "el",
+
     -- Buffer/Window Movements
     ["<C-h>"] = Kitty.navigate.left,
     ["<C-j>"] = Kitty.navigate.bottom,
@@ -91,8 +99,9 @@ local mappings = {
     -- Open Last Buffer
     ["<bs>"] = "<C-^>",
 
-    -- Play Last Macro with Q
-    ["Q"] = "@@",
+    -- Faster macro execution
+    ["Q"] = [[<cmd>set lazyredraw <bar> execute "noautocmd norm! Q" <bar> set nolazyredraw<cr>]],
+    ["@"] = [[<cmd>set lazyredraw <bar> execute "noautocmd norm! " . v:count1 . "@" . getcharstr() <bar> set nolazyredraw<cr>]],
 
     -- Fast movement to start/end of line
     ["H"] = "^",
@@ -136,6 +145,10 @@ local mappings = {
       ":s/\\<\\>//g | silent update<S-Left><S-Left><S-Left><Left><Left><Left><Left><Left><Left>",
       { silent = false },
     },
+
+    -- Faster macro execution
+    ["Q"] = [[:<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! Q" <bar> set nolazyredraw<cr>]],
+    ["@"] = [[:<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>]],
   },
   visual_block = {
     ["s"] = require("substitute").visual,
@@ -152,12 +165,5 @@ local mappings = {
   select = {},
   replace = {},
 }
-
-vim.cmd([[
-nnoremap @ <cmd>set lazyredraw <bar> execute "noautocmd norm! " . v:count1 . "@" . getcharstr() <bar> set nolazyredraw<cr>
-xnoremap @ :<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>
-nnoremap Q <cmd>set lazyredraw <bar> execute "noautocmd norm! Q" <bar> set nolazyredraw<cr>
-xnoremap Q :<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! Q" <bar> set nolazyredraw<cr>
-]])
 
 require("ckolkey.utils.keymaps").load(mappings)

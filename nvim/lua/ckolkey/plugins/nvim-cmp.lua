@@ -1,5 +1,7 @@
 return {
-  "hrsh7th/nvim-cmp",
+  -- "hrsh7th/nvim-cmp",
+  "iguanacucumber/magazine.nvim",
+  name = "nvim-cmp",
   event = "InsertEnter",
   dependencies = {
     "dmitmel/cmp-cmdline-history",
@@ -17,6 +19,7 @@ return {
     { "hrsh7th/cmp-nvim-lsp", opts = {} },
     -- { "zbirenbaum/copilot-cmp", opts = {} },
   },
+  -- enabled = false,
 
   config = function()
     local cmp = require("cmp")
@@ -101,7 +104,20 @@ return {
       },
 
       mapping = cmp.mapping.preset.insert({
-        ["<c-k>"] = {
+        -- ["<c-k>"] = {
+        --   i = function(fallback)
+        --     if cmp.visible() then
+        --       cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+        --     elseif luasnip.expandable() then
+        --       luasnip.expand()
+        --     else
+        --       fallback()
+        --     end
+        --   end,
+        --   c = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
+        -- },
+
+        ["<c-f>"] = {
           i = function(fallback)
             if cmp.visible() then
               cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
@@ -112,16 +128,6 @@ return {
             end
           end,
           c = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
-        },
-
-        ["<c-f>"] = {
-          i = function(fallback)
-            if cmp.visible() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-            else
-              fallback()
-            end
-          end,
         },
 
         ["<c-n>"] = {
@@ -136,6 +142,15 @@ return {
         },
 
         ["<c-g>"] = {
+          i = function(fallback)
+            if cmp.visible() then
+              cmp.close()
+            end
+            fallback()
+          end,
+        },
+
+        ["<c-e>"] = {
           i = function(fallback)
             if cmp.visible() then
               cmp.close()
@@ -181,8 +196,8 @@ return {
         { name = "nvim_lsp_document_symbol" },
         -- { name = "copilot", group_index = 2 },
         -- { name = "nvim_lua" },
-        { name = "async_path", priority_weight = 100, max_item_count = 40 },
-        { name = "lazydev", group_index = 0 }, -- set group index to 0 to skip loading LuaLS completions
+        { name = "async_path",              priority_weight = 100, max_item_count = 40 },
+        { name = "lazydev",                 group_index = 0 }, -- set group index to 0 to skip loading LuaLS completions
         {
           name = "luasnip",
           priority_weight = 90,
@@ -191,9 +206,9 @@ return {
           entry_filter = function()
             local context = require("cmp.config.context")
             return not context.in_treesitter_capture("string")
-              and not context.in_syntax_group("String")
-              and not context.in_treesitter_capture("comment")
-              and not context.in_syntax_group("Comment")
+                and not context.in_syntax_group("String")
+                and not context.in_treesitter_capture("comment")
+                and not context.in_syntax_group("Comment")
           end,
         },
         { name = "nvim_lsp", priority_weight = 85, max_item_count = 50 },

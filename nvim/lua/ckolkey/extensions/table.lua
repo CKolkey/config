@@ -63,7 +63,7 @@ end
 --- Check if the target matches  any item in the list.
 ---@param target string
 ---@param list string[]
----@return boolean | string
+---@return boolean|string
 function table.any(list, target)
   return table.inject(list, function(accum, item)
     if accum then return accum end

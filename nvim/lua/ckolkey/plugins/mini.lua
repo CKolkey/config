@@ -110,17 +110,6 @@ return {
     event = "BufReadPre",
     opts = {},
   },
-  -- {
-  --   "echasnovski/mini.move",
-  --   opts = {
-  --     mappings = {
-  --       right = "", -- noop
-  --       left = "", -- noop
-  --       line_left = "", -- noop
-  --       line_right = "", -- noop
-  --     },
-  --   },
-  -- },
   {
     "echasnovski/mini.bufremove",
     opts = {},
@@ -139,4 +128,25 @@ return {
       },
     }
   },
+  {
+    "echasnovski/mini.operators",
+    version = "*",
+    config = function()
+      local config = {
+        evaluate = { prefix = 'g=', },
+        exchange = { prefix = 'ge', },
+        multiply = { prefix = 'gm', },
+        sort     = { prefix = 'gs', },
+        replace  = { prefix = '', },
+      }
+
+      local operators = require('mini.operators')
+      operators.setup(config)
+
+      -- operators.make_mappings(
+      --   'replace',
+      --   { textobject = 's', line = 'ss', selection = 's' }
+      -- )
+    end
+  }
 }

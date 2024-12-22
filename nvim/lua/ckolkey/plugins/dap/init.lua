@@ -1,11 +1,7 @@
-vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DiagnosticError" })
-vim.fn.sign_define("DapLogPoint", { text = " ", texthl = "DiagnosticInfo" })
-vim.fn.sign_define("DapStopped", { text = " ", texthl = "Constant", linehl = "DapStoppedLine" })
-vim.fn.sign_define("DapBreakpointRejected", { text = " " })
-
 return {
   {
     "mfussenegger/nvim-dap",
+    enabled = false,
     dependencies = {
       "LiadOz/nvim-dap-repl-highlights",
       "theHamsta/nvim-dap-virtual-text",
@@ -13,6 +9,11 @@ return {
       "suketa/nvim-dap-ruby",
     },
     config = function()
+      vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DiagnosticError" })
+      vim.fn.sign_define("DapLogPoint", { text = " ", texthl = "DiagnosticInfo" })
+      vim.fn.sign_define("DapStopped", { text = " ", texthl = "Constant", linehl = "DapStoppedLine" })
+      vim.fn.sign_define("DapBreakpointRejected", { text = " " })
+
       local dap = require("dap")
       dap.defaults.fallback.external_terminal = {
         command = "/opt/homebrew/bin/kitty",

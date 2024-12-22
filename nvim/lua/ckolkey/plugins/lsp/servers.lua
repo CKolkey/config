@@ -7,6 +7,7 @@ local prettierd = {
 return {
   rust_analyzer = {},
   bashls = {},
+  --  ctags_lsp = {},
   ruby_lsp = {
     init_options = {
       featuresConfiguration = {
@@ -16,6 +17,7 @@ return {
       },
     },
   },
+  gopls = {},
   -- pylsp = {},
   efm = {
     init_options = { documentFormatting = true },
@@ -74,7 +76,6 @@ return {
     },
   },
   lua_ls = {
-    -- init_options = { documentFormatting = false },
     settings = {
       Lua = {
         format = {
@@ -100,7 +101,7 @@ return {
           globals = { "vim", "hs" },
         },
         workspace = {
-          checkThirdParty = false,
+          checkThirdParty = true,
         },
         telemetry = {
           enable = false,

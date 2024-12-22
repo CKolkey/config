@@ -3,7 +3,7 @@ return {
   enabled = true,
   dependencies = {
     "andymass/vim-matchup",
-    "RRethy/nvim-treesitter-endwise",
+    "metiulekm/nvim-treesitter-endwise",
     "nvim-treesitter/playground",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-refactor",
@@ -14,7 +14,7 @@ return {
   end,
   opts = function()
     require("nvim-treesitter.configs").setup({
-      auto_install = true,
+      auto_install = false,
       ignore_install = {},
       ensure_installed = {
         -- "comment",
@@ -38,7 +38,7 @@ return {
       playground = {
         enable = true,
         disable = {},
-        updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+        updatetime = 25,         -- Debounced time for highlighting nodes in the playground from source code
         persist_queries = false, -- Whether the query persists across vim sessions
         keybindings = {
           toggle_query_editor = "o",

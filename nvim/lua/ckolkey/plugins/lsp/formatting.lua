@@ -44,9 +44,9 @@ local function abort_formatting(result, bufnr)
   elseif new_changedtick_value(bufnr) then
     P("Aborted: New changedtick value")
     return true
-  -- elseif in_snippet() then
-  --   P("Aborted: Snippet active")
-  --   return true
+    -- elseif in_snippet() then
+    --   P("Aborted: Snippet active")
+    --   return true
   else
     return false
   end
@@ -108,7 +108,7 @@ local function build_range_edits(result, bufnr)
   local text_edits = {}
 
   local buf_text = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  local new_text = vim.lsp.util.trim_empty_lines(vim.split(result[1].newText, "\n"))
+  local new_text = vim.split(result[1].newText, "\n", { trimempty = true })
 
   for line, text in ipairs(new_text) do
     if text ~= buf_text[line] then
@@ -155,11 +155,10 @@ local function handler(err, result, ctx)
   end
 
   -- Having issues with LuaSnip function nodes taking the callback text as input
-  if require("luasnip").get_active_snip() then
-    require("luasnip").unlink_current()
-  end
+  -- if require("luasnip").get_active_snip() then
+  --   require("luasnip").unlink_current()
+  -- end
 
-  P("Applying format results")
   local view = vim.fn.winsaveview()
   apply_result(result, ctx)
   vim.fn.winrestview(view)
