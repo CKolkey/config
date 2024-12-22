@@ -148,6 +148,10 @@ run = 'move-node-to-workspace 4'
 if.app-id = 'com.microsoft.teams2'
 run = 'move-node-to-workspace 5'
 
+[[on-window-detected]]
+if.app-id = 'com.utmapp.UTM'
+run = 'move-node-to-workspace 9'
+
 [workspace-to-monitor-force-assignment]
 2 = 1
 4 = 1

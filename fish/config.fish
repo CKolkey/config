@@ -16,6 +16,11 @@ fish_add_path -g $HOME/.config/git/bin
 fish_add_path -g $HOME/.config/emacs/bin
 fish_add_path /opt/homebrew/opt/postgresql@16/bin
 
+fish_add_path /opt/homebrew/opt/curl/bin
+set -gx LDFLAGS "-L/opt/homebrew/opt/curl/lib"
+set -gx CPPFLAGS "-I/opt/homebrew/opt/curl/include"
+set -gx PKG_CONFIG_PATH "/opt/homebrew/opt/curl/lib/pkgconfig"
+
 source_homebrew
 
 if status is-interactive
@@ -26,6 +31,10 @@ if status is-interactive
   starship init fish | source
   fzf --fish | source
   gh completion -s fish | source
+
+  if test -e "$GHOSTTY_RESOURCES_DIR"
+    cat "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish" | source
+  end
 
   source $HOME/.config/fish/abbreviations.fish
 end
