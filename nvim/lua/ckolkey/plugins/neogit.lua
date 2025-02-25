@@ -44,6 +44,7 @@ return {
   },
   opts = {
     -- log_pager = { 'delta', '--width', '117', '--line-numbers', '--no-gitconfig', '--color-only' },
+    process_spinner = true,
     mappings = {
       popup = {
         ["F"] = "PullPopup",

@@ -11,5 +11,5 @@ return {
     },
   },
   opts = {},
-  dev = false,
+  dev = true,
 }

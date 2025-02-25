@@ -16,8 +16,6 @@ vim.api.nvim_create_autocmd("User", {
     end
 
     vim.print = _G.dd
-
-    Snacks.scroll.enable()
   end,
 })
 
@@ -28,7 +26,6 @@ return {
     bigfile = {},
     dim = {},
     quickfile = {},
-    scroll = {},
   },
   keys = {
     { "<leader>ps", function() Snacks.profiler.scratch() end, desc = "Profiler Scratch Bufer" },
