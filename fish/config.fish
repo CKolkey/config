@@ -39,4 +39,9 @@ if status is-interactive
   source $HOME/.config/fish/abbreviations.fish
 end
 
+set -gx MANPAGER "nvim +Man!"
 set -gx GPG_TTY (tty)
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :

@@ -1,0 +1,10 @@
+-- Overloads fancy popup window with classic prompt at bottom
+vim.ui.input = function(opts, callback)
+  vim.fn.inputsave()
+  local result = vim.fn.input(opts or {})
+  vim.fn.inputrestore()
+
+  if type(callback) == "function" then
+    callback(result)
+  end
+end

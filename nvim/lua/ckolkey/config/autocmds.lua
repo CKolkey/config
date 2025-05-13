@@ -76,6 +76,19 @@ local definitions = {
       command = "setl binary noeol",
     },
   },
+  neogit_worktree_create = {
+    desc = "copies over files from main worktree that are not git tracked",
+    {
+      event = { "User" },
+      pattern = "NeogitWorktreeCreate",
+      callback = function(event)
+        event.data.copy_if_present("Gemfile.dev")
+        event.data.copy_if_present(".envrc", function()
+          vim.system({ "direnv", "allow" }):wait()
+        end)
+      end
+    }
+  }
 }
 
 require("ckolkey.utils.autocmds").load(definitions)

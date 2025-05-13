@@ -53,6 +53,8 @@ return {
       rebase_editor = {
         ["<c-d>"] = "Abort",
         ["<c-c><c-k>"] = false,
+        ["<m-j>"] = "MoveDown",
+        ["<m-k>"] = "MoveUp",
       },
       commit_editor = {
         ["<c-d>"] = "Abort",

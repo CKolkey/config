@@ -5,7 +5,8 @@ return {
     "nvim-lua/plenary.nvim",
   },
   keys = {
-    { "<leader>gw", ":Gitsigns toggle_word_diff<cr>", desc = "Toggle word diff" },
+    { "<leader>gw", "<cmd>Gitsigns toggle_word_diff<cr>", desc = "Toggle word diff" },
+    { "<leader>gb", "<cmd>Gitsigns blame<cr>", desc = "Git Blame" },
     { "[g", ":Gitsigns next_hunk<cr>", desc = "Next hunk" },
     { "]g", ":Gitsigns prev_hunk<cr>", desc = "Previous hunk" },
   },
