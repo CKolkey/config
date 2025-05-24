@@ -25,16 +25,15 @@ source_homebrew
 
 if status is-interactive
   auto_ls
-  # direnv-hook
   direnv hook fish | source
   mise activate fish | source
   starship init fish | source
   fzf --fish | source
   gh completion -s fish | source
 
-  if test -e "$GHOSTTY_RESOURCES_DIR"
-    cat "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish" | source
-  end
+  # if test -e "$GHOSTTY_RESOURCES_DIR"
+  #   cat "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish" | source
+  # end
 
   source $HOME/.config/fish/abbreviations.fish
 end

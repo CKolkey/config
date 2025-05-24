@@ -10,7 +10,7 @@ SETUVAR FZF_PREVIEW_FILE_CMD:head\x20\x2dn\x2010
 SETUVAR FZF_TMUX_HEIGHT:40\x25
 SETUVAR --export PYENV_ROOT:/Users/u0158204/\x2epyenv
 SETUVAR VIRTUAL_ENV_DISABLE_PROMPT:true
-SETUVAR __fish_initialized:3400
+SETUVAR __fish_initialized:3800
 SETUVAR _fisher_jethrokuan_2F_fzf_files:/Users/cameron/\x2econfig/fish/functions/__fzf_cd\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_complete\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_complete_preview\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_find_file\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_get_dir\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_open\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_parse_commandline\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzf_reverse_isearch\x2efish\x1e/Users/cameron/\x2econfig/fish/functions/__fzfcmd\x2efish\x1e/Users/cameron/\x2econfig/fish/conf\x2ed/fzf\x2efish
 SETUVAR _fisher_jethrokuan_2F_z_files:/Users/u0158204/\x2econfig/fish/functions/__z\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_add\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_clean\x2efish\x1e/Users/u0158204/\x2econfig/fish/functions/__z_complete\x2efish\x1e/Users/u0158204/\x2econfig/fish/conf\x2ed/z\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/Users/u0158204/\x2econfig/fish/functions/fisher\x2efish\x1e/Users/u0158204/\x2econfig/fish/completions/fisher\x2efish
@@ -33,7 +33,7 @@ SETUVAR fish_color_operator:00a6b2
 SETUVAR fish_color_param:81a2be
 SETUVAR fish_color_quote:b5bd68
 SETUVAR fish_color_redirection:8abeb7
-SETUVAR fish_color_search_match:bryellow\x1e\x2d\x2dbackground\x3dbrblack
+SETUVAR fish_color_search_match:white\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_color_status:red
 SETUVAR fish_color_user:brgreen
@@ -44,4 +44,4 @@ SETUVAR fish_pager_color_description:B3A06D
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2d\x2dbackground\x3dbrblack
-SETUVAR fish_user_paths:/opt/homebrew/opt/postgresql\x4016/bin\x1e/Users/cameron/\x2econfig/emacs/bin\x1e/Users/cameron/\x2econfig/git/bin\x1e/Users/cameron/code/karnov/db_tonic/bin\x1e/Users/cameron/code/karnov/jin/bin\x1e/usr/local/opt/curl/bin\x1e/Users/cameron/\x2eyarn/bin\x1e/Users/cameron/\x2ecargo/bin\x1e/Users/cameron/\x2ecomposer/vendor/bin\x1e/Users/cameron/\x2elocal/bin\x1e/usr/local/opt/fzf/bin\x1e/opt/homebrew/opt/fzf/bin
+SETUVAR fish_user_paths:/opt/homebrew/opt/curl/bin\x1e/opt/homebrew/opt/postgresql\x4016/bin\x1e/Users/cameron/\x2econfig/emacs/bin\x1e/Users/cameron/\x2econfig/git/bin\x1e/Users/cameron/code/karnov/db_tonic/bin\x1e/Users/cameron/code/karnov/jin/bin\x1e/usr/local/opt/curl/bin\x1e/Users/cameron/\x2eyarn/bin\x1e/Users/cameron/\x2ecargo/bin\x1e/Users/cameron/\x2ecomposer/vendor/bin\x1e/Users/cameron/\x2elocal/bin\x1e/usr/local/opt/fzf/bin\x1e/opt/homebrew/opt/fzf/bin

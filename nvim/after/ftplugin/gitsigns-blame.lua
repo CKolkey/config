@@ -1,4 +1,5 @@
 vim.keymap.set("n", "q", vim.cmd.quit, { buffer = true })
+vim.keymap.set("n", "<leader>gb", vim.cmd.quit, { buffer = true })
 
 local function get_sha()
   -- We need the bufnr for the _alt_ buffer, as our current buffer is the git blame,

@@ -2,6 +2,10 @@ local focusedWindow = hs.window.focusedWindow
 local windowfilter = hs.window.filter
 local rectangle = hs.drawing.rectangle
 
+local blacklisted = {
+  ["org.videolan.vlc"] = true
+}
+
 local M = {}
 
 local frame, windows, running, watcher, paused
@@ -43,8 +47,9 @@ end
 
 -- Exposed so window motions can call this directly instead of waiting for event
 function M.draw(win, caller)
-  caller = caller or "event"
-  -- log.i("[Frame] (" .. caller .. ") Redrawing frame for window: " .. win:title())
+  if blacklisted[win:application():bundleID()] then
+    return
+  end
 
   local f = win:frame()
   frame:setFrame({

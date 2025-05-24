@@ -149,6 +149,14 @@ if.app-id = 'com.microsoft.teams2'
 run = 'move-node-to-workspace 5'
 
 [[on-window-detected]]
+if.app-id = 'com.microsoft.Outlook'
+run = 'move-node-to-workspace 6'
+
+[[on-window-detected]]
+if.app-id = 'org.videolan.vlc'
+run = 'move-node-to-workspace 8'
+
+[[on-window-detected]]
 if.app-id = 'com.utmapp.UTM'
 run = 'move-node-to-workspace 9'
 
