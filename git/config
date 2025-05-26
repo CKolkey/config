@@ -1,6 +1,9 @@
-[user]
-        email = Alleyria@gmail.com
-        name = Cameron
+[includeIf "gitdir:~/code/**"]
+        path = config-personal
+[includeIf "gitdir:~/.config/**"]
+        path = config-personal
+[includeIf "gitdir:~/work/karnov/**"]
+        path = config-karnov
 [column]
         ui = auto
 [branch]
@@ -41,7 +44,7 @@
         autoStash = true
         updateRefs = true
 [merge]
-        conflictstyle = zdiff3 
+        conflictstyle = zdiff3
 [apply]
         whitespace = fix
 [format]
@@ -68,7 +71,6 @@
 [alias]
   jump = "!$(brew --prefix git)/share/git-core/contrib/git-jump/git-jump"
   recent = "!git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' | rg -v '(staging|production|origin|refs|master|\\s([0-9]+)$)' | head -n 15 | fzf | cut -d' ' -f2 | xargs git checkout"
-  p = "!pull"
 
   # Fetch repo and blow out local branch, favoring upstream commits
   reset-origin = "!git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)"
