@@ -10,5 +10,6 @@ vifm/*
 karabiner/automatic_backups/*
 *.log
 .stignore
+
 k9s/*
 /github-copilot/*
