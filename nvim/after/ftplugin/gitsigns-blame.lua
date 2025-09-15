@@ -15,7 +15,7 @@ local function get_sha()
 
   local cursor = vim.api.nvim_win_get_cursor(0)[1]
   local blame = assert(bcache.blame)
-  local sha = assert(blame[cursor]).commit.sha
+  local sha = assert(blame.entries[cursor]).commit.sha
 
   return sha
 end
