@@ -1,26 +1,28 @@
 return {
   "NeogitOrg/neogit",
   dependencies = {
-    {
-      "m00qek/baleia.nvim",
-      version = "*",
-      config = function()
-        vim.g.baleia = require("baleia").setup({})
-
-        -- Command to colorize the current buffer
-        vim.api.nvim_create_user_command("BaleiaColorize", function()
-          vim.g.baleia.once(vim.api.nvim_get_current_buf())
-        end, { bang = true })
-
-        -- Command to show logs
-        vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
-      end,
-    }
+    "nvim-lua/plenary.nvim"
+    -- {
+    --   "m00qek/baleia.nvim",
+    --   version = "*",
+    --   config = function()
+    --     vim.g.baleia = require("baleia").setup({})
+    --
+    --     -- Command to colorize the current buffer
+    --     vim.api.nvim_create_user_command("BaleiaColorize", function()
+    --       vim.g.baleia.once(vim.api.nvim_get_current_buf())
+    --     end, { bang = true })
+    --
+    --     -- Command to show logs
+    --     vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
+    --   end,
+    -- }
   },
   cmd = "Neogit",
   dev = true,
+  lazy = true,
   keys = {
-    { "<leader>gg", ":Neogit<cr>", desc = "Neogit" },
+    { "<leader>gg", "<cmd>Neogit<cr>", desc = "Neogit" },
     {
       "<leader>gf",
       function()
@@ -50,6 +52,9 @@ return {
         ["F"] = "PullPopup",
         ["p"] = false,
       },
+      -- log_view = {
+      --   ["<esc>"] = false,
+      -- },
       rebase_editor = {
         ["<c-d>"] = "Abort",
         ["<c-c><c-k>"] = false,
@@ -69,7 +74,7 @@ return {
     disable_hint = true,
     notification_icon = " ",
     status = {
-      show_head_commit_hash = false,
+      show_head_commit_hash = true,
     },
     sections = {
       rebase = {

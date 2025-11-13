@@ -24,10 +24,6 @@ local function new_changedtick_value(bufnr)
   return vim.api.nvim_buf_get_var(bufnr, "format_changedtick") ~= vim.api.nvim_buf_get_changedtick(bufnr)
 end
 
-local function in_snippet()
-  return require("luasnip").in_snippet()
-end
-
 local function abort_formatting(result, bufnr)
   if no_result(result) then
     P("Aborted: No result")

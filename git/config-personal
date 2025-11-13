@@ -1,3 +1,9 @@
+# vim:ft=gitconfig
 [user]
         email = Alleyria@gmail.com
         name = Cameron
+        signingkey = 7998CB3EA6CE5CBC
+[commit]
+        gpgsign = true
+[tag]
+        gpgSign = true

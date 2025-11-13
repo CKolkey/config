@@ -7,7 +7,29 @@ local prettierd = {
 return {
   rust_analyzer = {},
   bashls = {},
-  --  ctags_lsp = {},
+  typos_lsp = {},
+  ctags_lsp = {
+    cmd = { "ctags-lsp" },
+    filetypes = { "ruby", "python", "lua" },
+    root_dir = vim.uv.cwd(),
+  },
+  basedpyright = {
+    settings = {
+      pyright = {
+        -- Using Ruff's import organizer
+        -- disableOrganizeImports = true,
+      },
+      python = {
+        analysis = {
+          -- Ignore all files for analysis to exclusively use Ruff for linting
+          -- ignore = { '*' },
+        },
+      },
+    },
+  },
+  ruff = {
+    cmd = { "uv", "run", "ruff", "server" }
+  }, -- python linting
   ruby_lsp = {
     init_options = {
       featuresConfiguration = {
@@ -18,11 +40,9 @@ return {
     },
   },
   gopls = {},
-  -- pylsp = {},
   efm = {
     init_options = { documentFormatting = true },
     filetypes = {
-      "python",
       "yaml",
       "lua",
       "javascript",
@@ -35,13 +55,6 @@ return {
     settings = {
       rootMarkers = { ".git/" },
       languages = {
-        ["python"] = {
-          {
-            formatCommand = "poetry run black --quiet -",
-            formatStdin = true,
-            rootMarkers = { "poetry.lock" },
-          },
-        },
         ["yaml"] = {
           -- {
           --   formatCommand = "yamlfmt -in ${INPUT}",

@@ -56,10 +56,10 @@ alt-slash = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-cmd-h = 'focus left --boundaries all-monitors-outer-frame'
-cmd-j = 'focus down --boundaries all-monitors-outer-frame'
-cmd-k = 'focus up --boundaries all-monitors-outer-frame'
-cmd-l = 'focus right --boundaries all-monitors-outer-frame'
+alt-ctrl-shift-cmd-h = 'focus left --boundaries all-monitors-outer-frame'
+alt-ctrl-shift-cmd-j = 'focus down --boundaries all-monitors-outer-frame'
+alt-ctrl-shift-cmd-k = 'focus up --boundaries all-monitors-outer-frame'
+alt-ctrl-shift-cmd-l = 'focus right --boundaries all-monitors-outer-frame'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move
 alt-shift-h = 'move left'
@@ -133,6 +133,11 @@ if.app-id = 'net.kovidgoyal.kitty'
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = 'move-node-to-workspace 1'
+
+
+[[on-window-detected]]
 if.app-id = 'org.mozilla.firefoxdeveloperedition'
 run = 'move-node-to-workspace 2'
 
@@ -161,8 +166,9 @@ if.app-id = 'com.utmapp.UTM'
 run = 'move-node-to-workspace 9'
 
 [workspace-to-monitor-force-assignment]
-2 = 1
-4 = 1
+0 = 2
 1 = 2
-3 = 3
-5 = 3
+2 = 1
+3 = 1
+4 = 1
+5 = 1

@@ -28,29 +28,29 @@ return function(options)
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
-    if
-      client.supports_method("textDocument/publishDiagnostics")
-      or client.supports_method("textDocument/diagnostic")
-    then
-      autocmds.lsp_diagnostics_hover = {
-        desc = "Show diagnostics when you hold cursor",
-        {
-          event = "CursorHold",
-          callback = function()
-            local position = vim.api.nvim_win_get_cursor(0)
-            vim.defer_fn(function()
-              if vim.deep_equal(vim.api.nvim_win_get_cursor(0), position) then
-                vim.diagnostic.open_float({
-                  focusable = false,
-                  border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-                })
-              end
-            end, 1000)
-          end,
-          buffer = bufnr,
-        },
-      }
-    end
+    -- if
+    --   client.supports_method("textDocument/publishDiagnostics")
+    --   or client.supports_method("textDocument/diagnostic")
+    -- then
+    --   autocmds.lsp_diagnostics_hover = {
+    --     desc = "Show diagnostics when you hold cursor",
+    --     {
+    --       event = "CursorHold",
+    --       callback = function()
+    --         local position = vim.api.nvim_win_get_cursor(0)
+    --         vim.defer_fn(function()
+    --           if vim.deep_equal(vim.api.nvim_win_get_cursor(0), position) then
+    --             vim.diagnostic.open_float({
+    --               focusable = false,
+    --               border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+    --             })
+    --           end
+    --         end, 1000)
+    --       end,
+    --       buffer = bufnr,
+    --     },
+    --   }
+    -- end
 
     if client.supports_method("textDocument/codeAction") then
       keymaps.normal["<leader>ca"] = { vim.lsp.buf.code_action, opts }

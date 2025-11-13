@@ -26,7 +26,12 @@ M.autosnippets = {
   ["__call"] = {
     description = "__call__(self, )",
     "__call__(self, ", i(1), "):", indent(), i(2),
+  },
+  ["adef"] = {
+    description = "async def",
+    "async def ", i(1)
   }
+
 
 }
 

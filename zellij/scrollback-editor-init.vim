@@ -12,12 +12,6 @@ set ignorecase
 set scrolloff=0
 set cmdheight=0
 
-source ~/.config/nvim/after/plugin/kitty.lua
-nnoremap <silent> <c-h> :lua Kitty.navigate.left()<cr>
-nnoremap <silent> <c-j> :lua Kitty.navigate.bottom()<cr>
-nnoremap <silent> <c-k> :lua Kitty.navigate.top()<cr>
-nnoremap <silent> <c-l> :lua Kitty.navigate.right()<cr>
-
 noremap q :qa!<CR>
 nnoremap <esc> :qa!<CR>
 

@@ -4,8 +4,25 @@ return {
   dependencies = {
     "ray-x/lsp_signature.nvim",
     "stevearc/dressing.nvim",
-    -- "hrsh7th/cmp-nvim-lsp",
-    "netmute/ctags-lsp.nvim",
+    {
+      "rachartier/tiny-inline-diagnostic.nvim",
+      event = "VeryLazy",
+      priority = 1000,
+      config = function()
+        require("tiny-inline-diagnostic").setup(
+          {
+            options = {
+              add_messages = {
+                display_count = true,
+              },
+              multilines = {
+                enabled = true,
+              },
+            },
+          }
+        )
+      end,
+    }
   },
   config = function()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -29,7 +46,8 @@ return {
       }
 
       opts = vim.tbl_deep_extend("force", {}, options, opts or {})
-      require("lspconfig")[server].setup(opts)
+      vim.lsp.config(server, opts)
+      vim.lsp.enable(server)
     end
   end,
 }

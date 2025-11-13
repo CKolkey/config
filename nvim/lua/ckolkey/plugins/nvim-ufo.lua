@@ -20,13 +20,13 @@ return {
       end,
       desc = "Close all folds",
     },
-    {
-      "zz",
-      function()
-        require("ufo").peekFoldedLinesUnderCursor()
-      end,
-      desc = "Peek folded lines under cursor",
-    },
+    -- {
+    --   "zz",
+    --   function()
+    --     require("ufo").peekFoldedLinesUnderCursor()
+    --   end,
+    --   desc = "Peek folded lines under cursor",
+    -- },
   },
   opts = {
     open_fold_hl_timeout = 0,

@@ -20,6 +20,12 @@ local keys = {
       -- ["±"] = { key = "~" }
     },
   },
+  ['ghostty'] = {
+    [''] = { -- Remap keys with no modifier
+      ["§"] = { key = "`" },
+      -- ["±"] = { key = "~" }
+    },
+  },
   ['global'] = {
     [''] = { -- Remap keys with no modifier
       ["§"] = { key = "`" }
@@ -54,7 +60,8 @@ local macros = {
 }
 
 local blacklist = {
-  'kitty'
+  'kitty',
+  'ghostty'
 }
 
 local function callBinding(namespace, mods, key)

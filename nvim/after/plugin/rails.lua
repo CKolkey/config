@@ -1,9 +1,5 @@
 local function rails_app()
-  if utils.file_in_cwd("Gemfile.lock") and utils.file_in_cwd("config/environment.rb") then
-    return true
-  else
-    return false
-  end
+  return utils.file_in_cwd("Gemfile.lock") and utils.file_in_cwd("config/environment.rb")
 end
 
 if _G.Rails or not rails_app() then

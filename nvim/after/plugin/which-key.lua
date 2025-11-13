@@ -30,7 +30,7 @@ if ok then
       name = "+File Operations",
       c = { require("genghis").createNewFile, "Create File" },
       x = { require("genghis").chmodx, "chmod +x" },
-      y = { require("genghis").copyFilename, "Copy Filename" },
+      y = { require("genghis").copyRelativePath, "Copy Filename" },
       Y = { require("genghis").copyFilepath, "Copy Filepath" },
       r = { require("genghis").renameFile, "Rename File" },
       d = { require("genghis").duplicateFile, "Duplicate File" },

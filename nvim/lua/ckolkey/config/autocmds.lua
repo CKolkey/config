@@ -76,6 +76,13 @@ local definitions = {
       command = "setl binary noeol",
     },
   },
+  -- zellij_unlock = {
+  --   desc = "Unlock on exit",
+  --   {
+  --     event = { "VimLeave" },
+  --     command = "silent !zellij action switch-mode normal"
+  --   }
+  -- },
   neogit_worktree_create = {
     desc = "copies over files from main worktree that are not git tracked",
     {
@@ -84,11 +91,15 @@ local definitions = {
       callback = function(event)
         event.data.copy_if_present("Gemfile.dev")
         event.data.copy_if_present(".envrc", function()
-          vim.system({ "direnv", "allow" }):wait()
+          vim.system({ "direnv", "allow" }, {
+            cwd = event.data.new_cwd,
+            on_exit = function()
+              vim.print(".envrc loaded")
+            end
+          })
         end)
       end
     }
   }
 }
-
 require("ckolkey.utils.autocmds").load(definitions)

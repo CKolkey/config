@@ -1,9 +1,10 @@
 return {
   "stevearc/qf_helper.nvim",
   ft = "qf",
+  lazy = false,
   keys = {
-    { "<up>", ":QFPrev<cr>", desc = "Quickfix Previous" },
-    { "<down>", ":QFNext<cr>", desc = "Quickfix Next" },
+    { "<up>",    ":QFPrev<cr>",    desc = "Quickfix Previous" },
+    { "<down>",  ":QFNext<cr>",    desc = "Quickfix Next" },
     { "<right>", ":QFToggle!<cr>", desc = "Quickfix Toggle" },
   },
   opts = {

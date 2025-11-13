@@ -1,3 +1,9 @@
+# vim:ft=gitconfig
 [user]
         email = cameron.kolkey@karnovgroup.com
         name = Cameron Kolkey
+        signingkey = 94EEC23A90FAA528
+[commit]
+        gpgsign = true
+[tag]
+        gpgSign = true

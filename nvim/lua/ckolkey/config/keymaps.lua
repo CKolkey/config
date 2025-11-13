@@ -27,10 +27,15 @@ local mappings = {
     ["e"] = "el",
 
     -- Buffer/Window Movements
-    ["<C-h>"] = Kitty.navigate.left,
-    ["<C-j>"] = Kitty.navigate.bottom,
-    ["<C-k>"] = Kitty.navigate.top,
-    ["<C-l>"] = Kitty.navigate.right,
+    -- ["<C-h>"] = Kitty.navigate.left,
+    -- ["<C-j>"] = Kitty.navigate.bottom,
+    -- ["<C-k>"] = Kitty.navigate.top,
+    -- ["<C-l>"] = Kitty.navigate.right,
+
+    -- ["<c-h>"] = require("zellij-nav").left,
+    -- ["<c-j>"] = require("zellij-nav").down,
+    -- ["<c-k>"] = require("zellij-nav").up,
+    -- ["<c-l>"] = require("zellij-nav").right,
 
     -- Toggle Folds
     ["<tab>"] = "za",
@@ -84,8 +89,8 @@ local mappings = {
     ["V"] = "v$",
 
     -- More sane vertical navigation
-    ["k"] = "gk",
-    ["j"] = "gj",
+    ["k"] = "<cmd>silent norm! gk<cr>",
+    ["j"] = "<cmd>silent norm! gj<cr>",
 
     -- Format File
     ["<leader><leader>"] = require("ckolkey.utils.functions").format,
@@ -101,7 +106,8 @@ local mappings = {
 
     -- Faster macro execution
     ["Q"] = [[<cmd>set lazyredraw <bar> execute "noautocmd norm! Q" <bar> set nolazyredraw<cr>]],
-    ["@"] = [[<cmd>set lazyredraw <bar> execute "noautocmd norm! " . v:count1 . "@" . getcharstr() <bar> set nolazyredraw<cr>]],
+    ["@"] =
+    [[<cmd>set lazyredraw <bar> execute "noautocmd norm! " . v:count1 . "@" . getcharstr() <bar> set nolazyredraw<cr>]],
 
     -- Fast movement to start/end of line
     ["H"] = "^",
@@ -148,7 +154,8 @@ local mappings = {
 
     -- Faster macro execution
     ["Q"] = [[:<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! Q" <bar> set nolazyredraw<cr>]],
-    ["@"] = [[:<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>]],
+    ["@"] =
+    [[:<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>]],
   },
   visual_block = {
     ["s"] = require("substitute").visual,
