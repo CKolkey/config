@@ -24,4 +24,29 @@ adjust-cell-height = 40%
 macos-titlebar-style = hidden
 macos-option-as-alt = true
 
-theme = Atom One Dark
+# theme = Atom One Dark
+
+cursor-style = block
+
+palette = 0=#181a1b
+palette = 8=#5c6061
+palette = 1=#e06c75
+palette = 9=#b5585f
+palette = 2=#c3e88d
+palette = 10=#9fbd73
+palette = 3=#ffe082
+palette = 11=#d4a959
+palette = 4=#82aaff
+palette = 12=#6c8ed4
+palette = 5=#c792ea
+palette = 13=#a377bf
+palette = 6=#6ce0cf
+palette = 14=#58b5a8
+palette = 7=#c5cdd9
+palette = 15=#fcfcfc
+selection-foreground = #fcfcfc
+selection-background = #483953
+foreground = #c5cdd9
+background = #1c2026
+cursor-color = #cccccc
+cursor-text = #111111

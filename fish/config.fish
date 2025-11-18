@@ -43,7 +43,10 @@ source ~/.orbstack/shell/init2.fish 2>/dev/null || :
 
 # Update zellij tab titles
 if status is-interactive
-  eval (zellij setup --generate-auto-start fish | string collect)
+  if [ "$TERM" = "xterm-ghostty" ]
+    eval (zellij setup --generate-auto-start fish | string collect)
+  end
+
   if type -q zellij
     # Update the zellij tab name with the current process name or pwd.
     function zellij_tab_name_update_pre --on-event fish_preexec

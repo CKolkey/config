@@ -206,3 +206,5 @@ Sessionx.vim
 .ignore
 .irb_history
 *.tags
+.envrc
+venv/*
