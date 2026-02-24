@@ -8,6 +8,8 @@ window-save-state = always
 
 cursor-style = bar
 
+shell-integration = fish
+
 font-thicken = true
 font-feature = -calt, -liga, -dlig
 font-family = Operator Mono Book

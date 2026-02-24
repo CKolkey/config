@@ -9,6 +9,8 @@ keybinds clear-defaults=true {
     }
     locked {
         bind "alt ." { SwitchToMode "normal"; }
+        bind "F3" { NewTab; SwitchToMode "locked"; }
+        bind "F10" { EditScrollback; SwitchToMode "locked"; }
     }
     pane {
         bind "c" { SwitchToMode "renamepane"; PaneNameInput 0; }

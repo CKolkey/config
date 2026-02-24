@@ -43,6 +43,8 @@ source ~/.orbstack/shell/init2.fish 2>/dev/null || :
 
 # Update zellij tab titles
 if status is-interactive
+  __hvst_once_per_day
+
   if [ "$TERM" = "xterm-ghostty" ]
     eval (zellij setup --generate-auto-start fish | string collect)
   end

@@ -16,6 +16,8 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
+    ["<ScrollWheelUp>"] = "<C-Y>",
+    ["<ScrollWheelDown>"] = "<C-E>",
     ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",
 
     -- Duplicate and comment out a copy of the current line

@@ -1,6 +1,11 @@
+vim.g.diffs = {
+  neogit = true,
+}
+
 return {
   "NeogitOrg/neogit",
   dependencies = {
+    -- "barrettruth/diffs.nvim",
     "nvim-lua/plenary.nvim"
     -- {
     --   "m00qek/baleia.nvim",
@@ -47,6 +52,7 @@ return {
   opts = {
     -- log_pager = { 'delta', '--width', '117', '--line-numbers', '--no-gitconfig', '--color-only' },
     process_spinner = true,
+    diff_viewer = "codediff",
     mappings = {
       popup = {
         ["F"] = "PullPopup",

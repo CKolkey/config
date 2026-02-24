@@ -6,29 +6,33 @@ local prettierd = {
 
 return {
   rust_analyzer = {},
-  bashls = {},
-  typos_lsp = {},
-  ctags_lsp = {
-    cmd = { "ctags-lsp" },
-    filetypes = { "ruby", "python", "lua" },
-    root_dir = vim.uv.cwd(),
+  bashls = {
+    cmd = { 'bash-language-server', 'start' },
+    filetypes = { 'bash', 'sh' }
   },
+  typos_lsp = {},
+  -- ctags_lsp = {
+  --   cmd = { "ctags-lsp" },
+  --   filetypes = { "ruby", "python", "lua" },
+  --   root_dir = vim.uv.cwd(),
+  -- },
+  -- pest_ls = {},
   basedpyright = {
     settings = {
       pyright = {
         -- Using Ruff's import organizer
-        -- disableOrganizeImports = true,
+        disableOrganizeImports = true,
       },
       python = {
         analysis = {
           -- Ignore all files for analysis to exclusively use Ruff for linting
-          -- ignore = { '*' },
+          ignore = { '*' },
         },
       },
     },
   },
   ruff = {
-    cmd = { "uv", "run", "ruff", "server" }
+    -- cmd = { "uv", "run", "ruff", "server" }
   }, -- python linting
   ruby_lsp = {
     init_options = {

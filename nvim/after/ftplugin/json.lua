@@ -8,3 +8,5 @@ vim.keymap.set('n', 'o', function()
     return 'o'
   end
 end, { buffer = true, expr = true })
+
+-- vim.opt_local.equalprg = "jq --indent 4"

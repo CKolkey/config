@@ -15,7 +15,7 @@ function M.format()
 
   if vim.bo.modifiable then
     local view = vim.fn.winsaveview()
-    vim.cmd([[silent! keeppatterns keepjumps %s/\s\+$//e]]) -- Strip Trailing Whitespace
+    vim.cmd([[silent! keeppatterns keepjumps %s/\s\+$//e]])          -- Strip Trailing Whitespace
     vim.cmd([[silent! keeppatterns keepjumps %s#\($\n\s*\)\+\%$##]]) -- Strip Empty lines at EOF
     vim.fn.winrestview(view)
     vim.cmd([[
@@ -110,16 +110,17 @@ function M.smart_join()
   local col = vim.fn.col(".")
   local context = string.sub(vim.fn.getline("."), col - 1, col + 1)
   if
-    context == ") ."
-    or context == "} ."
-    or context == "] ."
-    or context == ") :"
-    or context:match("%( .")
-    or context:match(". ,")
-    or context:match("%w %.")
+      context == ") ."
+      or context == "} ."
+      or context == "] ."
+      or context == ") :"
+      or context:match("%( .")
+      or context:match(". ,")
+      or context:match("%w %.")
   then
     vim.cmd("undojoin | normal! x")
-  elseif context == ",)" then
+  elseif context == ",)"
+      or context == ",)," then
     vim.cmd("undojoin | normal! hx")
   end
 

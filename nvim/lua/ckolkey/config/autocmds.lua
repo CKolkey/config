@@ -10,6 +10,16 @@ local definitions = {
     desc = "Load snippets for filetype",
     { event = "BufEnter", command = "LuasnipAutoloadFilteypeSnippets" },
   },
+  -- neogit_diff_loaded = {
+  --   desc = "testing",
+  --   {
+  --     event = { "User" },
+  --     pattern = "NeogitDiffLoaded",
+  --     callback = function(event)
+  --       P(event)
+  --     end
+  --   }
+  -- },
   autoreload = {
     desc = "Automatically reloads buffer if it's changed externally",
     { event = { "FocusGained", "BufEnter", "CursorHold" }, command = "silent! checktime %" },
@@ -50,7 +60,7 @@ local definitions = {
   },
   cursor_position = {
     desc = "Keeps cursor position when leaving insert mode, and reloads last position when opening buffer",
-    { event = "InsertLeave", command = "normal `^" },
+    { event = "InsertLeave", command = "norm! `^" },
   },
   hide_cursorline_in_inactive_windows = {
     desc = "Only show cursorline in active buffer",
@@ -66,14 +76,6 @@ local definitions = {
         local win_id = vim.api.nvim_get_current_win()
         vim.wo[win_id].cursorline = event.event == "WinEnter"
       end,
-    },
-  },
-  read_secrets_as_binary = {
-    desc = "Reads work secrets as binary files to prevent \n at EOL",
-    {
-      event = { "BufEnter" },
-      pattern = { "*/pro-secrets/**", "*/kaila-secrets/**" },
-      command = "setl binary noeol",
     },
   },
   -- zellij_unlock = {
@@ -100,6 +102,17 @@ local definitions = {
         end)
       end
     }
+  },
+  treesitter_highlight = {
+    desc = "Enable treesitter highlighting",
+    {
+      event = { "FileType", "VimEnter", "SessionLoadPost" },
+      -- pattern = "*",
+      callback = function(event)
+        pcall(vim.treesitter.start)
+      end
+    }
   }
+
 }
 require("ckolkey.utils.autocmds").load(definitions)
