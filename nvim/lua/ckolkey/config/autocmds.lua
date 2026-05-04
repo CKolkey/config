@@ -106,7 +106,7 @@ local definitions = {
   treesitter_highlight = {
     desc = "Enable treesitter highlighting",
     {
-      event = { "FileType", "VimEnter", "SessionLoadPost" },
+      event = { "FileType" },
       -- pattern = "*",
       callback = function(event)
         pcall(vim.treesitter.start)

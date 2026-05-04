@@ -37,39 +37,6 @@
                    (#set! injection.language "python"))
 
 ; query
-;; comment css injection
-((comment) @comment .
-           (expression_statement
-             (assignment right:
-                         (string
-                           (string_content)
-                           @injection.content
-                           (#match? @comment "^#+( )*[cC][sS][sS]( )*")
-                           (#set! injection.language "css")))))
-
-; query
-;; comment typescript injection
-((comment) @comment .
-           (expression_statement
-             (assignment right:
-                         (string
-                           (string_content)
-                           @injection.content
-                           (#match? @comment "^#+( )*[tT][yY][pP][eE][sS][cC][rR][iI][pP][tT]( )*")
-                           (#set! injection.language "typescript")))))
-
-; query
-;; comment python injection
-((comment) @comment .
-           (expression_statement
-             (assignment right:
-                         (string
-                           (string_content)
-                           @injection.content
-                           (#match? @comment "^#+( )*[pP][yY][tT][hH][oO][nN]( )*")
-                           (#set! injection.language "python")))))
-
-; query
 ;; comment lua injection
 ((comment) @comment .
            (expression_statement
@@ -103,6 +70,17 @@
                            (#set! injection.language "javascript")))))
 
 ; query
+;; comment typescript injection
+((comment) @comment .
+           (expression_statement
+             (assignment right:
+                         (string
+                           (string_content)
+                           @injection.content
+                           (#match? @comment "^#+( )*[tT][yY][pP][eE][sS][cC][rR][iI][pP][tT]( )*")
+                           (#set! injection.language "typescript")))))
+
+; query
 ;; comment html injection
 ((comment) @comment .
            (expression_statement
@@ -112,3 +90,25 @@
                            @injection.content
                            (#match? @comment "^#+( )*[hH][tT][mM][lL]( )*")
                            (#set! injection.language "html")))))
+
+; query
+;; comment python injection
+((comment) @comment .
+           (expression_statement
+             (assignment right:
+                         (string
+                           (string_content)
+                           @injection.content
+                           (#match? @comment "^#+( )*[pP][yY][tT][hH][oO][nN]( )*")
+                           (#set! injection.language "python")))))
+
+; query
+;; comment css injection
+((comment) @comment .
+           (expression_statement
+             (assignment right:
+                         (string
+                           (string_content)
+                           @injection.content
+                           (#match? @comment "^#+( )*[cC][sS][sS]( )*")
+                           (#set! injection.language "css")))))

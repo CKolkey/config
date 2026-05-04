@@ -3,6 +3,8 @@
 clipboard-read = allow
 clipboard-write = allow
 
+bell-features = system,title
+
 window-colorspace = display-p3
 window-save-state = always
 

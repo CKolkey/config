@@ -25,5 +25,45 @@ vim.api.nvim_create_autocmd("User", {
       require("plenary.profile").start("profile.log", { flame = true })
       vim.api.nvim_create_autocmd("VimLeavePre", { callback = require("plenary.profile").stop })
     end
+
+    vim.ui.input = function(opts, on_confirm)
+      if on_confirm then
+        local prompt = (opts or {}).prompt or "Input: "
+        local default = (opts or {}).default or ""
+
+        vim.fn.inputsave()
+        local ok, result = pcall(vim.fn.input, vim.tbl_extend("keep", opts, {
+          prompt = prompt,
+          default = default,
+          cancelreturn = vim.NIL,
+        }))
+        vim.fn.inputrestore()
+
+        if not ok or result == vim.NIL then
+          on_confirm(nil)
+        else
+          on_confirm(result)
+        end
+      end
+    end
+
+    -- vim.ui.select = function(items, opts, on_choice)
+    --   opts = opts or {}
+    --   local prompt = opts.prompt or "Select one:"
+    --   local choices
+    --   if type(items) ~= "table" then
+    --     choices = table.concat(items, "\n")
+    --   else
+    --     choices = items
+    --   end
+    --
+    --   local ok, idx = pcall(vim.fn.confirm, prompt, choices)
+    --
+    --   if not ok or idx == 0 then
+    --     on_choice(nil, nil)
+    --   else
+    --     on_choice(items[idx], idx)
+    --   end
+    -- end
   end,
 })

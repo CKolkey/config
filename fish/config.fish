@@ -24,14 +24,16 @@ set -gx PKG_CONFIG_PATH "/opt/homebrew/opt/curl/lib/pkgconfig"
 source_homebrew
 
 if status is-interactive
+  __hvst_once_per_day
+  source $HOME/.config/fish/abbreviations.fish
+
   auto_ls
   direnv hook fish | source
-  mise activate fish | source
   starship init fish | source
   fzf --fish | source
   gh completion -s fish | source
+  mise activate fish | source
 
-  source $HOME/.config/fish/abbreviations.fish
 end
 
 set -gx MANPAGER "nvim +Man!"
@@ -43,8 +45,6 @@ source ~/.orbstack/shell/init2.fish 2>/dev/null || :
 
 # Update zellij tab titles
 if status is-interactive
-  __hvst_once_per_day
-
   if [ "$TERM" = "xterm-ghostty" ]
     eval (zellij setup --generate-auto-start fish | string collect)
   end
