@@ -29,26 +29,26 @@ vnoremap <silent> k gk
 
 lua << EOF
     vim.pack.add({"https://github.com/m00qek/baleia.nvim"})
-    local colors = {
-        [0] = "#181a1b",
-        [1] = "#e06c75",
-        [2] = "#c3e88d",
-        [3] = "#ffe082",
-        [4] = "#82aaff",
-        [5] = "#c792ea",
-        [6] = "#6ce0cf",
-        [7] = "#c5cdd9",
-        [8] = "#5c6061",
-        [9] = "#b5585f",
-        [10] = "#9fbd73",
-        [11] = "#d4a959",
-        [12] = "#6c8ed4",
-        [13] = "#a377bf",
-        [14] = "#58b5a8",
-        [15] = "#fcfcfc",
-    }
-
-    vim.g.baleia = require("baleia").setup({ colors = colors })
+    vim.g.baleia = require("baleia").setup({
+        colors = {
+            [0] = "#181a1b",
+            [1] = "#e06c75",
+            [2] = "#c3e88d",
+            [3] = "#ffe082",
+            [4] = "#82aaff",
+            [5] = "#c792ea",
+            [6] = "#6ce0cf",
+            [7] = "#c5cdd9",
+            [8] = "#5c6061",
+            [9] = "#b5585f",
+            [10] = "#9fbd73",
+            [11] = "#d4a959",
+            [12] = "#6c8ed4",
+            [13] = "#a377bf",
+            [14] = "#58b5a8",
+            [15] = "#fcfcfc",
+        }
+    })
 EOF
 
 hi Normal guibg=#1c2026 guifg=#c5cdd9
