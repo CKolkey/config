@@ -6,7 +6,6 @@ return {
   "NeogitOrg/neogit",
   dependencies = {
     -- "barrettruth/diffs.nvim",
-    "nvim-lua/plenary.nvim"
     -- {
     --   "m00qek/baleia.nvim",
     --   version = "*",

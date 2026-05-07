@@ -106,13 +106,18 @@ local definitions = {
   treesitter_highlight = {
     desc = "Enable treesitter highlighting",
     {
-      event = { "FileType" },
-      -- pattern = "*",
+      event = { "BufWinEnter" },
       callback = function(event)
-        pcall(vim.treesitter.start)
+        local ok, _ = pcall(vim.treesitter.start)
+        if not ok then
+          local ft = vim.filetype.match({ buf = event.buf })
+          if ft then
+            require("nvim-treesitter").install({ ft }):wait(10000)
+            vim.treesitter.start()
+          end
+        end
       end
     }
-  }
-
+  },
 }
 require("ckolkey.utils.autocmds").load(definitions)

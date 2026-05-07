@@ -53,8 +53,6 @@ local d  = ls.dynamic_node
 local r  = ls.restore_node
 local ri = require("luasnip.extras").rep
 local ai = require("luasnip.nodes.absolute_indexer")
-local ts_locals = require "nvim-treesitter.locals"
-local ts_utils = require "nvim-treesitter.ts_utils"
 
 local newline = function(text)
   return t { "", text or "" }

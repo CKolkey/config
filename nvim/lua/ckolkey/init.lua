@@ -26,6 +26,8 @@ vim.api.nvim_create_autocmd("User", {
       vim.api.nvim_create_autocmd("VimLeavePre", { callback = require("plenary.profile").stop })
     end
 
+    require("vim._core.ui2").enable({})
+
     vim.ui.input = function(opts, on_confirm)
       if on_confirm then
         local prompt = (opts or {}).prompt or "Input: "
@@ -47,23 +49,49 @@ vim.api.nvim_create_autocmd("User", {
       end
     end
 
-    -- vim.ui.select = function(items, opts, on_choice)
-    --   opts = opts or {}
-    --   local prompt = opts.prompt or "Select one:"
-    --   local choices
-    --   if type(items) ~= "table" then
-    --     choices = table.concat(items, "\n")
-    --   else
-    --     choices = items
-    --   end
-    --
-    --   local ok, idx = pcall(vim.fn.confirm, prompt, choices)
-    --
-    --   if not ok or idx == 0 then
-    --     on_choice(nil, nil)
-    --   else
-    --     on_choice(items[idx], idx)
-    --   end
-    -- end
+    ---@param msg string
+    ---@param choices string[]
+    ---@return number
+    local function select_option(msg, choices)
+      local chunks = { { msg .. "\n", "Title" } }
+      for i, choice in ipairs(choices) do
+        table.insert(chunks, { string.format("  %d. %s\n", i, choice) })
+      end
+
+      vim.api.nvim_echo(chunks, false, { id = "ui.select" })
+
+      local char = vim.fn.getcharstr()
+      local idx = tonumber(char)
+
+      -- Clear prompt
+      vim.api.nvim_echo({ { "" } }, false, { id = "ui.select" })
+
+      if idx and idx >= 1 and idx <= #choices then
+        return idx
+      else
+        return 0
+      end
+    end
+
+    ---@param items T[]
+    ---@param opts { prompt: string?, format_item: fun(any): string? }
+    ---@param on_choice fun(item: T?, idx: number?)
+    vim.ui.select = function(items, opts, on_choice)
+      opts = opts or {}
+      opts.format_item = opts.format_item or tostring
+
+      local prompt = opts.prompt or "Select one:"
+      local choices = {}
+      for _, item in ipairs(items) do
+        table.insert(choices, opts.format_item(item))
+      end
+
+      local ok, idx = pcall(select_option, prompt, choices)
+      if not ok or idx == 0 then
+        on_choice(nil, nil)
+      else
+        on_choice(items[idx], idx)
+      end
+    end
   end,
 })

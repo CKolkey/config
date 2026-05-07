@@ -121,14 +121,14 @@ M.snippets = {
 
       local row = vim.api.nvim_win_get_cursor(0)[1] - 1
       local messages = vim
-        .iter(vim.diagnostic.get(0, { lnum = row }))
-        :map(function(tbl)
-          return tbl.code
-        end)
-        :filter(function(code)
-          return not vim.tbl_contains(ignored_codes, code)
-        end)
-        :totable()
+          .iter(vim.diagnostic.get(0, { lnum = row }))
+          :map(function(tbl)
+            return tbl.code
+          end)
+          :filter(function(code)
+            return not vim.tbl_contains(ignored_codes, code)
+          end)
+          :totable()
 
       return "# rubocop:disable " .. table.concat(utils.table_unique(messages), ", ")
     end),
@@ -201,7 +201,7 @@ M.autosnippets = {
         return
       end
 
-      local node = ts_utils.get_node_at_cursor()
+      local node = vim.treesitter.get_node_at_cursor()
       while node do
         if node:type() == "method" then
           break

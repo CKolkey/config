@@ -11,8 +11,8 @@ return {
       functions = "bold",
     },
     options = {
-      transparency = false, -- Use a transparent background?
-      terminal_colors = true, -- Use the colorscheme's colors for Neovim's :terminal?
+      transparency = false,              -- Use a transparent background?
+      terminal_colors = true,            -- Use the colorscheme's colors for Neovim's :terminal?
       highlight_inactive_windows = true, -- When the window is out of focus, change the normal background?
     },
   },
@@ -20,5 +20,6 @@ return {
     require("onedarkpro").setup(opts)
     vim.cmd.colorscheme("onedark")
     vim.cmd('hi! link CurSearch Search')
+    require('leap.user').set_backdrop_highlight('Comment')
   end,
 }

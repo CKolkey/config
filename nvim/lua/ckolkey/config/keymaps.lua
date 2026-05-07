@@ -16,6 +16,7 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
+    ["<space>"] = "<Plug>(leap)",
     ["<ScrollWheelUp>"] = "<C-Y>",
     ["<ScrollWheelDown>"] = "<C-E>",
     ["<esc>"] = "<esc>:lua require('notify').dismiss()<CR>",

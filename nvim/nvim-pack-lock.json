@@ -1,0 +1,12 @@
+{
+  "plugins": {
+    "baleia.nvim": {
+      "rev": "32617940adb2eea56e85a64883a19961ceac9641",
+      "src": "https://github.com/m00qek/baleia.nvim"
+    },
+    "leap.nvim": {
+      "rev": "5ad712bbc927c09b6b6ebd3df414669bb80b6c77",
+      "src": "https://codeberg.org/andyg/leap.nvim"
+    }
+  }
+}
