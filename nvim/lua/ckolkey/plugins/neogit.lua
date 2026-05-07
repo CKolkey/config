@@ -100,5 +100,46 @@ return {
       item = { "", "" },
       hunk = { "", "" },
     },
+    builders = {
+      ---@param builder PopupBuilder
+      NeogitTagPopup = function(builder)
+        builder:action_if(
+          vim.uv.cwd():match("karnov") ~= nil,
+          "d",
+          "deploy to production",
+          function(popup)
+            local notification = require("neogit.lib.notification")
+            local FuzzyFinderBuffer = require("neogit.buffers.fuzzy_finder")
+            local git = require("neogit.lib.git")
+            local input = require("neogit.lib.input")
+
+            local selected
+            if popup.state.env.commit then
+              local maybe_tag = git.tag.for_commit(popup.state.env.commit)[1]
+              if maybe_tag and maybe_tag:match("^staging%-%d+$") then
+                selected = maybe_tag
+              end
+            end
+
+            if not selected then
+              selected = FuzzyFinderBuffer.new(vim.fn.reverse(git.tag.list("staging-*"))):open_async { prompt_prefix = "Deploy to production" }
+            end
+
+            if selected and input.get_permission("Deploy " .. selected .. " to prod?") then
+              notification.info("Deploying " .. selected .. " to production")
+              local on_exit = function(obj)
+                if obj.code == 0 then
+                  notification.info("Done")
+                  require("neogit").dispatch_refresh()
+                else
+                  notification.warn("Jin encountered an error")
+                end
+              end
+
+              vim.system({ "jin", "deploy", selected }, on_exit)
+            end
+          end)
+      end
+    }
   },
 }
