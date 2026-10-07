@@ -5,5 +5,5 @@
         signingkey = 94EEC23A90FAA528
 [commit]
         gpgsign = true
-[tag]
-        gpgSign = true
+; [tag]
+;         gpgSign = true

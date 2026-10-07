@@ -20,7 +20,7 @@ abbr -a -- rs 'bundle exec rspec'
 abbr -a -- serve 'ruby -run -e httpd . -p 80'
 abbr -a -- v 'nvim'
 abbr -a -- autotest 'find ./spec -name "*_spec.rb" | entr -r -c bundle exec rspec /_ --format doc'
-abbr -a -- cat 'bat'
+# abbr -a -- cat 'bat'
 
 abbr -a -- oc 'overmind connect'
 abbr -a -- oq 'overmind quit'

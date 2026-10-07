@@ -49,7 +49,13 @@ return {
     },
   },
   opts = {
-    -- log_pager = { 'delta', '--width', '117', '--line-numbers', '--no-gitconfig', '--color-only' },
+    -- NOTE: for msgarea plugin
+    -- popup = { kind = "floating", show_title = false },
+    -- floating = {
+    --   relative = "msgarea",
+    --   height = 0.33,
+    --   border = "none",
+    -- },
     process_spinner = true,
     diff_viewer = "codediff",
     mappings = {
@@ -122,7 +128,9 @@ return {
             end
 
             if not selected then
-              selected = FuzzyFinderBuffer.new(vim.fn.reverse(git.tag.list("staging-*"))):open_async { prompt_prefix = "Deploy to production" }
+              selected = FuzzyFinderBuffer.new(vim.fn.reverse(git.tag.list("staging-*"))):open_async {
+                prompt_prefix = "Deploy to production"
+              }
             end
 
             if selected and input.get_permission("Deploy " .. selected .. " to prod?") then
@@ -130,7 +138,7 @@ return {
               local on_exit = function(obj)
                 if obj.code == 0 then
                   notification.info("Done")
-                  require("neogit").dispatch_refresh()
+                  vim.defer_fn(require("neogit").dispatch_refresh, 1000)
                 else
                   notification.warn("Jin encountered an error")
                 end

@@ -29,7 +29,7 @@ return {
   {
     "echasnovski/mini.ai",
     event = "BufReadPre",
-    dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
+    dependencies = { { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" } },
     init = function()
       -- no need to load the plugin, since we only need its queries
       require("lazy.core.loader").disable_rtp_plugin("nvim-treesitter-textobjects")
@@ -40,6 +40,7 @@ return {
       ai.setup({
         n_lines = 500,
         custom_textobjects = {
+          a = ai.gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }), -- argument/parameter
           b = ai.gen_spec.treesitter({ -- code block
             a = { "@block.outer", "@conditional.outer", "@loop.outer" },
             i = { "@block.inner", "@conditional.inner", "@loop.inner" },

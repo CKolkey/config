@@ -16,6 +16,7 @@ local mappings = {
     ["<Down>"] = "<Nop>",
   },
   normal = {
+    ["a"] = { require("ckolkey.utils.functions").smart_insert, { expr = true } },
     ["<space>"] = "<Plug>(leap)",
     ["<ScrollWheelUp>"] = "<C-Y>",
     ["<ScrollWheelDown>"] = "<C-E>",

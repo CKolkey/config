@@ -3,11 +3,11 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-  (after! magit (setq magit-git-debug t))
-  (setq shell-file-name (executable-find "bash"))
+  ; (after! magit (setq magit-git-debug t))
+  ; (setq shell-file-name (executable-find "bash"))
 
-  (setq magit-git-debug t)
-  (setq magit-process-extreme-logging t)
+  ; (setq magit-git-debug t)
+  ; (setq magit-process-extreme-logging t)
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.

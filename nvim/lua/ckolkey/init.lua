@@ -26,7 +26,10 @@ vim.api.nvim_create_autocmd("User", {
       vim.api.nvim_create_autocmd("VimLeavePre", { callback = require("plenary.profile").stop })
     end
 
-    require("vim._core.ui2").enable({})
+    require "vim._core.ui2".enable({
+      enable = true,
+      msg = { target = "msg" }
+    })
 
     vim.ui.input = function(opts, on_confirm)
       if on_confirm then
@@ -58,7 +61,9 @@ vim.api.nvim_create_autocmd("User", {
         table.insert(chunks, { string.format("  %d. %s\n", i, choice) })
       end
 
-      vim.api.nvim_echo(chunks, false, { id = "ui.select" })
+      vim.schedule(function()
+        vim.api.nvim_echo(chunks, false, { id = "ui.select" })
+      end)
 
       local char = vim.fn.getcharstr()
       local idx = tonumber(char)

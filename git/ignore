@@ -208,3 +208,8 @@ Sessionx.vim
 *.tags
 .envrc
 venv/*
+db/__pycache__/env.cpython-313.pyc
+.elixir-tools/next-ls.log
+
+**/.claude/settings.local.json
+.env.development

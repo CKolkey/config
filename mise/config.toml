@@ -1,6 +1,8 @@
 [tools]
-ruby = "latest"
+ruby = "3.4.0"
 go = "latest"
+node = "latest"
+rust = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]

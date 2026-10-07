@@ -28,19 +28,55 @@ vnoremap <silent> k gk
 
 
 lua << EOF
-    vim.pack.add({"https://github.com/m00qek/baleia.nvim"})
+    vim.pack.add({
+        "https://github.com/m00qek/baleia.nvim",
+        "https://codeberg.org/andyg/leap.nvim"
+    })
+
+    vim.keymap.set({ 'n', 'x', 'o' }, '<Space>', '<Plug>(leap)')
+    -- Highly recommended: define a preview filter to reduce visual noise
+    -- and the blinking effect after the first keypress.
+    -- For example, define word boundaries as the common case, that is, skip
+    -- preview for matches starting with whitespace or an alphabetic
+    -- mid-word character: foobar[baaz] = quux
+    --                     *    ***  ** * *  *
+    require('leap').opts.preview = function(ch0, ch1, ch2)
+      return not (
+        ch1:match('%s')
+        or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
+      )
+    end
+
+    -- Enable the traversal keys to repeat the previous search without
+    -- explicitly invoking Leap (`<cr><cr>...` instead of `s<cr><cr>...`):
+    do
+      local clever = require('leap.user').with_traversal_keys
+      -- For relative directions, set the `backward` flags according to:
+      -- local prev_backward = require('leap').state['repeat'].backward
+      vim.keymap.set({ 'n', 'x', 'o' }, '<cr>', function()
+        require('leap').leap {
+          ['repeat'] = true, opts = clever('<cr>', '<bs>'),
+        }
+      end)
+      vim.keymap.set({ 'n', 'x', 'o' }, '<bs>', function()
+        require('leap').leap {
+          ['repeat'] = true, opts = clever('<bs>', '<cr>'), backward = true,
+        }
+      end)
+    end
+
     vim.g.baleia = require("baleia").setup({
         colors = {
-            [0] = "#181a1b",
-            [1] = "#e06c75",
-            [2] = "#c3e88d",
-            [3] = "#ffe082",
-            [4] = "#82aaff",
-            [5] = "#c792ea",
-            [6] = "#6ce0cf",
-            [7] = "#c5cdd9",
-            [8] = "#5c6061",
-            [9] = "#b5585f",
+            [0]  = "#181a1b",
+            [1]  = "#e06c75",
+            [2]  = "#c3e88d",
+            [3]  = "#ffe082",
+            [4]  = "#82aaff",
+            [5]  = "#c792ea",
+            [6]  = "#6ce0cf",
+            [7]  = "#c5cdd9",
+            [8]  = "#5c6061",
+            [9]  = "#b5585f",
             [10] = "#9fbd73",
             [11] = "#d4a959",
             [12] = "#6c8ed4",
@@ -61,7 +97,7 @@ augroup END
 augroup highlight_yank
     autocmd!
     autocmd TextYankPost * silent! lua require('vim.highlight').on_yank({timeout = 300})
-    autocmd TextYankPost * lua vim.schedule(function() vim.cmd.sleep("300m"); vim.cmd.quit() end)
+    autocmd TextYankPost * lua vim.schedule(function() vim.cmd.sleep("300m"); vim.cmd("quit!") end)
 augroup END
 
 augroup start_at_bottom

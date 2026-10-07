@@ -8,7 +8,7 @@ function cd
       builtin cd "$PREV_CWD"
     else
       # Standard cd behaviour
-      builtin cd "$argv"
+      builtin cd $argv
     end
   else
     # Interactive, fzf backed, cd

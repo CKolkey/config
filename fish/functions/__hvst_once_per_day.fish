@@ -6,35 +6,33 @@ function __hvst_once_per_day --on-event fish_prompt
         set -U HVST_LAST_RUN $today
     end
 end
+
 # #!/usr/bin/env ruby
 #
-# # frozen_string_literal: true
-#
-# abort "You need to install FZF: https://github.com/junegunn/fzf" unless system("which fzf", out: File::NULL)
-#
 # require "bundler/inline"
-# require "date"
 #
 # gemfile do
 #   source "https://rubygems.org"
 #   gem "httpx"
+#   gem "tty-prompt"
+#   gem "date"
 # end
 #
-#
-# def fzf(choices, prompt:)
-#   IO.popen("fzf --layout=reverse --no-info --no-multi --read0 --prompt='#{prompt}: '", "r+") do |io|
-#     io.write(choices.uniq.join("\0"))
-#     io.close_write
-#     io.read
-#   end.chomp
-# end
+# exit(0) if Date.today.sunday? || Date.today.saturday?
 #
 # headers = {
 #   "Harvest-Account-ID" => 0,
-#   "Authorization" => "Bearer xx"
+#   "Authorization" => "Bearer xxx"
 # }
 #
 # def endpoint(path) = "https://api.harvestapp.com/api/v2/#{path}"
+#
+# def submit = system("open", "https://karnovgroup.harvestapp.com/time/week/")
+#
+# if ARGV[0] == "submit"
+#   submit
+#   exit(0)
+# end
 #
 # response = HTTPX.with(headers:)
 #   .get(endpoint("users/me/project_assignments"))
@@ -42,41 +40,29 @@ end
 #   .fetch("project_assignments")
 #   .select { _1.fetch("is_active") }
 #
-# projects = response.map { "#{_1.dig("project", "id")} - #{_1.dig("project", "name") }" }
-#
-# project_id, project_name = fzf(projects, prompt: "Project").split(" - ")
-# project = response.find { _1.dig("project", "id") == project_id.to_i }
-# exit(1) if project.nil?
-#
-# tasks = project.fetch("task_assignments").map { "#{_1.dig("task", "id")} - #{_1.dig("task", "name") }" }
-# task_id, task_name = fzf(tasks, prompt: project_name).split(" - ")
-# exit(1) if task_id.nil?
+# prompt = TTY::Prompt.new
+# puts `clear`
 #
 # begin
-#   puts `clear`
-#   puts "#{project_name}, #{task_name}"
-#   puts "Full day?"
-#   print "[y/n] > "
-#   if gets.chomp == "y"
-#     hours = 7
-#     minutes = 30
-#   else
-#     hours = ""
-#     minutes = ""
-#     until hours != "" && minutes != ""
-#       puts `clear`
-#       puts "#{project_name}, #{task_name}"
+#   project_id = response.map { [_1.dig("project", "name"), _1.dig("project", "id")] }
+#                        .sort
+#                        .to_h
+#                        .tap { _1["None"] = nil }
+#                        .then { |projects| prompt.enum_select("Project", projects) }
 #
-#       if hours == ""
-#         print "Hours > #{hours}"
-#         hours = gets.chomp
-#       else
-#         puts  "Hours > #{hours}"
-#         print "Mins  > #{minutes}"
-#         minutes = gets.chomp
-#       end
-#     end
-#   end
+#   exit(0) if project_id.nil?
+#
+#   task_id = response.find { _1.dig("project", "id") == project_id }
+#                     .fetch("task_assignments")
+#                     .map { [_1.dig("task", "name"), _1.dig("task", "id")] }
+#                     .sort
+#                     .to_h
+#                     .then { |tasks| prompt.enum_select("Task", tasks) }
+#
+#   exit(0) if task_id.nil?
+#
+#   hours = 7
+#   minutes = 30
 #
 #   HTTPX.with(headers: { **headers, "Content-Type" => "application/json" })
 #     .post(
@@ -88,6 +74,8 @@ end
 #         hours: hours.to_i + (minutes.to_i / 60.0)
 #       }.to_json
 #     )
+#
+#   submit if Date.today.friday?
 # rescue Interrupt, NoMethodError
 #   exit(1)
 # end

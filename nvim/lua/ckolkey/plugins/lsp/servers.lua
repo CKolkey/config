@@ -5,6 +5,11 @@ local prettierd = {
 }
 
 return {
+  expert = {
+    cmd = { 'expert', '--stdio' },
+    root_markers = { 'mix.exs', '.git' },
+    filetypes = { 'elixir', 'eelixir', 'heex' },
+  },
   rust_analyzer = {},
   bashls = {
     cmd = { 'bash-language-server', 'start' },
